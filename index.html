@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI specialist and PHP developer with 9 years of experience. AI integration into business processes, enterprise solutions development.">
+    <meta name="keywords" content="AI specialist, PHP developer, AI integration, LLM, Symfony, development">
+    <meta name="author" content="MILINSKY">
+    <meta property="og:title" content="MILINSKY — AI Specialist / PHP Developer">
+    <meta property="og:description" content="Deep engineering expertise combined with modern AI. 9+ years of development experience.">
+    <meta property="og:type" content="website">
+    <title>MILINSKY — AI Specialist / PHP Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <svg class="noise-overlay" aria-hidden="true">
+        <filter id="noiseFilter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
+    </svg>
+
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#hero" class="nav__logo">
+                <span class="nav__logo-bracket">&lt;</span><span class="nav__logo-text">MILINSKY</span><span class="nav__logo-bracket">/&gt;</span>
+            </a>
+            <ul class="nav__list" id="navList">
+                <li class="nav__item"><a href="#about" class="nav__link" data-i18n="nav_about">About</a></li>
+                <li class="nav__item"><a href="#services" class="nav__link" data-i18n="nav_services">Services</a></li>
+                <li class="nav__item"><a href="#results" class="nav__link" data-i18n="nav_results">Results</a></li>
+                <li class="nav__item"><a href="#expertise" class="nav__link" data-i18n="nav_expertise">AI Expertise</a></li>
+                <li class="nav__item"><a href="#contact" class="nav__link nav__link--cta" data-i18n="nav_contact">Contact</a></li>
+            </ul>
+            <div class="nav__actions">
+                <button class="lang-toggle" id="langToggle" aria-label="Switch language" type="button">
+                    <span class="lang-toggle__text">EN</span>
+                </button>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+                    <svg class="theme-toggle__icon theme-toggle__icon--sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <svg class="theme-toggle__icon theme-toggle__icon--moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                <button class="nav__burger" id="navBurger" aria-label="Open menu" aria-expanded="false" type="button">
+                    <span class="nav__burger-line"></span>
+                    <span class="nav__burger-line"></span>
+                    <span class="nav__burger-line"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="hero__grid-bg" aria-hidden="true"></div>
+            <div class="hero__content container">
+                <div class="hero__badge animate-on-scroll">
+                    <span class="hero__badge-dot"></span>
+                    <span class="hero__badge-text">PHP Developer / AI Specialist</span>
+                </div>
+                <h1 class="hero__title animate-on-scroll" data-glitch data-i18n-html="hero_title">
+                    Deep engineering<br>
+                    expertise combined<br>
+                    <span class="accent-text">with modern AI</span>
+                </h1>
+                <p class="hero__subtitle animate-on-scroll">
+                    <span class="terminal-prefix">$</span>
+                    <span class="typing-text" id="typingText"></span>
+                    <span class="cursor" aria-hidden="true">_</span>
+                </p>
+                <div class="hero__actions animate-on-scroll">
+                    <a href="#contact" class="btn btn--primary" data-i18n="hero_btn_primary">Discuss a project</a>
+                    <a href="#results" class="btn btn--ghost" data-i18n="hero_btn_ghost">View results</a>
+                </div>
+            </div>
+            <div class="hero__scroll-indicator" aria-hidden="true">
+                <span class="hero__scroll-text">scroll_</span>
+                <span class="hero__scroll-line"></span>
+            </div>
+        </section>
+
+        <section class="section about" id="about">
+            <div class="container">
+                <div class="section__header animate-on-scroll">
+                    <span class="section__label">&gt; section_01 --about</span>
+                    <h2 class="section__title" data-i18n-html="about_title">Not just a developer,<br><span class="accent-text">but a solutions engineer</span></h2>
+                </div>
+                <div class="about__grid">
+                    <div class="about__card retro-card animate-on-scroll">
+                        <div class="about__card-status">
+                            <span class="status-dot status-dot--green"></span>
+                            <span class="status-text">ACTIVE</span>
+                        </div>
+                        <h3 class="about__card-title" data-i18n="about_card1_title">9+ Years of Experience</h3>
+                        <p class="about__card-text" data-i18n="about_card1_text">Real commercial development. From simple landing pages to complex distributed systems. Every project raises the bar.</p>
+                    </div>
+                    <div class="about__card retro-card animate-on-scroll">
+                        <div class="about__card-status">
+                            <span class="status-dot status-dot--blue"></span>
+                            <span class="status-text">OPTIMIZED</span>
+                        </div>
+                        <h3 class="about__card-title" data-i18n="about_card2_title">Optimal Solutions</h3>
+                        <p class="about__card-text" data-i18n="about_card2_text">I don't take easy paths — I choose the most effective ways to achieve goals. Technically complex tasks are my element.</p>
+                    </div>
+                    <div class="about__card retro-card animate-on-scroll">
+                        <div class="about__card-status">
+                            <span class="status-dot status-dot--yellow"></span>
+                            <span class="status-text">DAILY</span>
+                        </div>
+                        <h3 class="about__card-title" data-i18n="about_card3_title">AI Every Day</h3>
+                        <p class="about__card-text" data-i18n="about_card3_text">I work with LLMs daily. Not a theorist — a practitioner. I train colleagues to use language models effectively. This work drives me.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section services" id="services">
+            <div class="container">
+                <div class="section__header animate-on-scroll">
+                    <span class="section__label">&gt; section_02 --services</span>
+                    <h2 class="section__title" data-i18n-html="services_title">What I<br><span class="accent-text">do best</span></h2>
+                </div>
+                <div class="services__grid">
+                    <article class="service-card retro-card animate-on-scroll">
+                        <div class="service-card__number">01</div>
+                        <h3 class="service-card__title" data-i18n="service1_title">AI Integration for Business</h3>
+                        <p class="service-card__text" data-i18n="service1_text">Implementing intelligent LLM-based systems into business processes. From needs analysis to production-ready solutions.</p>
+                        <div class="service-card__tags">
+                            <span class="tag">LLM</span>
+                            <span class="tag">Prompt Engineering</span>
+                            <span class="tag">RAG</span>
+                        </div>
+                    </article>
+                    <article class="service-card retro-card animate-on-scroll">
+                        <div class="service-card__number">02</div>
+                        <h3 class="service-card__title" data-i18n="service2_title">PHP/Symfony Development</h3>
+                        <p class="service-card__text" data-i18n="service2_text">Designing and developing high-load systems. Messaging services, VoIP provider integrations, enterprise platforms.</p>
+                        <div class="service-card__tags">
+                            <span class="tag">PHP 8.4+</span>
+                            <span class="tag">Symfony</span>
+                            <span class="tag">Architecture</span>
+                        </div>
+                    </article>
+                    <article class="service-card retro-card animate-on-scroll">
+                        <div class="service-card__number">03</div>
+                        <h3 class="service-card__title" data-i18n="service3_title">Enterprise Solutions</h3>
+                        <p class="service-card__text" data-i18n="service3_text">Building systems from simple landing pages to complex multi-component applications. Technical leadership and team mentoring.</p>
+                        <div class="service-card__tags">
+                            <span class="tag">Full-Stack</span>
+                            <span class="tag">Team Lead</span>
+                            <span class="tag">Mentoring</span>
+                        </div>
+                    </article>
+                    <article class="service-card retro-card animate-on-scroll">
+                        <div class="service-card__number">04</div>
+                        <h3 class="service-card__title" data-i18n="service4_title">AI Training</h3>
+                        <p class="service-card__text" data-i18n="service4_text">Running internal meetups, training colleagues to use LLMs effectively. Boosting the entire team's productivity.</p>
+                        <div class="service-card__tags">
+                            <span class="tag">Training</span>
+                            <span class="tag">Workshops</span>
+                            <span class="tag">LLM Usage</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section results" id="results">
+            <div class="container">
+                <div class="section__header animate-on-scroll">
+                    <span class="section__label">&gt; section_03 --results</span>
+                    <h2 class="section__title" data-i18n-html="results_title">Real projects,<br><span class="accent-text">real results</span></h2>
+                </div>
+                <div class="results__list">
+                    <div class="result-item retro-card animate-on-scroll">
+                        <div class="result-item__metric">
+                            <span class="result-item__value">+30%</span>
+                            <span class="result-item__label" data-i18n="result1_label">delivery speed</span>
+                        </div>
+                        <div class="result-item__content">
+                            <h3 class="result-item__title" data-i18n="result1_title">SMS & Email Broadcasting Services</h3>
+                            <p class="result-item__text" data-i18n="result1_text">Designed and deployed broadcasting services on PHP/Symfony. Optimized the architecture, increasing message delivery speed by 30%.</p>
+                            <div class="result-item__stack">
+                                <span>PHP</span>
+                                <span>Symfony</span>
+                                <span>Message Queue</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-item retro-card animate-on-scroll">
+                        <div class="result-item__metric">
+                            <span class="result-item__value">VoIP</span>
+                            <span class="result-item__label" data-i18n="result2_label">integration</span>
+                        </div>
+                        <div class="result-item__content">
+                            <h3 class="result-item__title" data-i18n="result2_title">VoIP Telephony Integration</h3>
+                            <p class="result-item__text" data-i18n="result2_text">Successfully integrated internal communications with VoIP telephony providers. Ensured seamless interaction between systems.</p>
+                            <div class="result-item__stack">
+                                <span>VoIP</span>
+                                <span>SIP</span>
+                                <span>WebRTC</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-item retro-card animate-on-scroll">
+                        <div class="result-item__metric">
+                            <span class="result-item__value">AI</span>
+                            <span class="result-item__label" data-i18n="result3_label">for call center</span>
+                        </div>
+                        <div class="result-item__content">
+                            <h3 class="result-item__title" data-i18n="result3_title">AI System for Operators</h3>
+                            <p class="result-item__text" data-i18n="result3_text">Created an AI-based system that simplifies call-center operators' work. Improved customer support quality and reduced company costs.</p>
+                            <div class="result-item__stack">
+                                <span>LLM</span>
+                                <span>NLP</span>
+                                <span>Real-time</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-item retro-card animate-on-scroll">
+                        <div class="result-item__metric">
+                            <span class="result-item__value">2+</span>
+                            <span class="result-item__label" data-i18n="result4_label">years of projects</span>
+                        </div>
+                        <div class="result-item__content">
+                            <h3 class="result-item__title" data-i18n="result4_title">Full Range of Solutions</h3>
+                            <p class="result-item__text" data-i18n="result4_text">Over the past two years, built numerous solutions in corporate development — from simple landing pages to complex multi-component applications.</p>
+                            <div class="result-item__stack">
+                                <span>Full-Stack</span>
+                                <span>Enterprise</span>
+                                <span>SaaS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section expertise" id="expertise">
+            <div class="container">
+                <div class="section__header animate-on-scroll">
+                    <span class="section__label">&gt; section_04 --expertise</span>
+                    <h2 class="section__title" data-i18n-html="expertise_title">Not a "site in one prompt" —<br><span class="accent-text">an engineering approach to AI</span></h2>
+                </div>
+                <div class="expertise__content">
+                    <div class="expertise__main retro-card animate-on-scroll">
+                        <div class="expertise__main-header">
+                            <div class="expertise__terminal">
+                                <div class="expertise__terminal-dots">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div class="expertise__terminal-title">ai_approach.sh</div>
+                            </div>
+                        </div>
+                        <div class="expertise__code">
+                            <code>
+                                <span class="code__keyword">const</span> <span class="code__var">approach</span> = {<br>
+                                &nbsp;&nbsp;<span class="code__key">attention_to_detail</span>: <span class="code__bool">true</span>,<br>
+                                &nbsp;&nbsp;<span class="code__key">code_quality</span>: <span class="code__string">"uncompromising"</span>,<br>
+                                &nbsp;&nbsp;<span class="code__key">rules_compliance</span>: <span class="code__bool">true</span>,<br>
+                                &nbsp;&nbsp;<span class="code__key">daily_llm_usage</span>: <span class="code__string">"every single day"</span>,<br>
+                                &nbsp;&nbsp;<span class="code__key">team_training</span>: <span class="code__string">"colleagues → LLM experts"</span>,<br>
+                                &nbsp;&nbsp;<span class="code__key">corporate_solutions</span>: <span class="code__bool">true</span>,<br>
+                                };
+                            </code>
+                        </div>
+                    </div>
+                    <div class="expertise__features">
+                        <div class="expertise__feature retro-card animate-on-scroll">
+                            <div class="expertise__feature-number">01</div>
+                            <h4 class="expertise__feature-title" data-i18n="feature1_title">Attention to Detail</h4>
+                            <p class="expertise__feature-text" data-i18n="feature1_text">Every line of code undergoes rigorous review. Quality is non-negotiable.</p>
+                        </div>
+                        <div class="expertise__feature retro-card animate-on-scroll">
+                            <div class="expertise__feature-number">02</div>
+                            <h4 class="expertise__feature-title" data-i18n="feature2_title">Daily Practice</h4>
+                            <p class="expertise__feature-text" data-i18n="feature2_text">LLMs aren't a hobby — they're a work tool. I use them daily, refining my approaches.</p>
+                        </div>
+                        <div class="expertise__feature retro-card animate-on-scroll">
+                            <div class="expertise__feature-number">03</div>
+                            <h4 class="expertise__feature-title" data-i18n="feature3_title">Team Training</h4>
+                            <p class="expertise__feature-text" data-i18n="feature3_text">Sharing knowledge with colleagues. Running meetups and workshops on effective AI usage.</p>
+                        </div>
+                        <div class="expertise__feature retro-card animate-on-scroll">
+                            <div class="expertise__feature-number">04</div>
+                            <h4 class="expertise__feature-title" data-i18n="feature4_title">Own Project</h4>
+                            <p class="expertise__feature-text" data-i18n="feature4_text">Currently leading my own project that reflects all accumulated experience in AI and development.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section contact" id="contact">
+            <div class="container">
+                <div class="contact__wrapper retro-card animate-on-scroll">
+                    <div class="contact__content">
+                        <span class="section__label">&gt; section_05 --contact</span>
+                        <h2 class="section__title" data-i18n-html="contact_title">Ready to discuss<br><span class="accent-text">your project</span></h2>
+                        <p class="contact__text" data-i18n="contact_text">If you need a specialist who combines deep technical expertise with understanding of AI — let's talk.</p>
+                        <div class="contact__methods">
+                            <a href="mailto:hello@example.com" class="contact__method">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+                                    <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 5l9 8 9-8"/>
+                                </svg>
+                                <span>hello@example.com</span>
+                            </a>
+                            <a href="https://t.me/" class="contact__method" target="_blank" rel="noopener noreferrer">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 3L2 11L10 14M22 3L18 21L10 14M22 3L10 14M10 14V20L13.5 16.5"/>
+                                </svg>
+                                <span>Telegram</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="contact__visual">
+                        <div class="contact__terminal-block">
+                            <div class="contact__terminal-header">
+                                <span class="contact__terminal-prompt">$</span> init_contact
+                            </div>
+                            <div class="contact__terminal-output">
+                                <span class="contact__terminal-line">status: <span class="text-green" data-i18n="contact_terminal_status">available for projects</span></span>
+                                <span class="contact__terminal-line">response: <span class="text-cyan" data-i18n="contact_terminal_response">within 24 hours</span></span>
+                                <span class="contact__terminal-line">languages: <span class="text-yellow" data-i18n="contact_terminal_languages">Russian, English</span></span>
+                            </div>
+                            <span class="contact__terminal-cursor" aria-hidden="true">_</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <div class="footer__social">
+                <a href="https://github.com/" class="footer__link" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 2C6.477 2 2 6.477 2 12C2 16.42 4.865 20.166 8.839 21.489C9.339 21.581 9.5 21.277 9.5 21.015V19.183C6.573 19.823 5.953 17.924 5.953 17.924C5.469 16.693 4.766 16.39 4.766 16.39C3.793 15.726 4.839 15.74 4.839 15.74C5.912 15.816 6.477 16.844 6.477 16.844C7.434 18.475 8.976 18.004 9.563 17.733C9.656 17.04 9.922 16.558 10.219 16.283C7.922 16.004 5.5 15.124 5.5 11.5C5.5 10.421 5.875 9.544 6.5 8.844C6.391 8.569 6.063 7.569 6.609 6.234C6.609 6.234 7.438 5.969 9.5 7.219C10.313 6.969 11.156 6.844 12 6.844C12.844 6.844 13.688 6.969 14.5 7.219C16.563 5.969 17.391 6.234 17.391 6.234C17.938 7.569 17.609 8.569 17.5 8.844C18.125 9.544 18.5 10.421 18.5 11.5C18.5 15.133 16.078 16 13.766 16.269C14.141 16.594 14.5 17.234 14.5 18.219V21.015C14.5 21.28 14.661 21.586 15.169 21.489C19.139 20.163 22 16.418 22 12C22 6.477 17.523 2 12 2Z"/>
+                    </svg>
+                </a>
+                <a href="https://linkedin.com/" class="footer__link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="2" width="20" height="20" rx="3"/><path d="M8 11V17M8 7V7.01M12 17V13C12 11.895 12.895 11 14 11C15.105 11 16 11.895 16 13V17" stroke-linecap="round"/>
+                    </svg>
+                </a>
+                <a href="https://t.me/" class="footer__link" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 3L2 11L10 14M22 3L18 21L10 14M22 3L10 14M10 14V20L13.5 16.5"/>
+                    </svg>
+                </a>
+            </div>
+            <p class="footer__legal" data-i18n="footer_legal">2026. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
