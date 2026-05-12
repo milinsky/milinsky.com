@@ -550,13 +550,13 @@ button {
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(var(--glow-color), 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(var(--glow-color), 0.07) 1px, transparent 1px);
+        linear-gradient(rgba(var(--glow-color), 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--glow-color), 0.12) 1px, transparent 1px);
     background-size: 60px 60px;
     transform: perspective(500px) rotateX(40deg) scale(2);
     transform-origin: center bottom;
-    mask-image: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 40%, transparent 80%);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 40%, transparent 80%);
+    mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 40%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 40%, transparent 80%);
 }
 
 .hero__content {
