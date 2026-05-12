@@ -408,9 +408,15 @@ button {
     align-items: center;
     gap: 0;
     font-family: var(--font-mono);
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+}
+
+.nav__logo-frame {
+    color: var(--accent);
+    font-weight: 400;
+    opacity: 0.6;
 }
 
 .nav__logo-bracket {
@@ -1309,6 +1315,11 @@ button {
 
     .nav__burger {
         display: flex;
+    }
+
+    .hero__content {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
 
     .hero__title {
