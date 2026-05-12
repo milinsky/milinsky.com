@@ -368,4 +368,17 @@
             html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
         }
     });
+
+    var progressBar = document.getElementById('scrollProgressBar');
+    var progressText = document.getElementById('scrollProgressText');
+
+    if (progressBar && progressText) {
+        window.addEventListener('scroll', function () {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var percent = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
+            progressBar.style.width = percent + '%';
+            progressText.textContent = percent + '%';
+        }, { passive: true });
+    }
 })();
