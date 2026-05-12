@@ -45,26 +45,26 @@
     --bg-card-hover: rgba(7, 54, 66, 0.95);
     --border: rgba(88, 110, 117, 0.3);
     --border-hover: rgba(88, 110, 117, 0.6);
-    --border-accent: rgba(38, 139, 210, 0.4);
+    --border-accent: rgba(181, 137, 0, 0.4);
     --text: var(--base0);
     --text-secondary: var(--base1);
     --text-heading: var(--base2);
     --text-heading-bright: var(--base3);
-    --accent: var(--solar-blue);
+    --accent: var(--solar-yellow);
     --accent-green: var(--solar-green);
     --accent-yellow: var(--solar-yellow);
     --accent-cyan: var(--solar-cyan);
     --accent-red: var(--solar-red);
     --accent-magenta: var(--solar-magenta);
     --accent-violet: var(--solar-violet);
-    --tag-bg: rgba(38, 139, 210, 0.12);
-    --tag-border: rgba(38, 139, 210, 0.25);
+    --tag-bg: rgba(181, 137, 0, 0.12);
+    --tag-border: rgba(181, 137, 0, 0.25);
     --scanline-color: rgba(0, 43, 54, 0.08);
     --noise-opacity: 0.05;
-    --glow-color: 38, 139, 210;
+    --glow-color: 181, 137, 0;
     --header-bg: rgba(0, 43, 54, 0.9);
     --vignette-color: rgba(0, 0, 0, 0.3);
-    --divider-gradient: linear-gradient(90deg, transparent, rgba(38, 139, 210, 0.4), transparent);
+    --divider-gradient: linear-gradient(90deg, transparent, rgba(181, 137, 0, 0.4), transparent);
 }
 
 [data-theme="light"] {
@@ -74,26 +74,26 @@
     --bg-card-hover: rgba(238, 232, 213, 0.95);
     --border: rgba(147, 161, 161, 0.3);
     --border-hover: rgba(147, 161, 161, 0.6);
-    --border-accent: rgba(38, 139, 210, 0.4);
+    --border-accent: rgba(88, 110, 117, 0.4);
     --text: var(--base00);
     --text-secondary: var(--base01);
     --text-heading: var(--base02);
     --text-heading-bright: var(--base03);
-    --accent: var(--solar-blue);
+    --accent: var(--base01);
     --accent-green: var(--solar-green);
     --accent-yellow: var(--solar-yellow);
     --accent-cyan: var(--solar-cyan);
     --accent-red: var(--solar-red);
     --accent-magenta: var(--solar-magenta);
     --accent-violet: var(--solar-violet);
-    --tag-bg: rgba(38, 139, 210, 0.1);
-    --tag-border: rgba(38, 139, 210, 0.2);
+    --tag-bg: rgba(88, 110, 117, 0.1);
+    --tag-border: rgba(88, 110, 117, 0.2);
     --scanline-color: rgba(88, 110, 117, 0.04);
     --noise-opacity: 0.03;
-    --glow-color: 38, 139, 210;
+    --glow-color: 88, 110, 117;
     --header-bg: rgba(253, 246, 227, 0.92);
     --vignette-color: rgba(0, 43, 54, 0.15);
-    --divider-gradient: linear-gradient(90deg, transparent, rgba(38, 139, 210, 0.3), transparent);
+    --divider-gradient: linear-gradient(90deg, transparent, rgba(88, 110, 117, 0.3), transparent);
 }
 
 *,
@@ -193,6 +193,10 @@ button {
     text-shadow:
         0 0 8px rgba(var(--glow-color), 0.4),
         0 0 20px rgba(var(--glow-color), 0.2);
+}
+
+[data-theme="light"] .accent-text {
+    text-shadow: none;
 }
 
 .retro-card {
@@ -579,6 +583,7 @@ button {
     display: flex;
     gap: var(--space-md);
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .hero__scroll-indicator {
