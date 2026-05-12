@@ -408,24 +408,18 @@ button {
     align-items: center;
     gap: 0;
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    text-decoration: none;
+    line-height: 1;
 }
 
-.nav__logo-frame {
-    color: var(--accent);
-    font-weight: 400;
-    opacity: 0.6;
-}
-
-.nav__logo-bracket {
-    color: var(--accent);
-    font-weight: 400;
-}
-
-.nav__logo-text {
+.nav__logo-ascii {
+    font-family: var(--font-mono);
+    font-size: 4px;
+    line-height: 1.15;
+    letter-spacing: 0;
     color: var(--text-heading-bright);
+    margin: 0;
+    white-space: pre;
 }
 
 .nav__list {
