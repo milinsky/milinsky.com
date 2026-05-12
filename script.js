@@ -381,4 +381,92 @@
             progressText.textContent = percent + '%';
         }, { passive: true });
     }
+
+    var crtNoise = document.getElementById('crtNoise');
+    if (crtNoise) {
+        (function runNoise() {
+            var delay = 3000 + Math.random() * 6000;
+            setTimeout(function () {
+                crtNoise.style.top = (Math.random() * 100) + 'vh';
+                crtNoise.classList.remove('crt-noise--active');
+                void crtNoise.offsetWidth;
+                crtNoise.classList.add('crt-noise--active');
+                setTimeout(function () {
+                    crtNoise.classList.remove('crt-noise--active');
+                }, 250);
+                runNoise();
+            }, delay);
+        })();
+    }
+
+    var sectionLabels = document.querySelectorAll('.section__label[data-section]');
+    if (sectionLabels.length > 0) {
+        var labelStatuses = ['[OK]', '[READY]', '[DONE]', '[PASS]'];
+        (function rotateLabelStatus() {
+            var delay = 4000 + Math.random() * 8000;
+            setTimeout(function () {
+                var idx = Math.floor(Math.random() * sectionLabels.length);
+                var label = sectionLabels[idx];
+                var section = label.getAttribute('data-section');
+                var original = '\u003E section_0' + (idx + 1) + ' --' + section;
+                var status = labelStatuses[Math.floor(Math.random() * labelStatuses.length)];
+                label.textContent = original + ' ' + status;
+                setTimeout(function () {
+                    label.textContent = original;
+                }, 800 + Math.random() * 600);
+                rotateLabelStatus();
+            }, delay);
+        })();
+    }
+
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav__link');
+    if (sections.length > 0 && navLinks.length > 0) {
+        var activeNavObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    var id = entry.target.getAttribute('id');
+                    navLinks.forEach(function (link) {
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.classList.add('nav__link--active');
+                        } else {
+                            link.classList.remove('nav__link--active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.3, rootMargin: '-80px 0px -40% 0px' });
+        sections.forEach(function (section) {
+            activeNavObserver.observe(section);
+        });
+    }
+
+    var scrollStatusEl = document.getElementById('scrollStatus');
+    var sectionMap = { about: '0x1A2B', services: '0x3F7C', results: '0x5D9E', expertise: '0x8A21', contact: '0xC4F0' };
+    var sectionNames = { about: 'about', services: 'services', results: 'results', expertise: 'expertise', contact: 'contact' };
+    var lastVisibleSection = '';
+
+    if (scrollStatusEl && sections.length > 0) {
+        var statusObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    var id = entry.target.getAttribute('id');
+                    if (id !== lastVisibleSection && sectionMap[id]) {
+                        lastVisibleSection = id;
+                        var addr = sectionMap[id];
+                        scrollStatusEl.innerHTML = '[SYS] LOAD MOD ' + addr + '.. OK<br>[IO] SEC \u2192 ' + sectionNames[id];
+                        scrollStatusEl.classList.remove('scroll-status--visible');
+                        void scrollStatusEl.offsetWidth;
+                        scrollStatusEl.classList.add('scroll-status--visible');
+                        setTimeout(function () {
+                            scrollStatusEl.classList.remove('scroll-status--visible');
+                        }, 1300);
+                    }
+                }
+            });
+        }, { threshold: 0.2, rootMargin: '-20% 0px -60% 0px' });
+        sections.forEach(function (section) {
+            statusObserver.observe(section);
+        });
+    }
 })();
