@@ -3,20 +3,36 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "esbuild src/main.js --bundle --format=iife --outfile=dist/main.js --target=es2020",
+    "build": "esbuild src/main.js --bundle --format=iife --outfile=dist/main.js --target=es2020 --minify --sourcemap",
     "dev": "npm run build && npx serve .",
+    "lint": "eslint src/",
+    "fmt": "prettier --write src/",
+    "fmt:check": "prettier --check src/",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "MILINSKY",
   "license": "ISC",
   "description": "MILINSKY landing page",
+  "lint-staged": {
+    "src/**/*.{js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@vitest/coverage-v8": "^4.1.6",
     "esbuild": "^0.28.0",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
     "happy-dom": "^20.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3",
     "vitest": "^4.1.6"
   }
 }
