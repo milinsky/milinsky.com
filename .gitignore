@@ -7,3 +7,4 @@ dist/
 *.log
 .playwright-mcp/
 screenshot-*.png
+.ai
