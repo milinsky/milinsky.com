@@ -219,6 +219,53 @@
 
     applyLanguage(currentLang);
 
+    (function initLogoReveal() {
+        var logoPre = document.querySelector('.nav__logo-ascii');
+        if (!logoPre) return;
+        var text = logoPre.textContent;
+        var html = '';
+        var pixelIndices = [];
+        for (var i = 0; i < text.length; i++) {
+            if (text[i] === '#') {
+                html += '<span class="nav__logo-pixel" data-pi="' + pixelIndices.length + '">#</span>';
+                pixelIndices.push(i);
+            } else {
+                html += text[i];
+            }
+        }
+        logoPre.innerHTML = html;
+
+        var pixels = logoPre.querySelectorAll('.nav__logo-pixel');
+        var indices = [];
+        for (var p = 0; p < pixels.length; p++) indices.push(p);
+
+        for (var s = indices.length - 1; s > 0; s--) {
+            var j = Math.floor(Math.random() * (s + 1));
+            var tmp = indices[s];
+            indices[s] = indices[j];
+            indices[j] = tmp;
+        }
+
+        var tease = indices.slice(0, 4);
+        var rest = indices.slice(4);
+
+        setTimeout(function () {
+            for (var t = 0; t < tease.length; t++) {
+                (function (el, delay) {
+                    setTimeout(function () { el.classList.add('nav__logo-pixel--visible'); }, delay);
+                })(pixels[tease[t]], Math.random() * 400);
+            }
+        }, 600);
+
+        setTimeout(function () {
+            for (var r = 0; r < rest.length; r++) {
+                (function (el, delay) {
+                    setTimeout(function () { el.classList.add('nav__logo-pixel--visible'); }, delay);
+                })(pixels[rest[r]], Math.random() * 3600);
+            }
+        }, 1800);
+    })();
+
     var langToggleBtn = document.getElementById('langToggle');
     if (langToggleBtn) {
         langToggleBtn.addEventListener('click', function () {

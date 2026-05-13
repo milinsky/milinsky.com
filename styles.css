@@ -422,6 +422,15 @@ button {
     white-space: pre;
 }
 
+.nav__logo-pixel {
+    opacity: 0;
+}
+
+.nav__logo-pixel--visible {
+    opacity: 1;
+    transition: opacity 0.08s ease-out;
+}
+
 .nav__list {
     display: flex;
     align-items: center;
