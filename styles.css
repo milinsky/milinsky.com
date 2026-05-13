@@ -36,6 +36,14 @@
     --header-height: 72px;
     --container-max: 1200px;
     --container-padding: 1.5rem;
+    --z-header: 1000;
+    --z-effects: 5000;
+    --z-scanlines: 9000;
+    --z-ee-base: 10000;
+    --z-ee-toast: 10001;
+    --z-ee-modal: 10002;
+    --z-ee-top: 10003;
+    --scroll-progress-height: 20px;
 }
 
 [data-theme="dark"] {
@@ -113,6 +121,11 @@
     background: rgba(var(--glow-color), 0.5);
 }
 
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--glow-color), 0.3) var(--bg);
+}
+
 *,
 
 *::before,
@@ -137,7 +150,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
-    padding-bottom: 20px;
+    padding-bottom: var(--scroll-progress-height);
 }
 
 body::after {
@@ -152,7 +165,7 @@ body::after {
         transparent 3px
     );
     pointer-events: none;
-    z-index: 9999;
+    z-index: calc(var(--z-scanlines) + 2);
 }
 
 body::before {
@@ -161,7 +174,7 @@ body::before {
     inset: 0;
     background: radial-gradient(ellipse at center, transparent 50%, var(--vignette-color) 100%);
     pointer-events: none;
-    z-index: 9998;
+    z-index: calc(var(--z-scanlines) + 1);
 }
 
 .noise-overlay {
@@ -171,7 +184,7 @@ body::before {
     height: 100%;
     opacity: var(--noise-opacity);
     pointer-events: none;
-    z-index: 9997;
+    z-index: var(--z-scanlines);
 }
 
 a {
@@ -268,13 +281,6 @@ button {
     0% { opacity: 0.92; }
     50% { opacity: 0.97; }
     100% { opacity: 1; }
-}
-
-.glow-divider {
-    height: 1px;
-    background: var(--divider-gradient);
-    border: none;
-    margin: var(--space-2xl) 0;
 }
 
 .btn {
@@ -388,7 +394,7 @@ button {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: var(--z-header);
     height: var(--header-height);
     background: var(--header-bg);
     backdrop-filter: blur(16px);
@@ -438,6 +444,7 @@ button {
 }
 
 .nav__link {
+    position: relative;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     font-weight: 500;
@@ -521,7 +528,7 @@ button {
     flex-direction: column;
     gap: 5px;
     padding: 4px;
-    z-index: 1001;
+    z-index: calc(var(--z-header) + 1);
 }
 
 .nav__burger-line {
@@ -654,10 +661,6 @@ button {
     letter-spacing: 0.05em;
 }
 
-.retro-card {
-    position: relative;
-}
-
 .retro-card .card-scanline {
     position: absolute;
     top: 0;
@@ -703,12 +706,7 @@ button {
 
 .status-pulse::before {
     content: '\25A0';
-    animation: statusPulse 2s ease-in-out infinite;
-}
-
-@keyframes statusPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    animation: blink 2s ease-in-out infinite;
 }
 
 .hero__title {
@@ -742,9 +740,6 @@ button {
 
 .typing-wrap {
     flex: 1;
-}
-
-.typing-text {
 }
 
 .cursor {
@@ -1195,7 +1190,7 @@ button {
         rgba(var(--glow-color), 0.06) 90%,
         transparent 100%
     );
-    z-index: 9998;
+    z-index: var(--z-scanlines);
     pointer-events: none;
     opacity: 0;
     will-change: transform, opacity;
@@ -1209,10 +1204,6 @@ button {
     0% { opacity: 0; transform: scaleX(0.3); }
     15% { opacity: 1; transform: scaleX(1); }
     100% { opacity: 0; transform: scaleX(1.1) translateY(4px); }
-}
-
-.nav__link {
-    position: relative;
 }
 
 .nav__link--active {
@@ -1258,12 +1249,12 @@ button {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 20px;
+    height: var(--scroll-progress-height);
     background: var(--bg-surface);
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
-    z-index: 999;
+    z-index: calc(var(--z-header) - 1);
     padding: 0 12px;
     gap: 8px;
 }
@@ -1393,7 +1384,8 @@ button {
 }
 
 [data-glitch] {
-    animation: none;
+    animation: glitch var(--gdur, 6s) ease-in-out infinite;
+    animation-delay: var(--gd, 0s);
 }
 
 @keyframes scrollPulse {
@@ -1420,7 +1412,7 @@ button {
 .ee-matrix-overlay {
     position: fixed;
     inset: 0;
-    z-index: 10000;
+    z-index: var(--z-ee-base);
     pointer-events: none;
     background: rgba(0, 43, 54, 0.92);
     overflow: hidden;
@@ -1448,7 +1440,7 @@ button {
 
 .ee-cde-menu {
     position: fixed;
-    z-index: 10001;
+    z-index: var(--z-ee-toast);
     background: var(--bg-surface);
     border: 2px solid var(--border);
     border-radius: 2px;
@@ -1497,7 +1489,7 @@ button {
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     padding: var(--space-sm) var(--space-lg);
-    z-index: 10002;
+    z-index: var(--z-ee-modal);
     border-radius: 2px;
     box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
     opacity: 0;
@@ -1516,7 +1508,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10002;
+    z-index: var(--z-ee-modal);
 }
 
 .ee-about-modal {
@@ -1583,7 +1575,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10003;
+    z-index: var(--z-ee-top);
 }
 
 .ee-solarized-dialog {
@@ -1796,7 +1788,7 @@ button {
         border-left: 1px solid var(--border);
         gap: var(--space-md);
         transition: right var(--transition-base);
-        z-index: 1000;
+        z-index: var(--z-header);
     }
 
     .nav__list.open {
@@ -1846,8 +1838,7 @@ button {
     }
 }
 
-@media (max-width: 480px) {
-    :root {
+@media (max-width: 480px) {    :root {
         --container-padding: 1rem;
     }
 
@@ -1920,5 +1911,9 @@ button {
         opacity: 1;
         transform: none;
         transition: none;
+    }
+
+    [data-glitch] {
+        animation: none;
     }
 }
