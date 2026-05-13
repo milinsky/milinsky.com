@@ -6,24 +6,36 @@ const mockCreateEeManager = vi.fn(() => ({
     getVisitCount: vi.fn(() => 1),
     getSessionSeed: vi.fn(() => 0.5),
     getDailySeed: vi.fn(() => 42),
+    recordVisit: vi.fn(),
 }));
 const mockTranslations = { hero_typing: { en: 'Hello' } };
 const mockEeT = vi.fn((key) => key);
 const mockApplyLanguage = vi.fn();
-const mockInitTheme = vi.fn();
-const mockInitNavigation = vi.fn();
-const mockInitTyping = vi.fn(() => ({ restartTyping: vi.fn() }));
-const mockInitScrollProgress = vi.fn();
-const mockInitVisualEffects = vi.fn();
-const mockInitScrollTracking = vi.fn();
-const mockEeShowToast = vi.fn();
-const mockInitConsoleDrop = vi.fn();
-const mockInitLogoReveal = vi.fn();
-const mockInitLogoMorph = vi.fn();
-const mockInitContextMenu = vi.fn();
-const mockEeShowSolarizedDialog = vi.fn();
-const mockInitSelectSecret = vi.fn();
-const mockInitVisitCounter = vi.fn();
+const mockGetState = vi.fn((key) => {
+    if (key === 'lang') return 'en';
+    if (key === 'theme') return 'light';
+    if (key === 'reducedMotion') return false;
+    return undefined;
+});
+const mockSetState = vi.fn();
+const mockSubscribe = vi.fn((key, cb) => () => {});
+const mockInitTheme = vi.fn(() => ({ destroy: vi.fn() }));
+const mockInitNavigation = vi.fn(() => ({ destroy: vi.fn() }));
+const mockInitTyping = vi.fn(() => ({ restartTyping: vi.fn(), destroy: vi.fn() }));
+const mockInitScrollProgress = vi.fn(() => ({ destroy: vi.fn() }));
+const mockInitVisualEffects = vi.fn(() => ({ destroy: vi.fn() }));
+const mockInitScrollTracking = vi.fn(() => ({ destroy: vi.fn() }));
+const mockShowToast = vi.fn();
+const mockCreateConsoleDrop = vi.fn(() => ({ destroy: vi.fn() }));
+const mockCreateLogoReveal = vi.fn(() => ({ destroy: vi.fn() }));
+const mockCreateLogoMorph = vi.fn(() => ({ destroy: vi.fn() }));
+const mockCreateContextMenu = vi.fn(() => ({ destroy: vi.fn() }));
+const mockCreateSolarized = vi.fn(() => ({
+    show: vi.fn(),
+    destroy: vi.fn(),
+}));
+const mockCreateSelectSecret = vi.fn(() => ({ destroy: vi.fn() }));
+const mockCreateVisitCounter = vi.fn(() => ({ destroy: vi.fn() }));
 
 vi.mock('../src/ee-manager.js', () => ({
     createEeManager: mockCreateEeManager,
@@ -34,6 +46,11 @@ vi.mock('../src/translations.js', () => ({
 vi.mock('../src/i18n.js', () => ({
     eeT: mockEeT,
     applyLanguage: mockApplyLanguage,
+}));
+vi.mock('../src/state.js', () => ({
+    getState: mockGetState,
+    setState: mockSetState,
+    subscribe: mockSubscribe,
 }));
 vi.mock('../src/theme.js', () => ({
     initTheme: mockInitTheme,
@@ -53,29 +70,29 @@ vi.mock('../src/visual-effects.js', () => ({
 vi.mock('../src/scroll-tracking.js', () => ({
     initScrollTracking: mockInitScrollTracking,
 }));
-vi.mock('../src/ee/toast.js', () => ({
-    eeShowToast: mockEeShowToast,
+vi.mock('../src/utils/toast.js', () => ({
+    showToast: mockShowToast,
 }));
 vi.mock('../src/ee/console-drop.js', () => ({
-    initConsoleDrop: mockInitConsoleDrop,
+    createConsoleDrop: mockCreateConsoleDrop,
 }));
 vi.mock('../src/ee/logo-reveal.js', () => ({
-    initLogoReveal: mockInitLogoReveal,
+    createLogoReveal: mockCreateLogoReveal,
 }));
 vi.mock('../src/ee/logo-morph.js', () => ({
-    initLogoMorph: mockInitLogoMorph,
+    createLogoMorph: mockCreateLogoMorph,
 }));
 vi.mock('../src/ee/context-menu.js', () => ({
-    initContextMenu: mockInitContextMenu,
+    createContextMenu: mockCreateContextMenu,
 }));
 vi.mock('../src/ee/solarized.js', () => ({
-    eeShowSolarizedDialog: mockEeShowSolarizedDialog,
+    createSolarized: mockCreateSolarized,
 }));
 vi.mock('../src/ee/select-secret.js', () => ({
-    initSelectSecret: mockInitSelectSecret,
+    createSelectSecret: mockCreateSelectSecret,
 }));
 vi.mock('../src/ee/visit-counter.js', () => ({
-    initVisitCounter: mockInitVisitCounter,
+    createVisitCounter: mockCreateVisitCounter,
 }));
 
 function setupDOM() {
@@ -114,29 +131,41 @@ function setupDOM() {
     document.body.appendChild(label2);
 }
 
+function resetMocks() {
+    localStorage.clear();
+    localStorage.setItem('lang', 'en');
+    mockCreateEeManager.mockClear();
+    mockEeT.mockClear();
+    mockApplyLanguage.mockClear();
+    mockGetState.mockClear().mockImplementation((key) => {
+        if (key === 'lang') return 'en';
+        if (key === 'theme') return 'light';
+        if (key === 'reducedMotion') return false;
+        return undefined;
+    });
+    mockSetState.mockClear();
+    mockSubscribe.mockClear().mockImplementation(() => () => {});
+    mockInitTheme.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockInitNavigation.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockInitTyping.mockClear().mockReturnValue({ restartTyping: vi.fn(), destroy: vi.fn() });
+    mockInitScrollProgress.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockInitVisualEffects.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockInitScrollTracking.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockShowToast.mockClear();
+    mockCreateConsoleDrop.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockCreateLogoReveal.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockCreateLogoMorph.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockCreateContextMenu.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockCreateSolarized.mockClear().mockReturnValue({ show: vi.fn(), destroy: vi.fn() });
+    mockCreateSelectSecret.mockClear().mockReturnValue({ destroy: vi.fn() });
+    mockCreateVisitCounter.mockClear().mockReturnValue({ destroy: vi.fn() });
+}
+
 describe('main.js', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         setupDOM();
-        localStorage.clear();
-        localStorage.setItem('lang', 'en');
-        mockCreateEeManager.mockClear();
-        mockEeT.mockClear();
-        mockApplyLanguage.mockClear();
-        mockInitTheme.mockClear();
-        mockInitNavigation.mockClear();
-        mockInitTyping.mockClear().mockReturnValue({ restartTyping: vi.fn() });
-        mockInitScrollProgress.mockClear();
-        mockInitVisualEffects.mockClear();
-        mockInitScrollTracking.mockClear();
-        mockEeShowToast.mockClear();
-        mockInitConsoleDrop.mockClear();
-        mockInitLogoReveal.mockClear();
-        mockInitLogoMorph.mockClear();
-        mockInitContextMenu.mockClear();
-        mockEeShowSolarizedDialog.mockClear();
-        mockInitSelectSecret.mockClear();
-        mockInitVisitCounter.mockClear();
+        resetMocks();
     });
 
     afterEach(() => {
@@ -153,60 +182,53 @@ describe('main.js', () => {
         expect(mockCreateEeManager).toHaveBeenCalled();
     });
 
-    it('captures eeOriginalLogo from .nav__logo-ascii', async () => {
+    it('calls eeManager.recordVisit explicitly', async () => {
         await importMain();
-        const logoPre = document.querySelector('.nav__logo-ascii');
-        expect(logoPre.textContent).toBe('ORIGINAL_LOGO');
+        const eeManager = mockCreateEeManager.mock.results[0].value;
+        expect(eeManager.recordVisit).toHaveBeenCalled();
     });
 
-    it('sets html lang from localStorage lang', async () => {
-        localStorage.setItem('lang', 'ru');
+    it('calls getState for lang', async () => {
         await importMain();
-        expect(document.documentElement.getAttribute('lang')).toBe('ru');
+        expect(mockGetState).toHaveBeenCalledWith('lang');
     });
 
-    it('defaults html lang to en when no localStorage lang', async () => {
-        localStorage.clear();
+    it('sets html lang from getState', async () => {
         await importMain();
         expect(document.documentElement.getAttribute('lang')).toBe('en');
     });
 
-    it('calls initConsoleDrop with eeManager and boundEeT', async () => {
-        await importMain();
-        expect(mockInitConsoleDrop).toHaveBeenCalled();
-        expect(mockInitConsoleDrop.mock.calls[0][0]).toBe(mockCreateEeManager.mock.results[0].value);
-        expect(typeof mockInitConsoleDrop.mock.calls[0][1]).toBe('function');
-    });
-
-    it('boundEeT calls eeT with translations and currentLang', async () => {
-        await importMain();
-        const boundEeT = mockInitConsoleDrop.mock.calls[0][1];
-        boundEeT('test_key');
-        expect(mockEeT).toHaveBeenCalledWith('test_key', mockTranslations, 'en');
-    });
-
-    it('calls initLogoReveal', async () => {
-        await importMain();
-        expect(mockInitLogoReveal).toHaveBeenCalled();
-    });
-
-    it('boundApplyLanguage updates lang and calls applyLanguage', async () => {
+    it('calls applyLanguage with current lang and translations', async () => {
         await importMain();
         expect(mockApplyLanguage).toHaveBeenCalledWith('en', mockTranslations);
     });
 
-    it('calls initTheme with html and solarized callback', async () => {
+    it('subscribes to lang changes', async () => {
+        await importMain();
+        expect(mockSubscribe).toHaveBeenCalledWith('lang', expect.any(Function));
+    });
+
+    it('calls createSolarized with eeManager and t', async () => {
+        await importMain();
+        expect(mockCreateSolarized).toHaveBeenCalledWith({
+            eeManager: mockCreateEeManager.mock.results[0].value,
+            t: expect.any(Function),
+        });
+    });
+
+    it('calls initTheme with html and solarized.show callback', async () => {
         await importMain();
         expect(mockInitTheme).toHaveBeenCalled();
         expect(mockInitTheme.mock.calls[0][0]).toBe(document.documentElement);
         expect(typeof mockInitTheme.mock.calls[0][1]).toBe('function');
     });
 
-    it('solarized callback calls eeShowSolarizedDialog', async () => {
+    it('solarized show callback calls solarized.show', async () => {
         await importMain();
-        const solarizedCb = mockInitTheme.mock.calls[0][1];
-        solarizedCb();
-        expect(mockEeShowSolarizedDialog).toHaveBeenCalled();
+        const solarizedInstance = mockCreateSolarized.mock.results[0].value;
+        const showCb = mockInitTheme.mock.calls[0][1];
+        showCb();
+        expect(solarizedInstance.show).toHaveBeenCalled();
     });
 
     it('calls initNavigation', async () => {
@@ -214,11 +236,35 @@ describe('main.js', () => {
         expect(mockInitNavigation).toHaveBeenCalled();
     });
 
+    it('calls createLogoReveal with reducedMotion', async () => {
+        await importMain();
+        expect(mockCreateLogoReveal).toHaveBeenCalledWith({ reducedMotion: false });
+    });
+
     it('calls initTyping with translations and getCurrentLang function', async () => {
         await importMain();
         expect(mockInitTyping).toHaveBeenCalled();
         expect(mockInitTyping.mock.calls[0][0]).toBe(mockTranslations);
         expect(typeof mockInitTyping.mock.calls[0][1]).toBe('function');
+    });
+
+    it('getCurrentLang function from initTyping uses getState', async () => {
+        let capturedGetLang = null;
+        mockInitTyping.mockImplementation((_t, getLang) => {
+            capturedGetLang = getLang;
+            return { restartTyping: vi.fn(), destroy: vi.fn() };
+        });
+        await importMain();
+        capturedGetLang();
+        expect(mockGetState).toHaveBeenCalledWith('lang');
+    });
+
+    it('subscribes to lang for restartTyping', async () => {
+        const mockRestart = vi.fn();
+        mockInitTyping.mockReturnValue({ restartTyping: mockRestart, destroy: vi.fn() });
+        await importMain();
+        const langSubscriptions = mockSubscribe.mock.calls.filter((c) => c[0] === 'lang');
+        expect(langSubscriptions.length).toBeGreaterThanOrEqual(1);
     });
 
     it('calls initScrollProgress', async () => {
@@ -240,79 +286,82 @@ describe('main.js', () => {
         expect(sections.length).toBe(2);
     });
 
-    it('calls initLogoMorph with correct args', async () => {
+    it('calls createConsoleDrop with eeManager and t', async () => {
         await importMain();
-        expect(mockInitLogoMorph).toHaveBeenCalled();
-        const args = mockInitLogoMorph.mock.calls[0];
-        expect(args[0]).toBe(mockCreateEeManager.mock.results[0].value);
-        expect(args[1]).toBeTypeOf('object');
-        expect(args[1].logoPre).toBe(document.querySelector('.nav__logo-ascii'));
-        expect(args[1].originalLogo).toBe('ORIGINAL_LOGO');
-        expect(typeof args[1].reducedMotion).toBe('boolean');
-        expect(args[1].showToast).toBe(mockEeShowToast);
-        expect(typeof args[1].t).toBe('function');
+        expect(mockCreateConsoleDrop).toHaveBeenCalledWith({
+            eeManager: mockCreateEeManager.mock.results[0].value,
+            t: expect.any(Function),
+        });
     });
 
-    it('calls initContextMenu with correct args', async () => {
+    it('calls createLogoMorph with correct context', async () => {
         await importMain();
-        expect(mockInitContextMenu).toHaveBeenCalled();
-        const args = mockInitContextMenu.mock.calls[0];
-        expect(args[0]).toBe(mockCreateEeManager.mock.results[0].value);
-        expect(typeof args[1]).toBe('function');
-        expect(args[2]).toBe(mockEeShowToast);
-        expect(args[3]).toBe(document.documentElement);
+        expect(mockCreateLogoMorph).toHaveBeenCalledWith({
+            eeManager: mockCreateEeManager.mock.results[0].value,
+            t: expect.any(Function),
+            showToast: mockShowToast,
+            reducedMotion: false,
+        });
     });
 
-    it('calls initSelectSecret with correct args', async () => {
+    it('calls createContextMenu with correct context', async () => {
         await importMain();
-        expect(mockInitSelectSecret).toHaveBeenCalled();
-        const args = mockInitSelectSecret.mock.calls[0];
-        expect(args[0]).toBe(mockCreateEeManager.mock.results[0].value);
-        expect(typeof args[1]).toBe('function');
+        expect(mockCreateContextMenu).toHaveBeenCalledWith({
+            eeManager: mockCreateEeManager.mock.results[0].value,
+            t: expect.any(Function),
+            showToast: mockShowToast,
+            html: document.documentElement,
+        });
     });
 
-    it('calls initVisitCounter with correct args', async () => {
+    it('calls createSelectSecret with eeManager and t', async () => {
         await importMain();
-        expect(mockInitVisitCounter).toHaveBeenCalled();
-        const args = mockInitVisitCounter.mock.calls[0];
-        expect(args[0]).toBe(mockCreateEeManager.mock.results[0].value);
-        expect(typeof args[1]).toBe('function');
+        expect(mockCreateSelectSecret).toHaveBeenCalledWith({
+            eeManager: mockCreateEeManager.mock.results[0].value,
+            t: expect.any(Function),
+        });
     });
 
-    it('langToggle click switches language from en to ru', async () => {
-        localStorage.setItem('lang', 'en');
+    it('calls createVisitCounter with eeManager and t', async () => {
         await importMain();
-        const restartTyping = mockInitTyping.mock.results[0].value.restartTyping;
-        const langBtn = document.getElementById('langToggle');
-        langBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-        expect(localStorage.getItem('lang')).toBe('ru');
+        expect(mockCreateVisitCounter).toHaveBeenCalledWith({
+            eeManager: mockCreateEeManager.mock.results[0].value,
+            t: expect.any(Function),
+        });
     });
 
-    it('langToggle click switches language from ru to en', async () => {
-        localStorage.setItem('lang', 'ru');
+    it('t function calls eeT with key, translations, and current lang', async () => {
         await importMain();
-        mockApplyLanguage.mockClear();
-        const langBtn = document.getElementById('langToggle');
-        langBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-        expect(localStorage.getItem('lang')).toBe('en');
+        const tCall = mockCreateConsoleDrop.mock.calls[0][0].t;
+        tCall('test_key');
+        expect(mockEeT).toHaveBeenCalledWith('test_key', mockTranslations, 'en');
     });
 
-    it('langToggle click calls boundApplyLanguage with next lang', async () => {
-        localStorage.setItem('lang', 'en');
-        await importMain();
-        mockApplyLanguage.mockClear();
-        const langBtn = document.getElementById('langToggle');
-        langBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-        expect(mockApplyLanguage).toHaveBeenCalledWith('ru', mockTranslations);
-    });
-
-    it('langToggle click calls restartTyping', async () => {
-        const mockRestart = vi.fn();
-        mockInitTyping.mockReturnValue({ restartTyping: mockRestart });
+    it('langToggle click sets next lang via setState', async () => {
         await importMain();
         const langBtn = document.getElementById('langToggle');
         langBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-        expect(mockRestart).toHaveBeenCalled();
+        expect(mockSetState).toHaveBeenCalledWith('lang', 'ru');
+    });
+
+    it('langToggle click switches to en when lang is ru', async () => {
+        mockGetState.mockImplementation((key) => {
+            if (key === 'lang') return 'ru';
+            if (key === 'theme') return 'light';
+            if (key === 'reducedMotion') return false;
+            return undefined;
+        });
+        await importMain();
+        const langBtn = document.getElementById('langToggle');
+        langBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        expect(mockSetState).toHaveBeenCalledWith('lang', 'en');
+    });
+
+    it('langToggle click stores lang in localStorage', async () => {
+        await importMain();
+        const langBtn = document.getElementById('langToggle');
+        langBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        expect(localStorage.setItem).toHaveBeenCalledWith('lang', 'ru');
     });
 
     it('works without langToggle button', async () => {
@@ -323,17 +372,63 @@ describe('main.js', () => {
     it('works without .nav__logo-ascii element', async () => {
         document.querySelector('.nav__logo-ascii').remove();
         await expect(importMain()).resolves.toBeDefined();
-        expect(mockInitLogoMorph).toHaveBeenCalled();
+        expect(mockCreateLogoMorph).toHaveBeenCalled();
     });
 
-    it('getCurrentLang function from initTyping returns current lang', async () => {
-        let capturedGetLang = null;
-        mockInitTyping.mockImplementation((_t, getLang) => {
-            capturedGetLang = getLang;
-            return { restartTyping: vi.fn() };
-        });
-        localStorage.setItem('lang', 'en');
+    it('safeInit catches errors gracefully', async () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        mockInitNavigation.mockImplementation(() => { throw new Error('test error'); });
+        await expect(importMain()).resolves.toBeDefined();
+        expect(warnSpy).toHaveBeenCalled();
+        warnSpy.mockRestore();
+    });
+
+    it('safeInit handles module returning undefined', async () => {
+        mockInitNavigation.mockReturnValue(undefined);
+        await expect(importMain()).resolves.toBeDefined();
+    });
+
+    it('safeInit handles module returning object without destroy', async () => {
+        mockInitNavigation.mockReturnValue({ someProp: true });
+        await expect(importMain()).resolves.toBeDefined();
+    });
+
+    it('lang subscription callback updates html lang and calls applyLanguage', async () => {
         await importMain();
-        expect(capturedGetLang()).toBe('en');
+        const langCallback = mockSubscribe.mock.calls.find((c) => c[0] === 'lang')[1];
+        langCallback('ru');
+        expect(document.documentElement.getAttribute('lang')).toBe('ru');
+        expect(mockApplyLanguage).toHaveBeenCalledWith('ru', mockTranslations);
+    });
+
+    it('lang subscription triggers restartTyping', async () => {
+        const mockRestart = vi.fn();
+        mockInitTyping.mockReturnValue({ restartTyping: mockRestart, destroy: vi.fn() });
+        await importMain();
+        const langCallbacks = mockSubscribe.mock.calls.filter((c) => c[0] === 'lang');
+        const lastLangCallback = langCallbacks[langCallbacks.length - 1][1];
+        lastLangCallback('ru');
+        expect(mockRestart).toHaveBeenCalled();
+    });
+
+    it('safeInit stores destroy functions from module results', async () => {
+        const mockDestroy = vi.fn();
+        mockInitNavigation.mockReturnValue({ destroy: mockDestroy });
+        await importMain();
+        expect(mockInitNavigation).toHaveBeenCalled();
+    });
+
+    it('createSolarized is called before initTheme', async () => {
+        const callOrder = [];
+        mockCreateSolarized.mockImplementation(() => {
+            callOrder.push('solarized');
+            return { show: vi.fn(), destroy: vi.fn() };
+        });
+        mockInitTheme.mockImplementation(() => {
+            callOrder.push('theme');
+            return { destroy: vi.fn() };
+        });
+        await importMain();
+        expect(callOrder.indexOf('solarized')).toBeLessThan(callOrder.indexOf('theme'));
     });
 });

@@ -79,6 +79,8 @@ describe('initTyping', () => {
         const result = initTyping(translations, getCurrentLang);
         expect(result).toHaveProperty('restartTyping');
         expect(typeof result.restartTyping).toBe('function');
+        expect(result).toHaveProperty('destroy');
+        expect(typeof result.destroy).toBe('function');
     });
 
     it('reserves typing height on init by setting minHeight on subtitle', () => {
@@ -323,5 +325,52 @@ describe('initTyping', () => {
             expect(result).toHaveProperty('restartTyping');
             expect(typeof result.restartTyping).toBe('function');
         });
+    });
+
+    it('destroy clears timeouts and disconnects observer', () => {
+        createTypingDOM();
+        const { destroy } = initTyping(translations, getCurrentLang);
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
+
+    it('destroy clears active typing timeout', () => {
+        const { hero, typingSpan } = createTypingDOM();
+        const { destroy } = initTyping(translations, getCurrentLang);
+
+        const observer = capturedObservers[0];
+        observer.callback([{ isIntersecting: true, target: hero }]);
+        vi.advanceTimersByTime(600);
+
+        expect(typingSpan.textContent.length).toBeGreaterThan(0);
+
+        destroy();
+
+        const textAtDestroy = typingSpan.textContent;
+        vi.advanceTimersByTime(5000);
+        expect(typingSpan.textContent).toBe(textAtDestroy);
+    });
+
+    it('destroy clears startDelayTimeout', () => {
+        const { hero } = createTypingDOM();
+        const { destroy } = initTyping(translations, getCurrentLang);
+
+        const observer = capturedObservers[0];
+        observer.callback([{ isIntersecting: true, target: hero }]);
+
+        destroy();
+
+        expect(() => vi.advanceTimersByTime(5000)).not.toThrow();
+    });
+
+    it('startTyping guard prevents double execution', () => {
+        const { hero, typingSpan } = createTypingDOM();
+        initTyping(translations, getCurrentLang);
+
+        const observer = capturedObservers[0];
+        observer.callback([{ isIntersecting: true, target: hero }]);
+        vi.advanceTimersByTime(600 + 40 * 5);
+
+        expect(typingSpan.textContent).toBe('Hello ');
     });
 });

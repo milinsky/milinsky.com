@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { initVisitCounter } from '../../src/ee/visit-counter.js';
+import { createVisitCounter } from '../../src/ee/visit-counter.js';
 
 describe('visit-counter', () => {
     let eeManager;
-    let eeT;
+    let t;
 
     beforeEach(() => {
         vi.useFakeTimers();
@@ -16,7 +16,7 @@ describe('visit-counter', () => {
         eeManager = {
             getVisitCount: vi.fn(),
         };
-        eeT = vi.fn((key) => {
+        t = vi.fn((key) => {
             const map = {
                 ee_visit_2: 'Back again! Visit #N',
                 ee_visit_5: 'Regular visitor! #N times',
@@ -33,49 +33,49 @@ describe('visit-counter', () => {
 
     it('returns early if visitCount < 2', () => {
         eeManager.getVisitCount.mockReturnValue(1);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         expect(document.querySelector('.ee-visit-msg')).toBeNull();
     });
 
     it('returns early if visitCount is 0', () => {
         eeManager.getVisitCount.mockReturnValue(0);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         expect(document.querySelector('.ee-visit-msg')).toBeNull();
     });
 
     it('creates .ee-visit-msg element', () => {
         eeManager.getVisitCount.mockReturnValue(2);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         expect(document.querySelector('.ee-visit-msg')).not.toBeNull();
     });
 
     it('uses correct message for 2-4 visits', () => {
         eeManager.getVisitCount.mockReturnValue(3);
-        initVisitCounter(eeManager, eeT);
-        expect(eeT).toHaveBeenCalledWith('ee_visit_2');
+        createVisitCounter({ eeManager, t });
+        expect(t).toHaveBeenCalledWith('ee_visit_2');
     });
 
     it('uses correct message for 5-9 visits', () => {
         eeManager.getVisitCount.mockReturnValue(7);
-        initVisitCounter(eeManager, eeT);
-        expect(eeT).toHaveBeenCalledWith('ee_visit_5');
+        createVisitCounter({ eeManager, t });
+        expect(t).toHaveBeenCalledWith('ee_visit_5');
     });
 
     it('uses correct message for 10-19 visits', () => {
         eeManager.getVisitCount.mockReturnValue(15);
-        initVisitCounter(eeManager, eeT);
-        expect(eeT).toHaveBeenCalledWith('ee_visit_10');
+        createVisitCounter({ eeManager, t });
+        expect(t).toHaveBeenCalledWith('ee_visit_10');
     });
 
     it('uses correct message for 20+ visits', () => {
         eeManager.getVisitCount.mockReturnValue(25);
-        initVisitCounter(eeManager, eeT);
-        expect(eeT).toHaveBeenCalledWith('ee_visit_20');
+        createVisitCounter({ eeManager, t });
+        expect(t).toHaveBeenCalledWith('ee_visit_20');
     });
 
     it('replaces #N with visit count', () => {
         eeManager.getVisitCount.mockReturnValue(3);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         const msgEl = document.querySelector('.ee-visit-msg');
         vi.advanceTimersByTime(5000);
         expect(msgEl.textContent).toContain('3');
@@ -83,7 +83,7 @@ describe('visit-counter', () => {
 
     it('types message character by character', () => {
         eeManager.getVisitCount.mockReturnValue(3);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         const msgEl = document.querySelector('.ee-visit-msg');
         const afterOne = msgEl.textContent.length;
         vi.advanceTimersByTime(50);
@@ -93,7 +93,7 @@ describe('visit-counter', () => {
 
     it('completes full message after all timeouts', () => {
         eeManager.getVisitCount.mockReturnValue(3);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         const msgEl = document.querySelector('.ee-visit-msg');
         vi.advanceTimersByTime(10000);
         expect(msgEl.textContent).toContain('3');
@@ -102,13 +102,13 @@ describe('visit-counter', () => {
     it('returns early if no .hero__terminal-frame', () => {
         document.body.innerHTML = '';
         eeManager.getVisitCount.mockReturnValue(5);
-        expect(() => initVisitCounter(eeManager, eeT)).not.toThrow();
+        expect(() => createVisitCounter({ eeManager, t })).not.toThrow();
         expect(document.querySelector('.ee-visit-msg')).toBeNull();
     });
 
     it('appends message element to terminal frame', () => {
         eeManager.getVisitCount.mockReturnValue(2);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         const frame = document.querySelector('.hero__terminal-frame');
         const msgEl = frame.querySelector('.ee-visit-msg');
         expect(msgEl).not.toBeNull();
@@ -116,7 +116,7 @@ describe('visit-counter', () => {
 
     it('replaces #N with visit count for 5-9 range', () => {
         eeManager.getVisitCount.mockReturnValue(7);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         const msgEl = document.querySelector('.ee-visit-msg');
         vi.advanceTimersByTime(10000);
         expect(msgEl.textContent).toContain('7');
@@ -124,9 +124,46 @@ describe('visit-counter', () => {
 
     it('replaces #N with visit count for 20+ range', () => {
         eeManager.getVisitCount.mockReturnValue(42);
-        initVisitCounter(eeManager, eeT);
+        createVisitCounter({ eeManager, t });
         const msgEl = document.querySelector('.ee-visit-msg');
         vi.advanceTimersByTime(10000);
         expect(msgEl.textContent).toContain('42');
+    });
+
+    it('returns destroy function that cleans up', () => {
+        eeManager.getVisitCount.mockReturnValue(2);
+        const { destroy } = createVisitCounter({ eeManager, t });
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
+
+    it('destroy stops typing mid-message', () => {
+        eeManager.getVisitCount.mockReturnValue(3);
+        const { destroy } = createVisitCounter({ eeManager, t });
+        const msgEl = document.querySelector('.ee-visit-msg');
+
+        vi.advanceTimersByTime(50);
+
+        const textBeforeDestroy = msgEl.textContent;
+        expect(textBeforeDestroy.length).toBeGreaterThan(0);
+
+        destroy();
+
+        vi.advanceTimersByTime(10000);
+        expect(msgEl.textContent).toBe(textBeforeDestroy);
+    });
+
+    it('returns early with destroy for visitCount < 2', () => {
+        eeManager.getVisitCount.mockReturnValue(1);
+        const { destroy } = createVisitCounter({ eeManager, t });
+        expect(destroy).toBeTypeOf('function');
+    });
+
+    it('completes full typing for 10-visit milestone', () => {
+        eeManager.getVisitCount.mockReturnValue(10);
+        createVisitCounter({ eeManager, t });
+        const msgEl = document.querySelector('.ee-visit-msg');
+        vi.advanceTimersByTime(10000);
+        expect(msgEl.textContent).toContain('You really like this place!');
     });
 });

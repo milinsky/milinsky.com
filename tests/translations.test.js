@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { translations } from '../src/translations.js';
 
-const EXPECTED_KEY_COUNT = 95;
+const EXPECTED_KEY_COUNT = 96;
 const REQUIRED_LANGS = ['en', 'ru'];
 const CRITICAL_KEYS = [
     'hero_typing',
@@ -68,14 +68,9 @@ describe('translations', () => {
         }
     });
 
-    it('contains easter egg keys that exist in the object', () => {
-        const existingEeKeys = EASTER_EGG_KEYS.filter((k) => k !== 'ee_select_promo');
-        for (const key of existingEeKeys) {
+    it('contains all easter egg keys', () => {
+        for (const key of EASTER_EGG_KEYS) {
             expect(translations).toHaveProperty(key);
         }
-    });
-
-    it('ee_select_promo does not exist (key is from task spec but not in source)', () => {
-        expect(translations).not.toHaveProperty('ee_select_promo');
     });
 });

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { initSelectSecret } from '../../src/ee/select-secret.js';
+import { createSelectSecret } from '../../src/ee/select-secret.js';
 
 describe('select-secret', () => {
     let eeManager;
-    let eeT;
+    let t;
     let originalGetSelection;
 
     beforeEach(() => {
@@ -13,7 +13,7 @@ describe('select-secret', () => {
         eeManager = {
             discover: vi.fn(),
         };
-        eeT = vi.fn((key) => `translated_${key}`);
+        t = vi.fn((key) => `translated_${key}`);
 
         originalGetSelection = window.getSelection;
     });
@@ -35,7 +35,7 @@ describe('select-secret', () => {
         createSecretElement('secret_key_1');
         createSecretElement('secret_key_2');
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         const elements = document.querySelectorAll('.ee-secret-text');
         expect(elements[0].textContent).toBe('translated_secret_key_1');
@@ -48,7 +48,7 @@ describe('select-secret', () => {
         el.textContent = 'original';
         document.body.appendChild(el);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         expect(el.textContent).toBe('original');
     });
@@ -62,7 +62,7 @@ describe('select-secret', () => {
         };
         window.getSelection = vi.fn(() => mockSelection);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', ctrlKey: true }));
         vi.advanceTimersByTime(150);
@@ -79,7 +79,7 @@ describe('select-secret', () => {
         };
         window.getSelection = vi.fn(() => mockSelection);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new MouseEvent('mouseup'));
         vi.advanceTimersByTime(250);
@@ -96,7 +96,7 @@ describe('select-secret', () => {
         };
         window.getSelection = vi.fn(() => mockSelection);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new TouchEvent('touchend'));
         vi.advanceTimersByTime(250);
@@ -113,7 +113,7 @@ describe('select-secret', () => {
         };
         window.getSelection = vi.fn(() => mockSelection);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new MouseEvent('mouseup'));
         vi.advanceTimersByTime(250);
@@ -132,7 +132,7 @@ describe('select-secret', () => {
         };
         window.getSelection = vi.fn(() => mockSelection);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new MouseEvent('mouseup'));
         vi.advanceTimersByTime(250);
@@ -144,7 +144,7 @@ describe('select-secret', () => {
         createSecretElement('my_secret');
         window.getSelection = vi.fn(() => null);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new MouseEvent('mouseup'));
         vi.advanceTimersByTime(250);
@@ -156,7 +156,7 @@ describe('select-secret', () => {
         createSecretElement('my_secret');
         window.getSelection = vi.fn(() => ({ rangeCount: 0 }));
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new MouseEvent('mouseup'));
         vi.advanceTimersByTime(250);
@@ -166,7 +166,7 @@ describe('select-secret', () => {
 
     it('returns early if no .ee-secret-text elements exist', () => {
         document.body.innerHTML = '<div>nothing here</div>';
-        expect(() => initSelectSecret(eeManager, eeT)).not.toThrow();
+        expect(() => createSelectSecret({ eeManager, t })).not.toThrow();
     });
 
     it('Meta+A triggers discovery check on Mac', () => {
@@ -178,11 +178,59 @@ describe('select-secret', () => {
         };
         window.getSelection = vi.fn(() => mockSelection);
 
-        initSelectSecret(eeManager, eeT);
+        createSelectSecret({ eeManager, t });
 
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', metaKey: true }));
         vi.advanceTimersByTime(150);
 
         expect(eeManager.discover).toHaveBeenCalledWith('ee11');
+    });
+
+    it('non-matching keydown does not trigger check', () => {
+        createSecretElement('my_secret');
+        createSelectSecret({ eeManager, t });
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'b', ctrlKey: true }));
+        vi.advanceTimersByTime(150);
+
+        expect(eeManager.discover).not.toHaveBeenCalled();
+    });
+
+    it('keydown without modifier does not trigger check', () => {
+        createSecretElement('my_secret');
+        createSelectSecret({ eeManager, t });
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+        vi.advanceTimersByTime(150);
+
+        expect(eeManager.discover).not.toHaveBeenCalled();
+    });
+
+    it('returns destroy function that cleans up', () => {
+        createSecretElement('my_secret');
+        const { destroy } = createSelectSecret({ eeManager, t });
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
+
+    it('destroy stops pending scheduled checks', () => {
+        createSecretElement('my_secret');
+
+        const mockSelection = {
+            rangeCount: 1,
+            containsNode: vi.fn(() => true),
+        };
+        window.getSelection = vi.fn(() => mockSelection);
+
+        const { destroy } = createSelectSecret({ eeManager, t });
+
+        document.dispatchEvent(new MouseEvent('mouseup'));
+
+        destroy();
+
+        const beforeDiscoverCount = eeManager.discover.mock.calls.length;
+        vi.advanceTimersByTime(500);
+
+        expect(eeManager.discover.mock.calls.length).toBe(beforeDiscoverCount);
     });
 });

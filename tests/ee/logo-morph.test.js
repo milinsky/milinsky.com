@@ -1,15 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { initLogoMorph } from '../../src/ee/logo-morph.js';
-
-function makeOptions(overrides = {}) {
-    return {
-        logoPre: overrides.logoPre ?? document.querySelector('.nav__logo-ascii'),
-        originalLogo: overrides.originalLogo ?? '###\n###',
-        reducedMotion: overrides.reducedMotion ?? false,
-        showToast: overrides.showToast ?? vi.fn(),
-        t: overrides.t ?? vi.fn((key) => key),
-    };
-}
+import { createLogoMorph } from '../../src/ee/logo-morph.js';
 
 describe('logo-morph', () => {
     let eeManager;
@@ -51,42 +41,40 @@ describe('logo-morph', () => {
 
     it('returns early if no .nav__logo element', () => {
         document.body.innerHTML = '';
-        const opts = makeOptions({ logoPre: null });
-        expect(() => initLogoMorph(eeManager, opts)).not.toThrow();
+        expect(() => createLogoMorph({ eeManager, t: vi.fn((k) => k) })).not.toThrow();
     });
 
-    it('returns early if logoPre is null', () => {
+    it('returns early if no .nav__logo-ascii element', () => {
         document.body.innerHTML = '<a class="nav__logo"></a>';
-        const opts = makeOptions({ logoPre: null });
-        expect(() => initLogoMorph(eeManager, opts)).not.toThrow();
+        expect(() => createLogoMorph({ eeManager, t: vi.fn((k) => k) })).not.toThrow();
     });
 
     it('7 clicks within 3.5s triggers morph and discovers ee03', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 400);
         expect(eeManager.discover).toHaveBeenCalledWith('ee03');
     });
 
     it('slow clicks do NOT trigger morph', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 600);
         expect(eeManager.discover).not.toHaveBeenCalled();
     });
 
     it('6 clicks do NOT trigger morph', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(6, 400);
         expect(eeManager.discover).not.toHaveBeenCalled();
     });
 
     it('creates matrix overlay on morph trigger', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 400);
         expect(document.querySelector('.ee-matrix-overlay')).not.toBeNull();
     });
 
     it('matrix overlay contains column elements', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 400);
         const overlay = document.querySelector('.ee-matrix-overlay');
         const cols = overlay.querySelectorAll('.ee-matrix-col');
@@ -94,7 +82,7 @@ describe('logo-morph', () => {
     });
 
     it('removes overlay after 2000ms and changes logo text', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 400);
         vi.advanceTimersByTime(2000);
         expect(document.querySelector('.ee-matrix-overlay')).toBeNull();
@@ -102,7 +90,7 @@ describe('logo-morph', () => {
     });
 
     it('reverts logo text after 3000 more ms', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 400);
         vi.advanceTimersByTime(2000 + 3000);
         expect(eeLogoPre.textContent).toBe(eeOriginalLogo);
@@ -110,26 +98,26 @@ describe('logo-morph', () => {
 
     it('shows toast with reduced motion', () => {
         const showToast = vi.fn();
-        initLogoMorph(eeManager, makeOptions({ reducedMotion: true, showToast }));
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), showToast, reducedMotion: true });
         clickLogo(7, 400);
         expect(showToast).toHaveBeenCalledWith('ee_logo_reduced', 3000);
     });
 
     it('with reduced motion, changes logo text directly', () => {
-        initLogoMorph(eeManager, makeOptions({ reducedMotion: true }));
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
         clickLogo(7, 400);
         expect(eeLogoPre.textContent).not.toBe(eeOriginalLogo);
     });
 
     it('with reduced motion, reverts after 3000ms', () => {
-        initLogoMorph(eeManager, makeOptions({ reducedMotion: true }));
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
         clickLogo(7, 400);
         vi.advanceTimersByTime(3000);
         expect(eeLogoPre.textContent).toBe(eeOriginalLogo);
     });
 
     it('does not trigger morph again while active', () => {
-        initLogoMorph(eeManager, makeOptions({ reducedMotion: true }));
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
         clickLogo(7, 400);
         eeManager.discover.mockClear();
         const logoLink = document.querySelector('.nav__logo');
@@ -139,14 +127,14 @@ describe('logo-morph', () => {
 
     it('uses session seed for art selection', () => {
         eeManager.getSessionSeed.mockReturnValue(0.0);
-        initLogoMorph(eeManager, makeOptions({ reducedMotion: true }));
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
         clickLogo(7, 400);
         const firstArt = eeLogoPre.textContent;
         expect(firstArt).not.toBe(eeOriginalLogo);
     });
 
     it('shifts clicks when more than 7 slow clicks accumulate', () => {
-        initLogoMorph(eeManager, makeOptions());
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         const logoLink = document.querySelector('.nav__logo');
         for (let i = 0; i < 8; i++) {
             logoLink.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
@@ -158,5 +146,29 @@ describe('logo-morph', () => {
             vi.advanceTimersByTime(400);
         }
         expect(eeManager.discover).toHaveBeenCalledWith('ee03');
+    });
+
+    it('returns destroy function that cleans up', () => {
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
+        const { destroy } = createLogoMorph({ eeManager, t: vi.fn((k) => k) });
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
+
+    it('destroy removes click listener', () => {
+        const { destroy } = createLogoMorph({ eeManager, t: vi.fn((k) => k) });
+        destroy();
+        eeManager.discover.mockClear();
+        clickLogo(7, 400);
+        expect(eeManager.discover).not.toHaveBeenCalled();
+    });
+
+    it('destroy stops pending timers', () => {
+        const { destroy } = createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
+        clickLogo(7, 400);
+        destroy();
+        const textAfterDestroy = eeLogoPre.textContent;
+        vi.advanceTimersByTime(10000);
+        expect(eeLogoPre.textContent).toBe(textAfterDestroy);
     });
 });

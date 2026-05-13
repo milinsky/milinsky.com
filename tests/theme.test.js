@@ -120,4 +120,16 @@ describe('initTheme', () => {
         themeToggle.remove();
         expect(() => initTheme(document.documentElement, vi.fn())).not.toThrow();
     });
+
+    it('returns destroy function that removes event listeners', () => {
+        const { destroy } = initTheme(document.documentElement, vi.fn());
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
+
+    it('destroy works when themeToggle is absent', () => {
+        themeToggle.remove();
+        const { destroy } = initTheme(document.documentElement, vi.fn());
+        expect(() => destroy()).not.toThrow();
+    });
 });

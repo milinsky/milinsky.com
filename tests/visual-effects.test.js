@@ -200,4 +200,70 @@ describe('initVisualEffects', () => {
         Object.defineProperty(document, 'hidden', { value: false, configurable: true });
         Math.random.mockRestore();
     });
+
+    it('returns destroy function that clears timeouts', () => {
+        createVisualEffectsDOM();
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        const { destroy } = initVisualEffects([]);
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+        Math.random.mockRestore();
+    });
+
+    it('destroy stops CRT noise loop', () => {
+        const { crtNoise } = createVisualEffectsDOM();
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        const { destroy } = initVisualEffects([]);
+
+        vi.advanceTimersByTime(3000);
+        expect(crtNoise.classList.contains('crt-noise--active')).toBe(true);
+
+        destroy();
+        Math.random.mockRestore();
+    });
+
+    it('destroy stops label rotation loop', () => {
+        const { label1 } = createVisualEffectsDOM();
+        const originalText = label1.textContent;
+
+        vi.spyOn(Math, 'random').mockReturnValue(0.5);
+        const { destroy } = initVisualEffects([label1]);
+
+        destroy();
+
+        vi.advanceTimersByTime(20000);
+        expect(label1.textContent).toBe(originalText);
+
+        Math.random.mockRestore();
+    });
+
+    it('noise does not run after destroy', () => {
+        const { crtNoise } = createVisualEffectsDOM();
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        const { destroy } = initVisualEffects([]);
+
+        destroy();
+
+        vi.advanceTimersByTime(30000);
+        expect(crtNoise.classList.contains('crt-noise--active')).toBe(false);
+
+        Math.random.mockRestore();
+    });
+
+    it('label does not change after destroy', () => {
+        const { label1 } = createVisualEffectsDOM();
+        const originalText = label1.textContent;
+
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        initVisualEffects([label1]);
+
+        vi.advanceTimersByTime(4000);
+        expect(label1.textContent).not.toBe(originalText);
+
+        const restoredText = label1.textContent;
+        vi.advanceTimersByTime(800);
+        expect(label1.textContent).toBe(originalText);
+
+        Math.random.mockRestore();
+    });
 });

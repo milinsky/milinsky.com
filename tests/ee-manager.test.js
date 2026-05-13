@@ -28,10 +28,19 @@ describe('ee-manager', () => {
     it('records visit count', () => {
         localStorage.clear();
         const mgr = createEeManager();
+        mgr.recordVisit();
         expect(mgr.getVisitCount()).toBeGreaterThan(0);
     });
 
     it('returns session seed as number', () => {
+        const mgr = createEeManager();
+        expect(mgr.getSessionSeed()).toBeTypeOf('number');
+        expect(mgr.getSessionSeed()).toBeGreaterThanOrEqual(0);
+        expect(mgr.getSessionSeed()).toBeLessThan(1);
+    });
+
+    it('falls back to Math.random when session seed is not parseable', () => {
+        sessionStorage.setItem('ee_session_seed', 'not-a-number');
         const mgr = createEeManager();
         expect(mgr.getSessionSeed()).toBeTypeOf('number');
         expect(mgr.getSessionSeed()).toBeGreaterThanOrEqual(0);
@@ -91,17 +100,28 @@ describe('ee-manager', () => {
                 return origGetItem(key);
             });
             const mgr = createEeManager();
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            mgr.recordVisit();
+            expect(warnSpy).toHaveBeenCalled();
+            warnSpy.mockRestore();
             expect(mgr.getVisitCount()).toBe(0);
         });
 
         it('handles localStorage.setItem throwing in recordVisit', () => {
             localStorage.clear();
+            let origSetItem;
+            const origGetItem = localStorage.getItem.bind(localStorage);
+            const origSet = localStorage.setItem.bind(localStorage);
             localStorage.setItem = vi.fn((key, value) => {
                 if (key === 'ee_visit_count') throw new Error('quota');
-                origSetItem(key, value);
+                origSet(key, value);
             });
             const mgr = createEeManager();
-            expect(mgr.getVisitCount()).toBe(0);
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            expect(() => mgr.recordVisit()).not.toThrow();
+            expect(warnSpy).toHaveBeenCalled();
+            warnSpy.mockRestore();
+            localStorage.setItem = origSet;
         });
 
         it('handles localStorage.getItem throwing in getVisitCount', () => {
@@ -118,6 +138,7 @@ describe('ee-manager', () => {
             origSetItem('ee_visit_count', 'not-a-number');
             localStorage.getItem = origGetItem;
             const mgr = createEeManager();
+            mgr.recordVisit();
             expect(mgr.getVisitCount()).toBe(1);
         });
 
@@ -133,6 +154,7 @@ describe('ee-manager', () => {
         it('sets first visit date on first visit', () => {
             localStorage.clear();
             const mgr = createEeManager();
+            mgr.recordVisit();
             const firstVisit = localStorage.getItem('ee_first_visit');
             expect(firstVisit).not.toBeNull();
         });

@@ -84,4 +84,22 @@ describe('initScrollProgress', () => {
         initScrollProgress();
         expect(addSpy).not.toHaveBeenCalledWith('scroll', expect.any(Function), expect.any(Object));
     });
+
+    it('returns destroy function that removes scroll listener', () => {
+        Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+        Object.defineProperty(window, 'innerHeight', { value: 500, configurable: true });
+        Object.defineProperty(document.documentElement, 'scrollHeight', { value: 500, configurable: true });
+
+        const { destroy } = initScrollProgress();
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
+
+    it('returns destroy function when elements missing', () => {
+        progressBar.remove();
+        progressText.remove();
+        const { destroy } = initScrollProgress();
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
 });

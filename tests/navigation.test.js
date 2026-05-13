@@ -105,4 +105,18 @@ describe('initNavigation', () => {
         navList.remove();
         expect(() => initNavigation()).not.toThrow();
     });
+
+    it('returns destroy function that cleans up', () => {
+        const { destroy } = initNavigation();
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
+
+    it('returns destroy function when burger absent', () => {
+        burger.remove();
+        navList.remove();
+        const { destroy } = initNavigation();
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
+    });
 });

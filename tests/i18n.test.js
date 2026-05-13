@@ -149,7 +149,16 @@ describe('applyLanguage', () => {
         expect(el.innerHTML).toBe('original');
     });
 
-    it('skips langToggle aria when translation missing for lang', () => {
+    it('skips langToggle text when langToggle has no text span', () => {
+        const langToggle = document.createElement('button');
+        langToggle.id = 'langToggle';
+        document.body.appendChild(langToggle);
+        elements.push(langToggle);
+
+        expect(() => applyLanguage('en', translations)).not.toThrow();
+    });
+
+    it('updates langToggle text only when text span exists', () => {
         const langToggle = document.createElement('button');
         langToggle.id = 'langToggle';
         const textSpan = document.createElement('span');
@@ -158,9 +167,16 @@ describe('applyLanguage', () => {
         document.body.appendChild(langToggle);
         elements.push(langToggle);
 
-        const partialTranslations = { aria_lang: { en: 'Switch' } };
-        applyLanguage('de', partialTranslations);
-        expect(langToggle.getAttribute('aria-label')).toBeNull();
-        expect(textSpan.textContent).toBe('DE');
+        applyLanguage('ru', translations);
+        expect(textSpan.textContent).toBe('RU');
+    });
+
+    it('skips aria_lang when translations lack aria_lang key', () => {
+        const langToggle = document.createElement('button');
+        langToggle.id = 'langToggle';
+        document.body.appendChild(langToggle);
+        elements.push(langToggle);
+
+        expect(() => applyLanguage('en', {})).not.toThrow();
     });
 });

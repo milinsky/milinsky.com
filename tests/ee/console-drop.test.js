@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { initConsoleDrop } from '../../src/ee/console-drop.js';
+import { createConsoleDrop } from '../../src/ee/console-drop.js';
 
 describe('console-drop', () => {
     let eeManager;
-    let eeT;
+    let t;
     let logSpy;
 
     beforeEach(() => {
@@ -12,7 +12,7 @@ describe('console-drop', () => {
             discover: vi.fn(),
             getDailySeed: vi.fn(() => 0),
         };
-        eeT = vi.fn((key) => {
+        t = vi.fn((key) => {
             const map = {
                 ee_console_box_1: 'Hello Developer',
                 ee_console_box_2: 'Welcome to MILINSKY',
@@ -27,26 +27,26 @@ describe('console-drop', () => {
     });
 
     it('calls eeManager.discover with ee06', () => {
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         expect(eeManager.discover).toHaveBeenCalledWith('ee06');
     });
 
-    it('calls eeT for console box translations', () => {
-        initConsoleDrop(eeManager, eeT);
-        expect(eeT).toHaveBeenCalledWith('ee_console_box_1');
-        expect(eeT).toHaveBeenCalledWith('ee_console_box_2');
-        expect(eeT).toHaveBeenCalledWith('ee_console_box_3');
+    it('calls t for console box translations', () => {
+        createConsoleDrop({ eeManager, t });
+        expect(t).toHaveBeenCalledWith('ee_console_box_1');
+        expect(t).toHaveBeenCalledWith('ee_console_box_2');
+        expect(t).toHaveBeenCalledWith('ee_console_box_3');
     });
 
     it('outputs bordered box to console.log', () => {
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         const calls = logSpy.mock.calls.map((c) => c[0]);
         expect(calls.some((c) => typeof c === 'string' && c.includes('\u250C'))).toBe(true);
         expect(calls.some((c) => typeof c === 'string' && c.includes('\u2514'))).toBe(true);
     });
 
     it('outputs translated text lines inside box', () => {
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         const calls = logSpy.mock.calls.map((c) => c[0]);
         expect(calls.some((c) => typeof c === 'string' && c.includes('Hello Developer'))).toBe(true);
         expect(calls.some((c) => typeof c === 'string' && c.includes('Welcome to MILINSKY'))).toBe(true);
@@ -55,7 +55,7 @@ describe('console-drop', () => {
 
     it('outputs fake kernel logs from daily seed set 0', () => {
         eeManager.getDailySeed.mockReturnValue(0);
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         const calls = logSpy.mock.calls.map((c) => c[0]);
         expect(calls.some((c) => typeof c === 'string' && c.includes('[kernel] MILINSKY.OS loaded'))).toBe(true);
         expect(calls.some((c) => typeof c === 'string' && c.includes('[auth] visitor authenticated'))).toBe(true);
@@ -63,27 +63,33 @@ describe('console-drop', () => {
 
     it('outputs fake kernel logs from daily seed set 1', () => {
         eeManager.getDailySeed.mockReturnValue(1);
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         const calls = logSpy.mock.calls.map((c) => c[0]);
         expect(calls.some((c) => typeof c === 'string' && c.includes('v4.2.0 booted'))).toBe(true);
     });
 
     it('outputs fake kernel logs from daily seed set 2', () => {
         eeManager.getDailySeed.mockReturnValue(2);
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         const calls = logSpy.mock.calls.map((c) => c[0]);
         expect(calls.some((c) => typeof c === 'string' && c.includes('MILINSKY.OS initialized'))).toBe(true);
     });
 
     it('uses dailySeed modulo for log selection', () => {
         eeManager.getDailySeed.mockReturnValue(5);
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         const calls = logSpy.mock.calls.map((c) => c[0]);
         expect(calls.some((c) => typeof c === 'string' && c.includes('[kernel]'))).toBe(true);
     });
 
     it('calls console.log 9 times total (5 box + 4 logs)', () => {
-        initConsoleDrop(eeManager, eeT);
+        createConsoleDrop({ eeManager, t });
         expect(logSpy).toHaveBeenCalledTimes(9);
+    });
+
+    it('returns destroy function that is callable', () => {
+        const { destroy } = createConsoleDrop({ eeManager, t });
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
     });
 });

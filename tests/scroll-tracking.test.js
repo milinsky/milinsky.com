@@ -290,6 +290,22 @@ describe('initScrollTracking', () => {
         expect(() => initScrollTracking([])).not.toThrow();
     });
 
+    it('creates only nav observer when no scrollStatus', () => {
+        const { aboutSection } = createScrollTrackingDOM();
+        document.getElementById('scrollStatus').remove();
+        document.getElementById('syslogText').remove();
+        document.querySelector('.footer').remove();
+        initScrollTracking([aboutSection]);
+        expect(capturedObservers.length).toBe(1);
+    });
+
+    it('creates nav and syslog observers when scrollStatus missing', () => {
+        createScrollTrackingDOM();
+        document.getElementById('scrollStatus').remove();
+        initScrollTracking(document.querySelectorAll('section'));
+        expect(capturedObservers.length).toBe(2);
+    });
+
     it('updates scrollStatus with correct address for services section', () => {
         const { servicesSection, scrollStatus } = createScrollTrackingDOM();
         initScrollTracking([servicesSection]);
@@ -310,6 +326,25 @@ describe('initScrollTracking', () => {
 
         expect(scrollStatus.innerHTML).toContain('0x5D9E');
         expect(scrollStatus.innerHTML).toContain('results');
+    });
+
+    it('nav observer ignores non-intersecting entries', () => {
+        const { aboutSection, linkAbout } = createScrollTrackingDOM();
+        initScrollTracking([aboutSection]);
+
+        const navObserver = capturedObservers[0];
+        linkAbout.classList.add('nav__link--active');
+        navObserver.callback([{ isIntersecting: false, target: aboutSection }]);
+        expect(linkAbout.classList.contains('nav__link--active')).toBe(true);
+    });
+
+    it('status observer ignores non-intersecting entries', () => {
+        const { aboutSection, scrollStatus } = createScrollTrackingDOM();
+        initScrollTracking([aboutSection]);
+
+        const statusObserver = capturedObservers[1];
+        statusObserver.callback([{ isIntersecting: false, target: aboutSection }]);
+        expect(scrollStatus.innerHTML).toBe('');
     });
 
     it('ignores sections not in sectionMap for scrollStatus', () => {
@@ -336,5 +371,13 @@ describe('initScrollTracking', () => {
             statusObserver.callback([{ isIntersecting: true, target: unknownSection }]);
             expect(scrollStatus.innerHTML).toBe('');
         }
+    });
+
+    it('returns destroy function that disconnects observers and clears timeouts', () => {
+        createScrollTrackingDOM();
+        const sections = document.querySelectorAll('section');
+        const { destroy } = initScrollTracking([...sections]);
+        expect(destroy).toBeTypeOf('function');
+        expect(() => destroy()).not.toThrow();
     });
 });

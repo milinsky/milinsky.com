@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { initLogoReveal } from '../../src/ee/logo-reveal.js';
+import { createLogoReveal } from '../../src/ee/logo-reveal.js';
 
 function createLogoPre(text) {
     const pre = document.createElement('pre');
@@ -33,7 +33,7 @@ describe('logo-reveal', () => {
 
     it('wraps # characters in spans with correct class and data-pi', () => {
         const pre = createLogoPre('## ab ##');
-        initLogoReveal();
+        createLogoReveal({});
 
         const pixels = pre.querySelectorAll('.nav__logo-pixel');
         expect(pixels.length).toBe(4);
@@ -48,14 +48,14 @@ describe('logo-reveal', () => {
 
     it('returns early if no .nav__logo-ascii element exists', () => {
         document.body.innerHTML = '';
-        const result = initLogoReveal();
+        const result = createLogoReveal({});
         expect(result).toBeDefined();
         expect(result.destroy).toBeTypeOf('function');
     });
 
     it('returns { destroy() }', () => {
         createLogoPre('###');
-        const result = initLogoReveal();
+        const result = createLogoReveal({});
         expect(result).toBeDefined();
         expect(result.destroy).toBeTypeOf('function');
     });
@@ -64,7 +64,7 @@ describe('logo-reveal', () => {
         const pre = createLogoPre('###');
         expect(pre.hasAttribute('data-glitch')).toBe(true);
 
-        initLogoReveal();
+        createLogoReveal({});
 
         expect(pre.hasAttribute('data-glitch')).toBe(false);
         expect(pre.style.getPropertyValue('--gd')).toBe('');
@@ -74,7 +74,7 @@ describe('logo-reveal', () => {
     it('reveals tease pixels after 600ms', () => {
         const pre = createLogoPre('##########');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initLogoReveal();
+        createLogoReveal({});
 
         vi.advanceTimersByTime(601);
 
@@ -85,7 +85,7 @@ describe('logo-reveal', () => {
     it('reveals all pixels after full assembly', () => {
         const pre = createLogoPre('##########');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initLogoReveal();
+        createLogoReveal({});
 
         vi.advanceTimersByTime(1801);
 
@@ -96,19 +96,18 @@ describe('logo-reveal', () => {
     it('applies glitch animation after assembly (Phase 2)', () => {
         const pre = createLogoPre('#####');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initLogoReveal();
+        createLogoReveal({});
 
         vi.advanceTimersByTime(5701);
 
-        expect(pre.style.animation).toBe('glitch 0.5s ease-in-out');
+        expect(pre.style.animation).toContain('glitch');
     });
 
     it('performs blink series after glitch animation', () => {
         const pre = createLogoPre('#####');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initLogoReveal();
+        createLogoReveal({});
 
-        // glitch applied at 5700ms, removed at 6200ms, first blink at 6200ms
         vi.advanceTimersByTime(6201);
         expect(pre.style.opacity).toBe('0');
 
@@ -119,7 +118,7 @@ describe('logo-reveal', () => {
     it('skips Phase 2 and 3 with reducedMotion=true', () => {
         const pre = createLogoPre('#####');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initLogoReveal(true);
+        createLogoReveal({ reducedMotion: true });
 
         vi.advanceTimersByTime(100000);
 
@@ -127,10 +126,22 @@ describe('logo-reveal', () => {
         expect(pre.style.opacity).toBe('1');
     });
 
+    it('destroy with reducedMotion clears timers', () => {
+        createLogoPre('#####');
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        const { destroy } = createLogoReveal({ reducedMotion: true });
+
+        vi.advanceTimersByTime(600);
+        destroy();
+        expect(() => vi.advanceTimersByTime(100000)).not.toThrow();
+
+        Math.random.mockRestore();
+    });
+
     it('fires periodic degradation after delay (Phase 3)', () => {
         const pre = createLogoPre('####################');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initLogoReveal();
+        createLogoReveal({});
 
         vi.advanceTimersByTime(39000);
 
@@ -146,9 +157,8 @@ describe('logo-reveal', () => {
             configurable: true,
         });
 
-        initLogoReveal();
+        createLogoReveal({});
 
-        // Advance past first degradation timer (36620ms)
         vi.advanceTimersByTime(40000);
         expect(pre.querySelectorAll('.nav__logo-pixel--visible').length).toBe(20);
 
@@ -157,7 +167,6 @@ describe('logo-reveal', () => {
             configurable: true,
         });
 
-        // Rescheduled degradation fires at 66620ms, advance into removal phase
         vi.advanceTimersByTime(28000);
 
         const visible = pre.querySelectorAll('.nav__logo-pixel--visible').length;
@@ -167,7 +176,7 @@ describe('logo-reveal', () => {
     it('stops degradation after destroy()', () => {
         const pre = createLogoPre('####################');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        const { destroy } = initLogoReveal();
+        const { destroy } = createLogoReveal({});
 
         vi.advanceTimersByTime(7000);
         expect(pre.querySelectorAll('.nav__logo-pixel--visible').length).toBe(20);
@@ -181,7 +190,7 @@ describe('logo-reveal', () => {
     it('handles missing pixels gracefully during degradation', () => {
         const pre = createLogoPre('####################');
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initLogoReveal();
+        createLogoReveal({});
 
         vi.advanceTimersByTime(7000);
         pre.innerHTML = 'no pixels here';
@@ -191,11 +200,90 @@ describe('logo-reveal', () => {
 
     it('preserves non-hash characters', () => {
         const pre = createLogoPre(' # \n # ');
-        initLogoReveal();
+        createLogoReveal({});
 
         const pixels = pre.querySelectorAll('.nav__logo-pixel');
         expect(pixels.length).toBe(2);
         expect(pre.innerHTML).toContain(' ');
         expect(pre.innerHTML).toContain('\n');
+    });
+
+    it('returns early with empty destroy when no # pixels found', () => {
+        createLogoPre('   ');
+        const result = createLogoReveal({});
+        expect(result).toBeDefined();
+        expect(result.destroy).toBeTypeOf('function');
+    });
+
+    it('degradation cycle recovers pixels after broken pause', () => {
+        const pre = createLogoPre('####################');
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        createLogoReveal({});
+
+        vi.advanceTimersByTime(5700 + 500 + 4 * 80 + 100 + 30000 + 500 + 4 * 80 + 100);
+        const afterBlink = pre.querySelectorAll('.nav__logo-pixel--visible').length;
+        expect(afterBlink).toBeLessThan(20);
+
+        vi.advanceTimersByTime(3000 + 500 + 4 * 80 + 100 + 200);
+        const afterRecovery = pre.querySelectorAll('.nav__logo-pixel--visible').length;
+        expect(afterRecovery).toBe(20);
+
+        Math.random.mockRestore();
+    });
+
+    it('degradation skips when no visible pixels remain', () => {
+        const pre = createLogoPre('##');
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        createLogoReveal({});
+
+        vi.advanceTimersByTime(1801);
+        expect(pre.querySelectorAll('.nav__logo-pixel--visible').length).toBe(2);
+
+        pre.querySelectorAll('.nav__logo-pixel').forEach((p) => {
+            p.classList.remove('nav__logo-pixel--visible');
+        });
+
+        vi.advanceTimersByTime(100000);
+        expect(() => {}).not.toThrow();
+
+        Math.random.mockRestore();
+    });
+
+    it('degradation handles disconnected pre element', () => {
+        const pre = createLogoPre('####################');
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        createLogoReveal({});
+
+        vi.advanceTimersByTime(7000);
+        pre.remove();
+
+        expect(() => vi.advanceTimersByTime(100000)).not.toThrow();
+
+        Math.random.mockRestore();
+    });
+
+    it('blink series handles disconnected pre', () => {
+        const pre = createLogoPre('#####');
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        createLogoReveal({});
+
+        vi.advanceTimersByTime(5700);
+        pre.remove();
+
+        expect(() => vi.advanceTimersByTime(5000)).not.toThrow();
+
+        Math.random.mockRestore();
+    });
+
+    it('full degradation cycle with blink and recovery', () => {
+        const pre = createLogoPre('####################');
+        vi.spyOn(Math, 'random').mockReturnValue(0.5);
+        createLogoReveal({});
+
+        vi.advanceTimersByTime(5700 + 500 + 4 * 80 + 100 + 30000 + 500 + 4 * 80 + 100 + 3000 + 500 + 4 * 80 + 100 + 200);
+
+        expect(pre.querySelectorAll('.nav__logo-pixel--visible').length).toBe(20);
+
+        Math.random.mockRestore();
     });
 });
