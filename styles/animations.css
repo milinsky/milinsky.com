@@ -1,0 +1,127 @@
+/* MILINSKY — animation styles */
+@keyframes cardFlicker {
+    0% { opacity: 0.92; }
+    50% { opacity: 0.97; }
+    100% { opacity: 1; }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes scanlineSweep {
+    0% { top: 0; opacity: 0; }
+    3% { opacity: 1; }
+    25% { opacity: 0.3; }
+    28% { top: 100%; opacity: 0; }
+    100% { top: 100%; opacity: 0; }
+}
+
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes crtSweep {
+    0% { opacity: 0; transform: scaleX(0.3); }
+    15% { opacity: 1; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(1.1) translateY(4px); }
+}
+
+@keyframes scrollStatusFlash {
+    0% { opacity: 0; transform: translateY(4px); }
+    10% { opacity: 0.85; transform: translateY(0); }
+    65% { opacity: 0.85; }
+    100% { opacity: 0; transform: translateY(-2px); }
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes glitch {
+    0%, 83%, 100% {
+        opacity: 1;
+        text-shadow: none;
+    }
+    84% {
+        opacity: 0.15;
+        text-shadow:
+            -2px 0 rgba(220, 50, 47, 0.8),
+            2px 0 rgba(42, 161, 152, 0.8);
+    }
+    85% {
+        opacity: 0.9;
+        text-shadow: none;
+    }
+    86% {
+        opacity: 0;
+    }
+    87% {
+        opacity: 1;
+        text-shadow:
+            2px 0 rgba(220, 50, 47, 0.7),
+            -2px 0 rgba(42, 161, 152, 0.7);
+    }
+    88%, 93% {
+        opacity: 1;
+        text-shadow: none;
+    }
+    94% {
+        opacity: 0.4;
+        text-shadow:
+            -1px 0 rgba(220, 50, 47, 0.5),
+            1px 0 rgba(42, 161, 152, 0.5);
+    }
+    95% {
+        opacity: 0;
+    }
+    96% {
+        opacity: 0.7;
+    }
+    97% {
+        opacity: 1;
+    }
+}
+
+@keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+    50% { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes ee-matrix-fall {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(calc(100vh + 100%)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+    }
+
+    body::after {
+        display: none;
+    }
+
+    .hero__grid-bg {
+        transform: none;
+    }
+
+    .animate-on-scroll {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

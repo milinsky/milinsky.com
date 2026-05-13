@@ -1,0 +1,70 @@
+/* MILINSKY — theme styles */
+[data-theme="dark"] {
+    --bg: var(--base03);
+    --bg-surface: var(--base02);
+    --bg-card: rgba(7, 54, 66, 0.6);
+    --bg-card-hover: rgba(7, 54, 66, 0.95);
+    --border: rgba(88, 110, 117, 0.3);
+    --border-hover: rgba(88, 110, 117, 0.6);
+    --border-accent: rgba(181, 137, 0, 0.4);
+    --text: var(--base0);
+    --text-secondary: var(--base1);
+    --text-heading: var(--base2);
+    --text-heading-bright: var(--base3);
+    --accent: var(--solar-yellow);
+    --accent-green: var(--solar-green);
+    --accent-yellow: var(--solar-yellow);
+    --accent-cyan: var(--solar-cyan);
+    --accent-red: var(--solar-red);
+    --accent-magenta: var(--solar-magenta);
+    --accent-violet: var(--solar-violet);
+    --tag-bg: rgba(181, 137, 0, 0.12);
+    --tag-border: rgba(181, 137, 0, 0.25);
+    --scanline-color: rgba(0, 43, 54, 0.08);
+    --noise-opacity: 0.05;
+    --glow-color: 181, 137, 0;
+    --header-bg: rgba(0, 43, 54, 0.9);
+    --vignette-color: rgba(0, 0, 0, 0.3);
+    --divider-gradient: linear-gradient(90deg, transparent, rgba(181, 137, 0, 0.4), transparent);
+}
+
+[data-theme="light"] {
+    --bg: var(--base3);
+    --bg-surface: var(--base2);
+    --bg-card: rgba(238, 232, 213, 0.6);
+    --bg-card-hover: rgba(238, 232, 213, 0.95);
+    --border: rgba(147, 161, 161, 0.3);
+    --border-hover: rgba(147, 161, 161, 0.6);
+    --border-accent: rgba(88, 110, 117, 0.4);
+    --text: var(--base00);
+    --text-secondary: var(--base01);
+    --text-heading: var(--base02);
+    --text-heading-bright: var(--base03);
+    --accent: var(--base01);
+    --accent-green: var(--solar-green);
+    --accent-yellow: var(--solar-yellow);
+    --accent-cyan: var(--solar-cyan);
+    --accent-red: var(--solar-red);
+    --accent-magenta: var(--solar-magenta);
+    --accent-violet: var(--solar-violet);
+    --tag-bg: rgba(88, 110, 117, 0.1);
+    --tag-border: rgba(88, 110, 117, 0.2);
+    --scanline-color: rgba(88, 110, 117, 0.04);
+    --noise-opacity: 0.03;
+    --glow-color: 88, 110, 117;
+    --header-bg: rgba(253, 246, 227, 0.92);
+    --vignette-color: rgba(0, 43, 54, 0.15);
+    --divider-gradient: linear-gradient(90deg, transparent, rgba(88, 110, 117, 0.3), transparent);
+}
+
+[data-theme="light"] .accent-text {
+    text-shadow: none;
+}
+
+[data-theme="dark"] .theme-toggle__icon--moon {
+    display: none;
+}
+
+[data-theme="light"] .theme-toggle__icon--sun {
+    display: none;
+}
