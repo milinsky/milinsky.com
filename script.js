@@ -80,6 +80,12 @@
             en: 'Created an AI-based system that simplifies call-center operators\' work. Improved customer support quality and reduced company costs.',
             ru: 'Создал систему на основе ИИ, облегчающую работу операторов call-центра. Улучшил качество клиентской поддержки и сократил затраты компании.'
         },
+        result_duyler_label: { en: 'years of dev', ru: 'лет разработки' },
+        result_duyler_title: { en: 'Duyler Framework', ru: 'Фреймворк Duyler' },
+        result_duyler_text: {
+            en: 'Event-driven non-blocking PHP framework for high-load AI solutions. Reactive architecture, async I/O, production-proven in real projects. Open Source.',
+            ru: 'Событийно-ориентированный неблокирующий PHP-фреймворк для высоконагруженных AI-решений. Реактивная архитектура, асинхронный I/O, проверенный в продакшене. Open Source.'
+        },
         result4_label: { en: 'years of projects', ru: 'года проектов' },
         result4_title: { en: 'Full Range of Solutions', ru: 'Полный спектр решений' },
         result4_text: {
