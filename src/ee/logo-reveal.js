@@ -82,12 +82,9 @@ export function initLogoReveal(reducedMotion) {
         };
     }
 
-    const assemblyDone = 1800 + 3600 + 300;
-
-    schedule(() => {
+    function blinkSeries(onComplete) {
         if (!logoPre.isConnected) return;
         logoPre.style.animation = 'glitch 0.5s ease-in-out';
-
         schedule(() => {
             if (!logoPre.isConnected) return;
             logoPre.style.animation = '';
@@ -104,9 +101,17 @@ export function initLogoReveal(reducedMotion) {
             }
 
             schedule(() => {
-                scheduleDegradation();
+                if (onComplete) onComplete();
             }, blinkCount * 80 + 100);
         }, 500);
+    }
+
+    const assemblyDone = 1800 + 3600 + 300;
+
+    schedule(() => {
+        blinkSeries(() => {
+            scheduleDegradation();
+        });
     }, assemblyDone);
 
     function scheduleDegradation() {
@@ -144,45 +149,25 @@ export function initLogoReveal(reducedMotion) {
         const regionStart = Math.floor(Math.random() * Math.max(1, visiblePixels.length - degradeCount));
         const toDegrade = visiblePixels.slice(regionStart, regionStart + degradeCount);
 
-        for (let i = 0; i < toDegrade.length; i++) {
-            const px = toDegrade[i];
-            schedule(() => {
-                if (px.isConnected) px.classList.remove('nav__logo-pixel--visible');
-            }, i * 30);
-        }
+        blinkSeries(() => {
+            for (let i = 0; i < toDegrade.length; i++) {
+                if (toDegrade[i].isConnected) toDegrade[i].classList.remove('nav__logo-pixel--visible');
+            }
 
-        const brokenPause = 2000 + Math.random() * 3000;
-        const degradeDone = toDegrade.length * 30 + brokenPause;
-        schedule(() => {
-            if (!logoPre.isConnected) return;
-
-            logoPre.style.animation = 'glitch 0.5s ease-in-out';
+            const brokenPause = 3000 + Math.random() * 4000;
             schedule(() => {
                 if (!logoPre.isConnected) return;
-                logoPre.style.animation = '';
 
-                const blinkCount = 4 + Math.floor(Math.random() * 2);
-                for (let b = 0; b < blinkCount; b++) {
-                    schedule(() => {
-                        if (!logoPre.isConnected) return;
-                        logoPre.style.opacity = '0';
-                        schedule(() => {
-                            if (logoPre.isConnected) logoPre.style.opacity = '1';
-                        }, 40);
-                    }, b * 80);
-                }
-
-                schedule(() => {
+                blinkSeries(() => {
                     for (let i = 0; i < toDegrade.length; i++) {
-                        const px = toDegrade[i];
-                        if (px.isConnected) px.classList.add('nav__logo-pixel--visible');
+                        if (toDegrade[i].isConnected) toDegrade[i].classList.add('nav__logo-pixel--visible');
                     }
                     schedule(() => {
                         scheduleDegradation();
                     }, 200);
-                }, blinkCount * 80 + 100);
-            }, 500);
-        }, degradeDone);
+                });
+            }, brokenPause);
+        });
     }
 
     return {

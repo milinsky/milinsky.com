@@ -132,9 +132,7 @@ describe('logo-reveal', () => {
         vi.spyOn(Math, 'random').mockReturnValue(0);
         initLogoReveal();
 
-        // Phase 2 ends ~6620ms, degradation delay 30000ms → fires at ~36620ms
-        // Advance into pixel removal: 36620 + 800 = 37420ms
-        vi.advanceTimersByTime(37420);
+        vi.advanceTimersByTime(39000);
 
         const visible = pre.querySelectorAll('.nav__logo-pixel--visible').length;
         expect(visible).toBeLessThan(20);
