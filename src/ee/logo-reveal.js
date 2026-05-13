@@ -1,6 +1,7 @@
 export function initLogoReveal() {
     const logoPre = document.querySelector('.nav__logo-ascii');
     if (!logoPre) return;
+    logoPre.style.opacity = '1';
     const text = logoPre.textContent;
     let logoHtml = '';
     const pixelIndices = [];

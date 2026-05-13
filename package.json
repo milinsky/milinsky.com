@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npx serve .",
+    "build": "esbuild src/main.js --bundle --format=iife --outfile=dist/main.js --target=es2020",
+    "dev": "npm run build && npx serve .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
@@ -14,6 +15,7 @@
   "description": "MILINSKY landing page",
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.6",
+    "esbuild": "^0.28.0",
     "happy-dom": "^20.9.0",
     "vitest": "^4.1.6"
   }

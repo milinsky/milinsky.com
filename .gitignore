@@ -1,6 +1,9 @@
 node_modules/
 coverage/
+dist/
 .idea/
 .sisyphus/
 .DS_Store
 *.log
+.playwright-mcp/
+screenshot-*.png
