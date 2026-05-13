@@ -1,0 +1,20 @@
+{
+  "name": "landing",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [],
+  "author": "MILINSKY",
+  "license": "ISC",
+  "description": "MILINSKY landing page",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.6",
+    "happy-dom": "^20.9.0",
+    "vitest": "^4.1.6"
+  }
+}
