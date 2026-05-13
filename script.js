@@ -280,6 +280,7 @@
     var typingDelay = 40;
     var typingStarted = false;
     var typingTimeout = null;
+    var typingSubitle = typingElement ? typingElement.closest('.hero__subtitle') : null;
 
     function getTypingText() {
         if (translations.hero_typing && translations.hero_typing[currentLang]) {
@@ -287,6 +288,16 @@
         }
         return translations.hero_typing.en;
     }
+
+    function reserveTypingHeight() {
+        if (!typingElement || !typingSubitle) return;
+        typingElement.textContent = getTypingText();
+        var h = typingSubitle.offsetHeight;
+        typingSubitle.style.minHeight = h + 'px';
+        typingElement.textContent = '';
+    }
+
+    reserveTypingHeight();
 
     function startTyping() {
         if (typingStarted) return;
@@ -311,6 +322,7 @@
         typingElement.textContent = '';
         typingIndex = 0;
         typingStarted = false;
+        reserveTypingHeight();
         if (document.querySelector('.hero__subtitle.is-visible') || document.querySelector('.hero.animate-on-scroll.is-visible')) {
             setTimeout(startTyping, 300);
         }
@@ -350,17 +362,6 @@
             el.classList.add('is-visible');
         });
         startTyping();
-    }
-
-    var scrollIndicator = document.querySelector('.hero__scroll-indicator');
-    if (scrollIndicator) {
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 100) {
-                scrollIndicator.style.opacity = '0';
-            } else {
-                scrollIndicator.style.opacity = '1';
-            }
-        }, { passive: true });
     }
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
@@ -476,5 +477,29 @@
         sections.forEach(function (section) {
             statusObserver.observe(section);
         });
+    }
+
+    var syslogText = document.getElementById('syslogText');
+    var footer = document.querySelector('.footer');
+    if (syslogText && footer) {
+        var syslogStr = 'build: 2026.05 | mem: 64MB | uptime: 127d | pid: 0x3A7F';
+        var syslogDone = false;
+        var syslogObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting && !syslogDone) {
+                    syslogDone = true;
+                    syslogObserver.unobserve(footer);
+                    var i = 0;
+                    (function typeChar() {
+                        if (i < syslogStr.length) {
+                            syslogText.textContent += syslogStr[i];
+                            i++;
+                            setTimeout(typeChar, 25 + Math.random() * 25);
+                        }
+                    })();
+                }
+            });
+        }, { threshold: 0.1 });
+        syslogObserver.observe(footer);
     }
 })();
