@@ -140,7 +140,7 @@ export function initLogoReveal(reducedMotion) {
             return;
         }
 
-        const degradeCount = Math.min(visiblePixels.length, 15 + Math.floor(Math.random() * 16));
+        const degradeCount = Math.min(visiblePixels.length, 25 + Math.floor(Math.random() * 16));
         const regionStart = Math.floor(Math.random() * Math.max(1, visiblePixels.length - degradeCount));
         const toDegrade = visiblePixels.slice(regionStart, regionStart + degradeCount);
 
@@ -148,26 +148,40 @@ export function initLogoReveal(reducedMotion) {
             const px = toDegrade[i];
             schedule(() => {
                 if (px.isConnected) px.classList.remove('nav__logo-pixel--visible');
-            }, i * 100);
+            }, i * 30);
         }
 
-        const degradeDone = toDegrade.length * 100 + 500;
+        const brokenPause = 2000 + Math.random() * 3000;
+        const degradeDone = toDegrade.length * 30 + brokenPause;
         schedule(() => {
             if (!logoPre.isConnected) return;
-            logoPre.style.opacity = '0';
+
+            logoPre.style.animation = 'glitch 0.5s ease-in-out';
             schedule(() => {
                 if (!logoPre.isConnected) return;
-                logoPre.style.opacity = '1';
-                for (let i = 0; i < toDegrade.length; i++) {
-                    const px = toDegrade[i];
+                logoPre.style.animation = '';
+
+                const blinkCount = 4 + Math.floor(Math.random() * 2);
+                for (let b = 0; b < blinkCount; b++) {
                     schedule(() => {
-                        if (px.isConnected) px.classList.add('nav__logo-pixel--visible');
-                    }, i * 50);
+                        if (!logoPre.isConnected) return;
+                        logoPre.style.opacity = '0';
+                        schedule(() => {
+                            if (logoPre.isConnected) logoPre.style.opacity = '1';
+                        }, 40);
+                    }, b * 80);
                 }
+
                 schedule(() => {
-                    scheduleDegradation();
-                }, toDegrade.length * 50 + 100);
-            }, 40);
+                    for (let i = 0; i < toDegrade.length; i++) {
+                        const px = toDegrade[i];
+                        if (px.isConnected) px.classList.add('nav__logo-pixel--visible');
+                    }
+                    schedule(() => {
+                        scheduleDegradation();
+                    }, 200);
+                }, blinkCount * 80 + 100);
+            }, 500);
         }, degradeDone);
     }
 
