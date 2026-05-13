@@ -1383,11 +1383,6 @@ button {
     }
 }
 
-[data-glitch] {
-    animation: glitch var(--gdur, 6s) ease-in-out infinite;
-    animation-delay: var(--gd, 0s);
-}
-
 @keyframes scrollPulse {
     0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
     50% { opacity: 1; transform: scaleY(1); }
@@ -1911,9 +1906,5 @@ button {
         opacity: 1;
         transform: none;
         transition: none;
-    }
-
-    [data-glitch] {
-        animation: none;
     }
 }

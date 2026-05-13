@@ -42,7 +42,7 @@ const boundApplyLanguage = (lang) => {
 };
 boundApplyLanguage(currentLang);
 
-initLogoReveal();
+initLogoReveal(reducedMotion);
 
 const langToggleBtn = document.getElementById('langToggle');
 if (langToggleBtn) {
