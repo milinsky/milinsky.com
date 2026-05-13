@@ -1,157 +1,157 @@
-# MILINSKY Landing — Easter Eggs Concept
+# MILINSKY Лендинг — Концепт пасхалок
 
-## Philosophy
+## Философия
 
-Easter eggs serve three purposes:
+Пасхалки служат трём целям:
 
-1. **Engagement** — visitors spend more time exploring, the site becomes memorable
-2. **Signal** — demonstrates technical skill and creativity to potential clients
-3. **Connection** — humor and hidden rewards create an emotional bond with the brand
+1. **Вовлечение** — посетители проводят больше времени за исследованием, сайт становится запоминающимся
+2. **Сигнал** — демонстрирует технические навыки и креативность потенциальным клиентам
+3. **Связь** — юмор и скрытые награды создают эмоциональную связь с брендом
 
-Key principle: easter eggs should **change behavior or location** so they can't be trivially shared as "click here" instructions. Each visit should feel like a new exploration.
+Ключевой принцип: пасхалки должны **менять поведение или расположение**, чтобы их нельзя было тривиально переслать как «кликни сюда». Каждый визит должен ощущаться как новое исследование.
 
 ---
 
-## Architecture
+## Архитектура
 
-### EasterEggManager (single JS controller)
+### EasterEggManager (единый JS-контроллер)
 
 ```
 EasterEggManager {
-    discovered: Set<string>       // tracks found eggs in localStorage
-    visitCount: number            // visit counter in localStorage
-    firstVisitDate: string        // ISO date of first visit
-    lastActivity: timestamp       // for idle detection
-    sessionSeed: number           // random per session for variation
+    discovered: Set<string>       // отслеживает найденные пасхалки в localStorage
+    visitCount: number            // счётчик визитов в localStorage
+    firstVisitDate: string        // ISO-дата первого визита
+    lastActivity: timestamp       // для определения простоя
+    sessionSeed: number           // случайное число сессии для вариативности
 
-    register(id, trigger, reward) // universal registration
-    discover(id)                  // mark as found, save, check meta-achievement
-    getVariant(id)                // returns random variant based on sessionSeed
-    reset()                       // clear all progress
+    register(id, trigger, reward) // универсальная регистрация
+    discover(id)                  // пометить как найденное, сохранить, проверить мета-достижение
+    getVariant(id)                // возвращает случайный вариант на основе sessionSeed
+    reset()                       // очистить весь прогресс
 }
 ```
 
-### Randomization Rules
+### Правила рандомизации
 
-- **Session seed**: `Math.random()` on load, stored in `sessionStorage`
-- **Daily seed**: hash of `new Date().toDateString()`
-- **Monthly rotation**: modulo on current month changes trigger locations
-- Variant selection uses seeded random so behavior is consistent within a session but different between sessions
+- **Сид сессии**: `Math.random()` при загрузке, хранится в `sessionStorage`
+- **Дневной сид**: хеш от `new Date().toDateString()`
+- **Месячная ротация**: остаток от деления текущего месяца меняет точки срабатывания
+- Выбор вариантов использует сидированную случайность — поведение стабильно внутри сессии, но различается между сессиями
 
 ---
 
-## Tier 1: Obvious & Delightful
+## Уровень 1: Очевидные и восхитительные
 
-Visitors stumble into these naturally. First contact with the "this site is alive" feeling.
+Посетители натыкаются на них естественно. Первый контакт с ощущением «этот сайт живой».
 
-### EE-01: Konami Boot Sequence
+### EE-01: Загрузочная последовательность Konami
 
-- **Trigger**: Konami code (↑↑↓↓←→←→BA) anywhere on page
-- **Reward**: CRT "glitches" violently for 1s, then fake BIOS boot sequence in fullscreen overlay:
+- **Триггер**: Код Konami (↑↑↓↓←→←→BA) в любом месте страницы
+- **Награда**: CRT «глючит» яростно 1с, затем фейковая загрузка BIOS в полноэкранном оверлее:
   ```
   MILINSKY BIOS v4.2.0
   Memory Test... 64MB OK
   Loading MILINSKY.OS...
   Kernel panic - not syncing: VFS: unable to mount root fs
   
-  ...just kidding. You found me.
+  ...шутка. Ты нашёл меня.
   
-  Achievement unlocked: ⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️
+  Достижение разблокировано: ⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️
   ```
-- **Variation**: Boot message changes daily (different "kernel panic" reasons, different jokes)
-- **Difficulty**: Easy
+- **Вариативность**: Загрузочное сообщение меняется ежедневно (разные причины «kernel panic», разные шутки)
+- **Сложность**: Лёгкая
 
-### EE-02: Idle Terminal Ghost
+### EE-02: Призрак терминала
 
-- **Trigger**: No mouse/scroll/keyboard activity for 45-90s (randomized interval)
-- **Reward**: A ghost cursor appears in a random terminal window and starts "typing" on its own. It browses fake files, reads `/etc/passwd`, finds `secrets.txt`, types "nah, I shouldn't... or should I?", then disappears
-- **Variation**: Ghost picks a random terminal window each time, browses different fake files
-- **Difficulty**: Easy (passive)
+- **Триггер**: Нет активности мыши/скролла/клавиатуры 45–90с (рандомизированный интервал)
+- **Награда**: Призрачный курсор появляется в случайном терминальном окне и начинает «печатать» сам по себе. Листает фейковые файлы, читает `/etc/passwd`, находит `secrets.txt`, печатает «хм, не стоит... или стоит?» — затем исчезает
+- **Вариативность**: Призрак каждый раз выбирает случайное окно терминала, просматривает разные фейковые файлы
+- **Сложность**: Лёгкая (пассивная)
 
-### EE-03: Logo Morph
+### EE-03: Трансформация логотипа
 
-- **Trigger**: Click the MILINSKY ASCII logo 7 times rapidly (< 500ms gaps)
-- **Reward**: Logo dissolves into Matrix-style character rain for 2s, then reassembles as a different ASCII art piece. Rotates through: rocket ship, cat, PHP elephant, Duyler logo, retro computer
-- **Difficulty**: Easy
+- **Триггер**: Кликнуть на ASCII-логотип MILINSKY 7 раз быстро (< 500мс между кликами)
+- **Награда**: Логотип растворяется в «матричном» дожде символов на 2с, затем собирается в другой ASCII-арт. Ротация: ракета, кот, слон PHP, логотип Duyler, ретро-компьютер
+- **Сложность**: Лёгкая
 
-### EE-04: CDE Right-Click Menu
+### EE-04: CDE-меню правой кнопки
 
-- **Trigger**: Right-click anywhere on page (long-press on mobile)
-- **Reward**: Custom CDE/Solaris-style dropdown replaces browser menu:
+- **Триггер**: Правый клик в любом месте страницы (долгое нажатие на мобильном)
+- **Награда**: Кастомное CDE/Solaris-выпадающее меню заменяет браузерное:
   ```
-  ┌─────────────────────────────┐
-  │ > About MILINSKY.OS         │
-  │ > View Source (you know how)│
-  │ > Print Resume              │
-  │ > Enable Secret Theme       │
-  │ > Contact — coming soon     │
-  │ > Exit (nice try)           │
-  └─────────────────────────────┘
+  ┌─────────────────────────────────┐
+  │ > О MILINSKY.OS                 │
+  │ > Исходный код (ты знаешь как)  │
+  │ > Печать резюме                 │
+  │ > Включить секретную тему       │
+  │ > Контакты — скоро будет        │
+  │ > Выход (хорошая попытка)       │
+  └─────────────────────────────────┘
   ```
-  "Enable Secret Theme" activates a Cyberpunk/Neon color variant for the session. "Exit" shows "Nice try. There is no exit from MILINSKY.OS."
-- **Variation**: Menu items shuffle order each session. Occasionally a new item appears: "Self-Destruct" (screen goes black for 2s, then back), "Coffee Break" (shows a ASCII coffee cup for 5s)
-- **Difficulty**: Easy
+  «Включить секретную тему» активирует киберпанк/неоновую цветовую схему на текущую сессию. «Выход» показывает «Хорошая попытка. Из MILINSKY.OS выхода нет.»
+- **Вариативность**: Пункты меню перемешиваются каждую сессию. Иногда появляется новый пункт: «Самоуничтожение» (экран гаснет на 2с, затем возвращается), «Кофе-брейк» (показывает ASCII-чашку кофе на 5с)
+- **Сложность**: Лёгкая
 
-### EE-05: Phosphor Trail
+### EE-05: Фосфорный след
 
-- **Trigger**: Move mouse around normally. After ~2000px cumulative distance, trail appears
-- **Reward**: Faint cursor trail like CRT phosphor burn-in. After 5000px, random ASCII chars appear in trail. After 10000px, trail spells out a promo code or message
-- **Variation**: The message at 10000px changes per session — different promo codes, jokes, or ASCII art
-- **Difficulty**: Easy (passive)
+- **Триггер**: Двигать мышь как обычно. После ~2000px суммарного пробега появляется след
+- **Награда**: Тусклый след за курсором, как выгорание фосфора на CRT. После 5000px — случайные ASCII-символы в следе. После 10000px — след складывается в промокод или сообщение
+- **Вариативность**: Сообщение на 10000px меняется каждую сессию — разные промокоды, шутки или ASCII-арт
+- **Сложность**: Лёгкая (пассивная)
 
 ---
 
-## Tier 2: Curious & Clever
+## Уровень 2: Любопытные и хитрые
 
-Requires poking around, trying things. Rewards curiosity and developer instincts.
+Требуется poking around, пробы действий. Награждают любопытство и девелоперские инстинкты.
 
-### EE-06: Console Drop
+### EE-06: Консольный дроп
 
-- **Trigger**: Open browser DevTools console
-- **Reward**: Styled `console.log` outputs:
+- **Триггер**: Открыть консоль DevTools в браузере
+- **Награда**: Стилизованный вывод через `console.log`:
   ```
   ╔═══════════════════════════════════════╗
-  ║  Looking under the hood? Respect.     ║
-  ║  Promo code: RETRO-DEV-2026           ║
-  ║  20% off consulting.                  ║
+  ║  Смотришь под капот? Уважаю.          ║
+  ║  Промокод: RETRO-DEV-2026             ║
+  ║  Скидка 20% на консультацию.          ║
   ╚═══════════════════════════════════════╝
   ```
-  Followed by fake system logs:
+  Затем фейковые системные логи:
   ```
-  [kernel] MILINSKY.OS loaded
-  [auth] visitor authenticated as curious_developer
-  [notice] coffee levels: critical
-  [warn] this developer seems cool — consider reaching out
+  [kernel] MILINSKY.OS загружен
+  [auth] посетитель аутентифицирован как curious_developer
+  [notice] уровень кофеина: критический
+  [warn] этот разработчик кажется крутым — стоит связаться
   ```
-- **Variation**: Fake log messages rotate daily
-- **Difficulty**: Medium
+- **Вариативность**: Фейковые логи ротируются ежедневно
+- **Сложность**: Средняя
 
-### EE-07: The 404 Room
+### EE-07: Комната 404
 
-- **Trigger**: Navigate to any non-existent URL path (/secret, /admin, /wp-admin, etc.)
-- **Reward**: Custom 404 page styled as "sector not found" error:
+- **Триггер**: Перейти по любому несуществующему URL-пути (/secret, /admin, /wp-admin и т.д.)
+- **Награда**: Кастомная страница 404 в стиле «сектор не найден»:
   ```
   ╔══════════════════════════════╗
-  ║  SECTOR NOT FOUND            ║
-  ║  Error 0x00000035            ║
+  ║  СЕКТОР НЕ НАЙДЕН            ║
+  ║  Ошибка 0x00000035           ║
   ║                              ║
-  ║  The file you're looking for ║
-  ║  has been moved to a BBS     ║
-  ║  that no longer exists.      ║
+  ║  Файл, который вы ищете,     ║
+  ║  перенесён на BBS,           ║
+  ║  которого больше не существует║
   ║                              ║
-  ║  ...but since you're here:   ║
-  ║  Check the page source for   ║
-  ║  another secret.             ║
+  ║  ...но раз уж вы здесь:      ║
+  ║  Проверьте исходный код —   ║
+  ║  там ещё один секрет.        ║
   ╚══════════════════════════════╝
   ```
-  ASCII art floppy disk "DATA NOT FOUND" above the text.
-- **Variation**: Error code changes per URL attempted. Different ASCII art.
-- **Difficulty**: Medium
+  ASCII-арт дискеты «DATA NOT FOUND» над текстом.
+- **Вариативность**: Код ошибки меняется в зависимости от запрошенного URL. Разный ASCII-арт.
+- **Сложность**: Средняя
 
-### EE-08: Source Code Secret
+### EE-08: Секрет в исходном коде
 
-- **Trigger**: View page source (Ctrl+U)
-- **Reward**: Large HTML comment block visible only in source view:
+- **Триггер**: Просмотр исходного кода страницы (Ctrl+U)
+- **Награда**: Большой блок HTML-комментария, видимый только в просмотре исходного кода:
   ```
   <!--
    ____  _     _ _   _ _____   ____ _  ______ _____
@@ -160,277 +160,278 @@ Requires poking around, trying things. Rewards curiosity and developer instincts
   |  _ <| |___| | |\  | |  | | |__| . \___ \ | |
   |_| \_\_____|_|_| \_|_|  |_|\____|_|\_\____/ |_|
   
-  You checked the source. Old school. Respect.
+  Ты проверил исходный код. Олдскул. Уважение.
   
-  Fun fact: This page has [X] easter eggs.
-  You've found one. Keep looking.
+  Забавный факт: на этой странице [X] пасхалок.
+  Ты нашёл одну. Продолжай искать.
   
   -->
   ```
-- **Difficulty**: Medium
+- **Сложность**: Средняя
 
-### EE-09: Terminal Command Parser
+### EE-09: Парсер терминальных команд
 
-- **Trigger**: Click any terminal window to focus, type commands
-- **Commands & Responses**:
+- **Триггер**: Кликнуть на любое окно терминала для фокуса, вводить команды
+- **Команды и ответы**:
 
-  | Command | Response |
-  |---------|----------|
-  | `help` | Lists available commands with `secret` dimmed/strikethrough |
-  | `sudo` | "Nice try. Root access requires solving a riddle." |
-  | `sudo make me a sandwich` | "Okay." → ASCII sandwich with build log |
-  | `exit` | Screen goes black. "Are you sure? [Y/N]" |
-  | `whoami` | "visitor_${sessionId}" |
-  | `ls` | Lists fake files: projects/, secrets.enc, todo.txt, coffee.md |
-  | `cat coffee.md` | ASCII coffee cup + "Status: caffeine depleted. Please send more." |
-  | `secret` | Password prompt (password rotates daily) |
-  | `hello` | "Hi there! I'm not a chatbot. But I appreciate you trying." |
-  | `rm -rf /` | "Nice try. This isn't that kind of terminal." |
-  | `pineapple` | "Pineapple on pizza: a hill I'm willing to code on." |
+  | Команда | Ответ |
+  |---------|-------|
+  | `help` | Показывает список доступных команд, `secret` — зачёркнутый/тусклый |
+  | `sudo` | «Хорошая попытка. Root-доступ требует решения загадки.» |
+  | `sudo make me a sandwich` | «Окей.» → ASCII-сэндвич с логом сборки |
+  | `exit` | Экран гаснет. «Вы уверены? [Y/N]» |
+  | `whoami` | «visitor_${sessionId}» |
+  | `ls` | Показывает фейковые файлы: projects/, secrets.enc, todo.txt, coffee.md |
+  | `cat coffee.md` | ASCII-чашка кофе + «Статус: кофеин на нуле. Пожалуйста, пришлите ещё.» |
+  | `secret` | Запрос пароля (пароль меняется ежедневно) |
+  | `hello` | «Привет! Я не чат-бот. Но ценю, что пытаешься.» |
+  | `rm -rf /` | «Хорошая попытка. Это не тот терминал.» |
+  | `pineapple` | «Ананас на пицце: холм, на котором я готовен кодить.» |
 
-- **Variation**: Daily password for `secret` is deterministic from date hash. Hints scattered as `data-hint` attributes across the site
-- **Difficulty**: Medium
+- **Вариативность**: Дневной пароль для `secret` детерминирован из хеша даты. Подсказки разбросаны как `data-hint` атрибуты по всему сайту
+- **Сложность**: Средняя
 
-### EE-10: Theme Toggle Speedrun
+### EE-10: Спидран переключения темы
 
-- **Trigger**: Toggle dark/light theme 5 times in under 3 seconds
-- **Reward**: Screen flashes, then re-renders in garish 90s GeoCities theme: tiled star background, Comic Sans, marquee tags, visitor counter, "under construction" CSS animation. Lasts 10s, then:
+- **Триггер**: Переключить тёмную/светлую тему 5 раз менее чем за 3 секунды
+- **Награда**: Экран вспыхивает, затем рендерится в кричащей теме GeoCities 90-х: мозаичный звёздный фон, Comic Sans, тэги marquee, счётчик посетителей, CSS-анимация «under construction». Длится 10с, затем:
   ```
-  SYSTEM RESTORED
-  Sorry. I had a flashback to 1997.
+  СИСТЕМА ВОССТАНОВЛЕНА
+  Извините. Меня отбросило в 1997-й.
   ```
-- **Difficulty**: Medium
+- **Сложность**: Средняя
 
-### EE-11: Select All Reveal
+### EE-11: Раскрытие через «Выделить всё»
 
-- **Trigger**: Ctrl+A (Select All) on the page
-- **Reward**: Hidden transparent text between sections becomes visible via `::selection` styling. Forms a poem or message:
+- **Триггер**: Ctrl+A (Выделить всё) на странице
+- **Награда**: Скрытый прозрачный текст между секциями становится видимым через `::selection` стили. Образует стихотворение или сообщение:
   ```
-  You found the invisible text.
-  In the early web, we hid messages in font color=background.
-  Some things never change.
-  Promo code: SELECT-ALL-2026
+  Ты нашёл невидимый текст.
+  В раннем вебе мы прятали сообщения в font color=background.
+  Кое-что никогда не меняется.
+  Промокод: SELECT-ALL-2026
   ```
-- **Difficulty**: Easy-Medium
+- **Сложность**: Лёгкая-Средняя
 
-### EE-12: Print Resume
+### EE-12: Печать резюме
 
-- **Trigger**: Ctrl+P (Print the page)
-- **Reward**: Print stylesheet renders the page as an actual formal resume/CV. Completely different layout. Footer reads: "This resume was printed from milinsky.dev. For the interactive experience, visit the URL."
-- **Difficulty**: Medium
+- **Триггер**: Ctrl+P (Печать страницы)
+- **Награда**: Стили для печати рендерят страницу как настоящее формальное резюме/CV. Полностью другой макет. Подвал: «Это резюме распечатано с milinsky.dev. Для интерактивного опыта — перейдите по ссылке.»
+- **Сложность**: Средняя
 
-### EE-13: Drag Resistance
+### EE-13: Сопротивление перетаскиванию
 
-- **Trigger**: Try to drag any element on the page
-- **Reward**: Element resists. CDE dialog appears:
+- **Триггер**: Попробовать перетащить любой элемент на странице
+- **Награда**: Элемент сопротивляется. Появляется CDE-диалог:
   ```
   ┌──────────────────────────────────────────┐
-  │ MILINSKY.OS — Error                       │
+  │ MILINSKY.OS — Ошибка                     │
   ├──────────────────────────────────────────┤
-  │ The user attempted to relocate            │
-  │ a system resource.                        │
-  │                                           │
-  │ Error Code: 0xC0FFEE                      │
-  │                                           │
-  │ Did you want to:                          │
-  │  [Contact Me]  [View Resume]  [Just Play] │
+  │ Пользователь попытался переместить       │
+  │ системный ресурс.                        │
+  │                                          │
+  │ Код ошибки: 0xC0FFEE                     │
+  │                                          │
+  │ Вы хотели:                               │
+  │  [Связаться]  [Резюме]  [Просто так]    │
   └──────────────────────────────────────────┘
   ```
-  "Just Playing Around" closes with "Carry on, troublemaker."
-- **Difficulty**: Medium
+  «Просто так» закрывается с «Продолжай, хулиган.»
+- **Сложность**: Средняя
 
 ---
 
-## Tier 3: Hidden & Hardcore
+## Уровень 3: Скрытые и хардкорные
 
-Requires dev tools, specific knowledge, or patience. The ultimate flex.
+Требуют dev-tools, специфических знаний или терпения. Высший пилотаж.
 
-### EE-14: The #bbs Portal
+### EE-14: Портал #bbs
 
-- **Trigger**: Add `#bbs` to URL
-- **Reward**: Page transforms into full BBS interface with fake modem connection (Web Audio API generated dial tones → static → carrier). Shows BBS menu:
+- **Триггер**: Добавить `#bbs` к URL
+- **Награда**: Страница трансформируется в полноценный BBS-интерфейс с фейковым модемным подключением (сгенерированные через Web Audio API тоны набора → стат → несущая). Показывает BBS-меню:
   ```
-  CONNECTED TO MILINSKY BBS v2.1
-  2400 baud — NO PARITY — 8 DATA BITS
+  ПОДКЛЮЧЕНИЕ К MILINSKY BBS v2.1
+  2400 baud — БЕЗ ЧЁТНОСТИ — 8 БИТ ДАННЫХ
   
-  [1] Message Board
-  [2] File Library  
-  [3] SysOp Chat
-  [4] Logout
+  [1] Доска объявлений
+  [2] Файловая библиотека
+  [3] Чат с SysOp
+  [4] Выход
   
-  Selection> 
+  Выбор> 
   ```
-  Each option has content — message board has dev jokes, file library has downloadable ASCII art
-- **Variation**: Baud rate shown is random each session (2400, 9600, 14400, 28800)
-- **Difficulty**: Hard
+  Каждый пункт содержит контент — доска объявлений с девелоперскими шутками, файловая библиотека с «доступным» для скачивания ASCII-артом
+- **Вариативность**: Показанная скорость (baud rate) случайна каждую сессию (2400, 9600, 14400, 28800)
+- **Сложность**: Сложная
 
-### EE-15: The Time Traveler
+### EE-15: Путешественник во времени
 
-- **Trigger**: System clock on specific dates
-- **Reward**:
-  - **Jan 1 1970**: "SYSTEM CLOCK RESET. ENTERING BIOS..." → fake BIOS screen
-  - **Apr 1**: Everything is mirrored/backwards
-  - **Oct 31**: Spooky theme (accent → orange, ASCII pumpkins)
-  - **Dec 25**: ASCII snow, prompts say "HO HO HO >"
-  - **Before 1990**: "TEMPORAL ANOMALY. This website does not exist yet."
-- **Variation**: Active dates rotate monthly to prevent predictable triggering
-- **Difficulty**: Hard
+- **Триггер**: Системные часы на определённые даты
+- **Награда**:
+  - **1 января 1970**: «СБРОС СИСТЕМНЫХ ЧАСОВ. ВХОД В BIOS...» → фейковый экран BIOS
+  - **1 апреля**: Всё зеркально/наоборот
+  - **31 октября**: Хэллоуинская тема (акцент → оранжевый, ASCII-тыквы)
+  - **25 декабря**: ASCII-снег, промпты говорят «HO HO HO >»
+  - **До 1990 года**: «ТЕМПОРАЛЬНАЯ АНОМАЛИЯ. Этот сайт ещё не существует.»
+- **Вариативность**: Активные даты ротируются ежемесячно для предотвращения предсказуемого срабатывания
+- **Сложность**: Сложная
 
-### EE-16: Visit Counter Persistence
+### EE-16: Стойкость счётчика визитов
 
-- **Trigger**: Visit the page multiple times over days
-- **Reward**: Terminal "remembers" you:
-  - Visit 2: "Welcome back. I noticed you returned."
-  - Visit 5: "Visit #5. You're becoming a regular."
-  - Visit 10: "10 visits. Time we made this official." — unlocks hidden contact form
-  - Visit 20+: "You've been here [X] times. Secret: [personal email/link]"
-  - If localStorage cleared: "I had a feeling about you. You wiped your tracks. Respect."
-- **Difficulty**: Medium-Hard (requires patience)
+- **Триггер**: Посещать страницу несколько раз на протяжении дней
+- **Награда**: Терминал «запоминает» вас:
+  - Визит 2: «С возвращением. Заметил, что вы вернулись.»
+  - Визит 5: «Визит №5. Вы становитесь завсегдатаем.»
+  - Визит 10: «10 визитов. Пора бы сделать это официальным.» — разблокируется скрытая форма контакта
+  - Визит 20+: «Вы были здесь [X] раз. Секрет: [личный email/ссылка]»
+  - Если localStorage очищен: «У меня было предчувствие о вас. Вы замели следы. Уважение.»
+- **Сложность**: Средняя-Сложная (требует терпения)
 
-### EE-17: Network Tab Teapot
+### EE-17: Чайник во вкладке Network
 
-- **Trigger**: Open DevTools Network tab, find request to `/api/flag`
-- **Reward**: Returns HTTP 418 (I'm a Teapot) with body:
+- **Триггер**: Открыть вкладку Network в DevTools, найти запрос к `/api/flag`
+- **Награда**: Возвращает HTTP 418 (I'm a Teapot) с телом:
   ```json
   {
     "status": "I'm a teapot",
-    "message": "HTTP 418 was an April Fools joke in RFC 2324. You knowing that means we'd get along.",
+    "message": "HTTP 418 — первоапрельская шутка из RFC 2324. То, что вы это знаете — мы бы поладили.",
     "promo": "TEAPOT-418-2026"
   }
   ```
-  Also: `/robots.txt` lists `/secret`, `/admin`, `/toast` — visiting `/toast` shows ASCII toast
-- **Difficulty**: Expert
+  Также: `/robots.txt` содержит `/secret`, `/admin`, `/toast` — переход на `/toast` показывает ASCII-тост
+- **Сложность**: Экспертная
 
-### EE-18: Favicon Signal
+### EE-18: Сигнал в favicon
 
-- **Trigger**: Watch browser tab favicon over 5+ minutes
-- **Reward**: Favicon changes every 30s, cycling through pixel patterns. After 5 minutes, the sequence encodes a binary message. Each favicon frame is a 16x16 canvas → PNG data URL
-- **Variation**: Message direction reverses every other day
-- **Difficulty**: Expert
+- **Триггер**: Наблюдать за favicon вкладки браузера 5+ минут
+- **Награда**: Favicon меняется каждые 30с, циклируя пиксельные паттерны. Через 5 минут последовательность кодирует бинарное сообщение. Каждый кадр favicon — 16x16 canvas → PNG data URL
+- **Вариативность**: Направление сообщения меняется через день
+- **Сложность**: Экспертная
 
-### EE-19: Triple-Click Unredacted
+### EE-19: Тройной клик — нередактированная версия
 
-- **Trigger**: Triple-click any section label (e.g., `> section_01 --about`)
-- **Reward**: Section "expands" with hidden flags:
+- **Триггер**: Тройной клик по любому лейблу секции (например, `> section_01 --about`)
+- **Награда**: Секция «расширяется» скрытыми флагами:
   ```
   > section_01 --about --verbose --unredacted
   ```
-  Content temporarily shows "real talk" version — unfiltered, humorous. After 10s fades back:
+  Контент временно показывает «честную» версию — без фильтра, с юмором. Через 10с возвращается обратно:
   
-  Polished: "Real commercial development experience across distributed systems."
-  Unredacted: "I've been writing PHP since before it was cool. And after it stopped being cool. And right now while it's becoming cool again."
-- **Variation**: Unredacted content rotates from a pool of variants
-- **Difficulty**: Medium
+  Полированный: «Реальный опыт коммерческой разработки распределённых систем.»
+  Нередактированный: «Я пишу на PHP с тех времён, когда это было круто. И после того, как перестало быть крутым. И прямо сейчас, пока это снова становится крутым.»
+- **Вариативность**: Нередактированный контент ротируется из пула вариантов
+- **Сложность**: Средняя
 
-### EE-20: The Scanline Cipher
+### EE-20: Шифр сканлайнов
 
-- **Trigger**: Analyze the CRT scanline pattern (screenshot + decode or inspect CSS)
-- **Reward**: The "scanlines" encode binary data via thickness variation (thin=0, thick=1). Decoding reveals a message: "You decoded the signal. Next frequency: [promo code]"
-- **Difficulty**: Expert
+- **Триггер**: Проанализировать паттерн CRT-сканлайнов (скриншот + декодирование или инспекция CSS)
+- **Награда**: «Сканлайны» кодируют бинарные данные через вариацию толщины (тонкий=0, толстый=1). Декодирование раскрывает сообщение: «Вы расшифровали сигнал. Следующая частота: [промокод]»
+- **Сложность**: Экспертная
 
-### EE-21: Mobile Shake
+### EE-21: Встряхивание на мобильном
 
-- **Trigger**: Shake phone (accelerometer) while on page
-- **Reward**: CRT "breaks" — screen shakes, scanlines distort, "signal lost" static for 2s, then "tunes back in" to hidden ASCII art gallery or motivational quote
-- **Difficulty**: Easy (mobile-specific)
+- **Триггер**: Встряхнуть телефон (акселерометр) на странице
+- **Награда**: CRT «ломается» — экран трясётся, сканлайны искажаются, стат «сигнал потерян» на 2с, затем «перестраивается» на скрытую галерею ASCII-арта или мотивационную цитату
+- **Сложность**: Лёгкая (только мобильная)
 
-### EE-22: Overscroll Hidden Sector
+### EE-22: Скрытый сектор через оверскролл
 
-- **Trigger**: Scroll to very bottom, keep scrolling (overscroll) 3 times
-- **Reward**: Page "tears" — horizontal crack animation, hidden section slides up labeled `> sector_99 --classified`. Contains a mini ASCII pong game or hidden case study
-- **Difficulty**: Medium-Hard
+- **Триггер**: Прокрутить в самый низ, продолжить скроллить (overscroll) 3 раза
+- **Награда**: Страница «рвётся» — анимация горизонтальной трещины, скрытая секция выезжает снизу с меткой `> sector_99 --classified`. Содержит мини-игру ASCII-pong или скрытое кейс-стади
+- **Сложность**: Средняя-Сложная
 
 ---
 
-## Meta: The Achievement System
+## Мета: Система достижений
 
-### EE-META: Easter Egg Hunter
+### EE-META: Охотник за пасхалками
 
-- **Trigger**: Discover any 5 easter eggs
-- **Reward**: Achievement notification: "ACHIEVEMENT UNLOCKED: Easter Egg Hunter". Hidden `#achievements` panel shows all discovered eggs with checkmarks. Finding ALL triggers:
+- **Триггер**: Найти любые 5 пасхалок
+- **Награда**: Уведомление о достижении: «ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО: Охотник за пасхалками». Скрытая панель `#achievements` показывает все найденные пасхалки с галочками. Нахождение ВСЕХ активирует:
   ```
   ╔════════════════════════════════════════════╗
-  ║  ACHIEVEMENT: Completionist                 ║
+  ║  ДОСТИЖЕНИЕ: Перфекционист                 ║
   ║                                              ║
-  ║  You found everything.                       ║
-  ║  You're exactly the kind of person           ║
-  ║  I want to work with. Let's talk.            ║
+  ║  Вы нашли всё.                               ║
+  ║  Вы именно тот человек,                      ║
+  ║  с которым я хочу работать. Давайте          ║
+  ║  поговорим.                                  ║
   ║                                              ║
-  ║  [Direct contact link/email]                  ║
+  ║  [Прямая ссылка на контакт/email]            ║
   ╚════════════════════════════════════════════╝
   ```
-- **Implementation**: `localStorage` Set tracking discovered IDs. Check count after each `discover()` call. Achievement panel accessible via `#achievements` hash.
+- **Реализация**: `localStorage` Set отслеживает найденные ID. Проверка количества после каждого вызова `discover()`. Панель достижений доступна через хеш `#achievements`.
 
 ---
 
-## Implementation Priority
+## Приоритет реализации
 
-### Phase 1 — Quick Wins (can implement immediately)
+### Фаза 1 — Быстрые победы (можно реализовать сразу)
 
-| ID | Effort | Impact |
-|----|--------|--------|
-| EE-06 Console Drop | Low | High (devs always check) |
-| EE-08 Source Code | Low | Medium |
-| EE-11 Select All | Low | Medium |
-| EE-03 Logo Morph | Medium | High |
-| EE-04 Right-Click Menu | Medium | High |
+| ID | Усилие | Влияние |
+|----|--------|---------|
+| EE-06 Консольный дроп | Низкое | Высокое (разрабы всегда проверяют) |
+| EE-08 Исходный код | Низкое | Среднее |
+| EE-11 Выделить всё | Низкое | Среднее |
+| EE-03 Трансформация логотипа | Среднее | Высокое |
+| EE-04 Меню правой кнопки | Среднее | Высокое |
 
-### Phase 2 — Core Interactive
+### Фаза 2 — Ключевая интерактивность
 
-| ID | Effort | Impact |
-|----|--------|--------|
-| EE-09 Terminal Commands | High | Very High (killer feature) |
-| EE-01 Konami Boot | Medium | High |
-| EE-02 Idle Ghost | Medium | High |
-| EE-10 Theme Speedrun | Medium | High (viral potential) |
-| EE-16 Visit Counter | Low | High (retention) |
+| ID | Усилие | Влияние |
+|----|--------|---------|
+| EE-09 Терминальные команды | Высокое | Очень высокое (killer feature) |
+| EE-01 Загрузка Konami | Среднее | Высокое |
+| EE-02 Призрак терминала | Среднее | Высокое |
+| EE-10 Спидран темы | Среднее | Высокое (вирусный потенциал) |
+| EE-16 Счётчик визитов | Низкое | Высокое (удержание) |
 
-### Phase 3 — Hardcore
+### Фаза 3 — Хардкор
 
-| ID | Effort | Impact |
-|----|--------|--------|
-| EE-14 BBS Portal | Very High | Very High |
-| EE-07 404 Room | Medium | High |
-| EE-13 Drag Resistance | Medium | Medium |
-| EE-12 Print Resume | Medium | Medium |
-| EE-19 Triple-Click | Low | Medium |
+| ID | Усилие | Влияние |
+|----|--------|---------|
+| EE-14 Портал BBS | Очень высокое | Очень высокое |
+| EE-07 Комната 404 | Среднее | Высокое |
+| EE-13 Сопротивление перетаскиванию | Среднее | Среднее |
+| EE-12 Печать резюме | Среднее | Среднее |
+| EE-19 Тройной клик | Низкое | Среднее |
 
-### Phase 4 — Expert Level
+### Фаза 4 — Уровень эксперта
 
-| ID | Effort | Impact |
-|----|--------|--------|
-| EE-17 Network Teapot | Medium | Low (very few will find) |
-| EE-18 Favicon Signal | High | Low (very few will find) |
-| EE-20 Scanline Cipher | Very High | Low (very few will find) |
-| EE-15 Time Traveler | Medium | Medium (seasonal) |
-| EE-22 Overscroll Sector | High | Medium |
+| ID | Усилие | Влияние |
+|----|--------|---------|
+| EE-17 Сетевой чайник | Среднее | Низкое (мало кто найдёт) |
+| EE-18 Сигнал в favicon | Высокое | Низкое (мало кто найдёт) |
+| EE-20 Шифр сканлайнов | Очень высокое | Низкое (мало кто найдёт) |
+| EE-15 Путешественник во времени | Среднее | Среднее (сезонное) |
+| EE-22 Скрытый сектор | Высокое | Среднее |
 
-### Phase 5 — Meta
+### Фаза 5 — Мета
 
-| ID | Effort | Impact |
-|----|--------|--------|
-| EE-META Achievement | Medium | Very High (ties everything together) |
-| EE-05 Phosphor Trail | Medium | Medium |
-| EE-21 Mobile Shake | Low | Medium (mobile-only) |
-
----
-
-## Promo Codes Strategy
-
-Easter eggs that give promo codes should use **session-specific codes** to prevent easy sharing:
-
-- Codes are generated from: `BASE_PREFIX + hash(sessionDate + secretSalt)`
-- Each code is valid conceptually (real usage requires backend validation later)
-- Example codes for demo: `RETRO-DEV-2026`, `SELECT-ALL-2026`, `TEAPOT-418-2026`
-- When backend exists, codes map to actual discounts on consulting
+| ID | Усилие | Влияние |
+|----|--------|---------|
+| EE-META Достижения | Среднее | Очень высокое (связывает всё воедино) |
+| EE-05 Фосфорный след | Среднее | Среднее |
+| EE-21 Встряхивание | Низкое | Среднее (только мобильное) |
 
 ---
 
-## Design Principles
+## Стратегия промокодов
 
-1. **Never break the professional feel** — easter eggs are delightful surprises, not gimmicks that undermine credibility
-2. **Respect both themes** — every easter egg must work in dark and light Solarized
-3. **Mobile parity** — every desktop easter egg has a mobile equivalent or is replaced by EE-21 (Shake)
-4. **No external dependencies** — all effects use vanilla JS, Web Audio API, Canvas API
-5. **prefers-reduced-motion** — easter eggs that are purely visual/animations are disabled; text-based rewards still work
-6. **Variable location** — key easter eggs randomize their trigger point per session/day so walkthroughs become stale quickly
+Пасхалки с промокодами должны использовать **привязанные к сессии коды**, чтобы предотвратить лёгкую передачу:
+
+- Коды генерируются из: `BASE_PREFIX + hash(дата_сессии + секретная_соль)`
+- Каждый код концептуально валиден (реальное использование потребует бэкенд-валидации позже)
+- Пример кодов для демо: `RETRO-DEV-2026`, `SELECT-ALL-2026`, `TEAPOT-418-2026`
+- Когда появится бэкенд, коды будут маппиться на реальные скидки на консультации
+
+---
+
+## Принципы дизайна
+
+1. **Никогда не ломать профессиональный вид** — пасхалки это восхитительные сюрпризы, не gimmicks, подрывающие доверие
+2. **Уважать обе темы** — каждая пасхалка должна работать в тёмной и светлой Solarized-теме
+3. **Паритет мобильных** — каждая десктопная пасхалка имеет мобильный аналог или заменяется на EE-21 (Встряхивание)
+4. **Без внешних зависимостей** — все эффекты используют vanilla JS, Web Audio API, Canvas API
+5. **prefers-reduced-motion** — пасхалки, которые чисто визуальные/анимационные, отключаются; текстовые награды продолжают работать
+6. **Переменное расположение** — ключевые пасхалки рандомизируют точку срабатывания по сессии/дню, чтобы walkthrough-гайды быстро устаревали
