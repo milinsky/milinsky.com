@@ -41,7 +41,7 @@
 [data-theme="dark"] {
     --bg: var(--base03);
     --bg-surface: var(--base02);
-    --bg-card: rgba(7, 54, 66, 0.8);
+    --bg-card: rgba(7, 54, 66, 0.6);
     --bg-card-hover: rgba(7, 54, 66, 0.95);
     --border: rgba(88, 110, 117, 0.3);
     --border-hover: rgba(88, 110, 117, 0.6);
@@ -70,7 +70,7 @@
 [data-theme="light"] {
     --bg: var(--base3);
     --bg-surface: var(--base2);
-    --bg-card: rgba(238, 232, 213, 0.8);
+    --bg-card: rgba(238, 232, 213, 0.6);
     --bg-card-hover: rgba(238, 232, 213, 0.95);
     --border: rgba(147, 161, 161, 0.3);
     --border-hover: rgba(147, 161, 161, 0.6);
@@ -740,8 +740,11 @@ button {
     flex-shrink: 0;
 }
 
-.typing-text {
+.typing-wrap {
     flex: 1;
+}
+
+.typing-text {
 }
 
 .cursor {
@@ -1216,7 +1219,7 @@ button {
     color: var(--accent);
 }
 
-.nav__link--active::after {
+.nav__link--active:not(.nav__link--cta)::after {
     content: '_';
     position: absolute;
     bottom: -1px;
