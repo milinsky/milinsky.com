@@ -382,6 +382,14 @@
         }, { passive: true });
     }
 
+    var retroCards = document.querySelectorAll('.retro-card');
+    for (var c = 0; c < retroCards.length; c++) {
+        var scanline = document.createElement('span');
+        scanline.className = 'card-scanline';
+        scanline.setAttribute('aria-hidden', 'true');
+        retroCards[c].appendChild(scanline);
+    }
+
     var crtNoise = document.getElementById('crtNoise');
     if (crtNoise) {
         (function runNoise() {
@@ -435,7 +443,7 @@
                     });
                 }
             });
-        }, { threshold: 0.3, rootMargin: '-80px 0px -40% 0px' });
+        }, { threshold: 0.15, rootMargin: '-80px 0px -15% 0px' });
         sections.forEach(function (section) {
             activeNavObserver.observe(section);
         });

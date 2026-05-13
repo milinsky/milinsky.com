@@ -70,11 +70,17 @@
                     <span class="hero__badge-dot"></span>
                     <span class="hero__badge-text">PHP Developer / AI Specialist</span>
                 </div>
-                <h1 class="hero__title animate-on-scroll" data-glitch style="--gd:0s;--gdur:6s" data-i18n-html="hero_title">
-                    Deep engineering<br>
-                    expertise combined<br>
-                    <span class="accent-text">with modern AI</span>
-                </h1>
+                <div class="hero__terminal-frame animate-on-scroll">
+                    <div class="hero__terminal-header" aria-hidden="true">
+                        <span class="hero__terminal-controls"><span>─</span><span>□</span><span>×</span></span>
+                        <span class="hero__terminal-title">milinsky.sh</span>
+                    </div>
+                    <h1 class="hero__title" data-glitch style="--gd:0s;--gdur:6s" data-i18n-html="hero_title">
+                        Deep engineering<br>
+                        expertise combined<br>
+                        <span class="accent-text">with modern AI</span>
+                    </h1>
+                </div>
                 <p class="hero__subtitle animate-on-scroll">
                     <span class="terminal-prefix">$</span>
                     <span class="typing-text" id="typingText"></span>
@@ -258,9 +264,7 @@
                     <div class="expertise__main retro-card animate-on-scroll">
                         <div class="expertise__main-header">
                             <div class="expertise__terminal">
-                                <div class="expertise__terminal-dots">
-                                    <span></span><span></span><span></span>
-                                </div>
+                                <div class="expertise__terminal-controls"><span>─</span><span>□</span><span>×</span></div>
                                 <div class="expertise__terminal-title">ai_approach.sh</div>
                             </div>
                         </div>
@@ -331,7 +335,7 @@
                                 <span class="contact__terminal-prompt">$</span> init_contact
                             </div>
                             <div class="contact__terminal-output">
-                                <span class="contact__terminal-line">status: <span class="text-green" data-i18n="contact_terminal_status">available for projects</span></span>
+                                <span class="contact__terminal-line">status: <span class="text-green status-pulse" data-i18n="contact_terminal_status">available for projects</span></span>
                                 <span class="contact__terminal-line">response: <span class="text-cyan" data-i18n="contact_terminal_response">within 24 hours</span></span>
                                 <span class="contact__terminal-line">languages: <span class="text-yellow" data-i18n="contact_terminal_languages">Russian, English</span></span>
                             </div>
@@ -363,6 +367,7 @@
                 </a>
             </div>
             <p class="footer__legal" data-i18n="footer_legal">2026. All rights reserved.</p>
+            <p class="footer__syslog" aria-hidden="true">build: 2026.05 | mem: 64MB | uptime: 127d | pid: 0x3A7F</p>
         </div>
     </footer>
 
