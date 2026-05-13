@@ -35,19 +35,30 @@ export function createLogoReveal(ctx) {
     logoPre.style.opacity = '1';
 
     const text = logoPre.textContent;
-    let logoHtml = '';
     const pixelIndices = [];
+
+    while (logoPre.firstChild) logoPre.removeChild(logoPre.firstChild);
+    const fragment = document.createDocumentFragment();
+    let textBuffer = '';
 
     for (let i = 0; i < text.length; i++) {
         if (text[i] === '#') {
-            logoHtml += `<span class="nav__logo-pixel" data-pi="${pixelIndices.length}">#</span>`;
+            if (textBuffer) {
+                fragment.appendChild(document.createTextNode(textBuffer));
+                textBuffer = '';
+            }
+            const span = document.createElement('span');
+            span.className = 'nav__logo-pixel';
+            span.setAttribute('data-pi', String(pixelIndices.length));
+            span.textContent = '#';
+            fragment.appendChild(span);
             pixelIndices.push(i);
         } else {
-            logoHtml += text[i];
+            textBuffer += text[i];
         }
     }
-
-    logoPre.innerHTML = logoHtml;
+    if (textBuffer) fragment.appendChild(document.createTextNode(textBuffer));
+    logoPre.appendChild(fragment);
 
     const pixels = logoPre.querySelectorAll('.nav__logo-pixel');
     if (pixels.length === 0) return { destroy() {} };

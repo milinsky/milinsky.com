@@ -2,6 +2,14 @@
  * @module i18n
  */
 
+function setParsedContent(el, str) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+    const doc = new DOMParser().parseFromString(str, 'text/html');
+    for (const node of doc.body.childNodes) {
+        el.appendChild(node.cloneNode(true));
+    }
+}
+
 /**
  * Translate a key using the given translations map and language.
  * @param {string} key - Translation key.
@@ -40,7 +48,7 @@ export function applyLanguage(lang, translations) {
     for (let j = 0; j < htmlElements.length; j++) {
         const hKey = htmlElements[j].getAttribute('data-i18n-html');
         if (translations[hKey] && translations[hKey][lang]) {
-            htmlElements[j].innerHTML = translations[hKey][lang];
+            setParsedContent(htmlElements[j], translations[hKey][lang]);
         }
     }
 
