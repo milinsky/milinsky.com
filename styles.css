@@ -675,13 +675,14 @@ button {
 }
 
 .retro-card:hover .card-scanline {
-    animation: scanlineSweep 0.6s ease-out;
+    animation: scanlineSweep 3s ease-out infinite;
 }
 
 @keyframes scanlineSweep {
     0% { top: 0; opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 0.5; }
+    3% { opacity: 1; }
+    25% { opacity: 0.3; }
+    28% { top: 100%; opacity: 0; }
     100% { top: 100%; opacity: 0; }
 }
 
