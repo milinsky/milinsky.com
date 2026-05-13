@@ -1,3 +1,14 @@
+/**
+ * @module i18n
+ */
+
+/**
+ * Translate a key using the given translations map and language.
+ * @param {string} key - Translation key.
+ * @param {Object<string, {en: string, ru: string}>} translations - Translations map.
+ * @param {string} currentLang - Current language code.
+ * @returns {string} Translated text or the key itself as fallback.
+ */
 export function eeT(key, translations, currentLang) {
     if (translations[key] && translations[key][currentLang]) {
         return translations[key][currentLang];
@@ -8,6 +19,11 @@ export function eeT(key, translations, currentLang) {
     return key;
 }
 
+/**
+ * Apply a language to all i18n-enabled DOM elements.
+ * @param {string} lang - Language code to apply.
+ * @param {Object<string, {en: string, ru: string}>} translations - Translations map.
+ */
 export function applyLanguage(lang, translations) {
     const html = document.documentElement;
     html.setAttribute('lang', lang);

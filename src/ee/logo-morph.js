@@ -1,70 +1,118 @@
-export function initLogoMorph(eeManager, options) {
-    const { logoPre, originalLogo, reducedMotion, showToast, t } = options;
+const MAX_CLICKS = 7;
+const CLICK_SPAN_MS = 3500;
+const MATRIX_CELL_SIZE_PX = 20;
+const MATRIX_CHAR_MIN = 10;
+const MATRIX_CHAR_RANGE = 20;
+const MATRIX_MIN_DURATION_S = 1;
+const MATRIX_DURATION_RANGE_S = 2;
+const MATRIX_MAX_DELAY_S = 0.8;
+const MORPH_DISPLAY_MS = 3000;
+const MATRIX_OVERLAY_MS = 2000;
+
+/**
+ * Triggers a matrix-rain morph of the ASCII logo after rapid clicks.
+ * @param {{ eeManager: object, t: function, showToast?: function, reducedMotion?: boolean }} ctx
+ * @returns {{ destroy(): void }}
+ */
+export function createLogoMorph(ctx) {
+    const { eeManager, t, showToast, reducedMotion } = ctx;
+
+    const timers = [];
+    const listeners = [];
+    let destroyed = false;
+
+    function schedule(fn, delay) {
+        if (destroyed) return null;
+        const id = setTimeout(() => {
+            if (!destroyed) fn();
+        }, delay);
+        timers.push(id);
+        return id;
+    }
+
+    function listen(target, event, handler, options) {
+        target.addEventListener(event, handler, options);
+        listeners.push({ target, event, handler, options });
+    }
+
+    const logoPre = document.querySelector('.nav__logo-ascii');
     const logoLink = document.querySelector('.nav__logo');
-    if (!logoLink || !logoPre) return;
+    const originalLogo = logoPre?.textContent || '';
+    if (!logoLink || !logoPre) return { destroy() {} };
 
     const altArts = [
         '     /\\\n    /  \\\n   | ** |\n   | PHP|\n   | ** |\n  /| .. |\\\n / +----+ \\',
         ' /\\_/\\\n( o.o )\n > ^ <\n/|   |\\\n(_|   |_)',
         '   ____\n  / _  \\\n | (_   |\n |  _)  |\n | |    |\n \\_____/',
         ' ________\n|  ____. |\n| |    | |\n| |____| |\n|________|\n   |  |',
-        '   ____\n  |  _ \\\n  | | | |\n  | |_| |\n  |  _  /\n  |_| \\_\\'
+        '   ____\n  |  _ \\\n  | | | |\n  | |_| |\n  |  _  /\n  |_| \\_\\',
     ];
 
     let clicks = [];
     let morphActive = false;
-    logoLink.addEventListener('click', (e) => {
+
+    listen(logoLink, 'click', (e) => {
         if (morphActive) return;
         e.preventDefault();
         clicks.push(Date.now());
-        if (clicks.length > 7) {
+        if (clicks.length > MAX_CLICKS) {
             clicks.shift();
         }
-        if (clicks.length === 7) {
-            const span = clicks[6] - clicks[0];
-            if (span < 3500) {
+        if (clicks.length === MAX_CLICKS) {
+            const span = clicks[MAX_CLICKS - 1] - clicks[0];
+            if (span < CLICK_SPAN_MS) {
                 clicks = [];
                 morphActive = true;
                 eeManager.discover('ee03');
                 if (reducedMotion) {
-                    showToast(t('ee_logo_reduced'), 3000);
+                    showToast(t('ee_logo_reduced'), MORPH_DISPLAY_MS);
                     const artIdx = Math.floor(eeManager.getSessionSeed() * altArts.length);
                     logoPre.textContent = altArts[artIdx];
-                    setTimeout(() => {
+                    schedule(() => {
                         logoPre.textContent = originalLogo;
                         morphActive = false;
-                    }, 3000);
+                    }, MORPH_DISPLAY_MS);
                     return;
                 }
                 const overlay = document.createElement('div');
                 overlay.className = 'ee-matrix-overlay';
                 document.body.appendChild(overlay);
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*';
-                const colCount = Math.floor(window.innerWidth / 20);
+                const colCount = Math.floor(window.innerWidth / MATRIX_CELL_SIZE_PX);
                 for (let col = 0; col < colCount; col++) {
                     const colEl = document.createElement('div');
                     colEl.className = 'ee-matrix-col';
-                    colEl.style.left = `${col * 20}px`;
+                    colEl.style.left = `${col * MATRIX_CELL_SIZE_PX}px`;
                     let text = '';
-                    const len = 10 + Math.floor(Math.random() * 20);
+                    const len = MATRIX_CHAR_MIN + Math.floor(Math.random() * MATRIX_CHAR_RANGE);
                     for (let ci = 0; ci < len; ci++) {
                         text += chars.charAt(Math.floor(Math.random() * chars.length));
                     }
                     colEl.textContent = text;
-                    colEl.style.animationDuration = `${1 + Math.random() * 2}s`;
-                    colEl.style.animationDelay = `${Math.random() * 0.8}s`;
+                    colEl.style.animationDuration = `${MATRIX_MIN_DURATION_S + Math.random() * MATRIX_DURATION_RANGE_S}s`;
+                    colEl.style.animationDelay = `${Math.random() * MATRIX_MAX_DELAY_S}s`;
                     overlay.appendChild(colEl);
                 }
-                setTimeout(() => {
+                schedule(() => {
                     overlay.remove();
                     const artIdx = Math.floor(eeManager.getSessionSeed() * altArts.length);
                     logoPre.textContent = altArts[artIdx];
-                    setTimeout(() => {
+                    schedule(() => {
                         logoPre.textContent = originalLogo;
                         morphActive = false;
-                    }, 3000);
-                }, 2000);
+                    }, MORPH_DISPLAY_MS);
+                }, MATRIX_OVERLAY_MS);
             }
         }
     });
+
+    return {
+        destroy() {
+            destroyed = true;
+            for (const id of timers) clearTimeout(id);
+            for (const { target, event, handler, options } of listeners) {
+                target.removeEventListener(event, handler, options);
+            }
+        },
+    };
 }

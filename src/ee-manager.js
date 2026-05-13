@@ -1,3 +1,7 @@
+/**
+ * Create an Easter Egg manager instance.
+ * @returns {{ discover: (id: string) => void, isDiscovered: (id: string) => boolean, getVisitCount: () => number, getSessionSeed: () => number, getDailySeed: () => number, recordVisit: () => void }}
+ */
 export function createEeManager() {
     let discovered = new Set();
     try {
@@ -84,19 +88,18 @@ export function createEeManager() {
         const str = new Date().toDateString();
         let hash = 0;
         for (let i = 0; i < str.length; i++) {
-            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash = (hash << 5) - hash + str.charCodeAt(i);
             hash = hash & hash;
         }
         return Math.abs(hash);
     }
-
-    recordVisit();
 
     return {
         discover,
         isDiscovered,
         getVisitCount,
         getSessionSeed,
-        getDailySeed
+        getDailySeed,
+        recordVisit,
     };
 }

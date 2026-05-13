@@ -1,3 +1,13 @@
+/**
+ * @module theme
+ */
+
+/**
+ * Initialize theme toggle and system-preference listener.
+ * @param {HTMLElement} html - The <html> element.
+ * @param {function(): void} eeShowSolarizedDialog - Callback for double-click easter egg.
+ * @returns {{ destroy: () => void }}
+ */
 export function initTheme(html, eeShowSolarizedDialog) {
     const storedTheme = localStorage.getItem('theme');
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -6,22 +16,39 @@ export function initTheme(html, eeShowSolarizedDialog) {
     html.setAttribute('data-theme', initialTheme);
 
     const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
-        themeToggle.addEventListener('dblclick', (e) => {
-            e.preventDefault();
-            eeShowSolarizedDialog();
-        });
+
+    function onThemeClick() {
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
     }
 
-    darkModeQuery.addEventListener('change', (e) => {
+    function onThemeDblClick(e) {
+        e.preventDefault();
+        eeShowSolarizedDialog();
+    }
+
+    function onDarkModeChange(e) {
         if (!localStorage.getItem('theme')) {
             html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
         }
-    });
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', onThemeClick);
+        themeToggle.addEventListener('dblclick', onThemeDblClick);
+    }
+
+    darkModeQuery.addEventListener('change', onDarkModeChange);
+
+    return {
+        destroy() {
+            if (themeToggle) {
+                themeToggle.removeEventListener('click', onThemeClick);
+                themeToggle.removeEventListener('dblclick', onThemeDblClick);
+            }
+            darkModeQuery.removeEventListener('change', onDarkModeChange);
+        },
+    };
 }

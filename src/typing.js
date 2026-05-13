@@ -1,9 +1,27 @@
+/**
+ * @module typing
+ */
+
+const TYPING_DELAY_MS = 40;
+const RESTART_DELAY_MS = 300;
+const TYPING_START_DELAY_MS = 600;
+const OBSERVER_THRESHOLD = 0.1;
+const OBSERVER_ROOT_MARGIN = '0px 0px -40px 0px';
+const STAGGER_BATCH_SIZE = 6;
+const STAGGER_STEP_MS = 0.08;
+
+/**
+ * Initialize the hero typing animation with intersection-observer-based visibility triggers.
+ * @param {Object} translations - Translations map.
+ * @param {function(): string} getCurrentLang - Function returning the current language code.
+ * @returns {{ restartTyping: () => void, destroy: () => void }}
+ */
 export function initTyping(translations, getCurrentLang) {
     const typingElement = document.getElementById('typingText');
     let typingIndex = 0;
-    const typingDelay = 40;
     let typingStarted = false;
     let typingTimeout = null;
+    let startDelayTimeout = null;
     const typingSubtitle = typingElement ? typingElement.closest('.hero__subtitle') : null;
 
     function getTypingText() {
@@ -35,7 +53,7 @@ export function initTyping(translations, getCurrentLang) {
         if (typingIndex < text.length) {
             typingElement.textContent = text.substring(0, typingIndex + 1);
             typingIndex++;
-            typingTimeout = setTimeout(typeNextChar, typingDelay);
+            typingTimeout = setTimeout(typeNextChar, TYPING_DELAY_MS);
         }
     }
 
@@ -48,49 +66,73 @@ export function initTyping(translations, getCurrentLang) {
         typingIndex = 0;
         typingStarted = false;
         reserveTypingHeight();
-        if (document.querySelector('.hero__subtitle.is-visible') || document.querySelector('.hero.animate-on-scroll.is-visible')) {
-            setTimeout(startTyping, 300);
+        if (
+            document.querySelector('.hero__subtitle.is-visible') ||
+            document.querySelector('.hero.animate-on-scroll.is-visible')
+        ) {
+            startDelayTimeout = setTimeout(startTyping, RESTART_DELAY_MS);
         }
     }
 
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    let observer = null;
 
     if ('IntersectionObserver' in window) {
         const delayMap = new Map();
-        animatedElements.forEach((el, i) => delayMap.set(el, i % 6));
+        let idx = 0;
+        for (const el of animatedElements) {
+            delayMap.set(el, idx % STAGGER_BATCH_SIZE);
+            idx++;
+        }
 
-        const observer = new IntersectionObserver(
+        observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
+                for (const entry of entries) {
                     if (entry.isIntersecting) {
                         const delay = delayMap.get(entry.target) || 0;
-                        entry.target.style.transitionDelay = `${delay * 0.08}s`;
+                        entry.target.style.transitionDelay = `${delay * STAGGER_STEP_MS}s`;
                         entry.target.classList.add('is-visible');
                         observer.unobserve(entry.target);
 
                         if (entry.target.querySelector('#typingText')) {
                             if (!typingStarted) {
-                                setTimeout(startTyping, 600);
+                                startDelayTimeout = setTimeout(startTyping, TYPING_START_DELAY_MS);
                             }
                         }
                     }
-                });
+                }
             },
             {
-                threshold: 0.1,
-                rootMargin: '0px 0px -40px 0px',
+                threshold: OBSERVER_THRESHOLD,
+                rootMargin: OBSERVER_ROOT_MARGIN,
             }
         );
 
-        animatedElements.forEach((el) => {
+        for (const el of animatedElements) {
             observer.observe(el);
-        });
+        }
     } else {
-        animatedElements.forEach((el) => {
+        for (const el of animatedElements) {
             el.classList.add('is-visible');
-        });
+        }
         startTyping();
     }
 
-    return { restartTyping };
+    return {
+        restartTyping,
+        destroy() {
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+            if (startDelayTimeout) {
+                clearTimeout(startDelayTimeout);
+                startDelayTimeout = null;
+            }
+            if (observer) {
+                observer.disconnect();
+                observer = null;
+            }
+        },
+    };
 }

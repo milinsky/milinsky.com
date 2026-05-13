@@ -1,34 +1,78 @@
-export function initSelectSecret(eeManager, eeT) {
+const SELECT_CHECK_DELAY_MS = 100;
+const SELECT_CHECK_MOUSE_DELAY_MS = 200;
+
+/**
+ * Discovers a hidden easter egg when the user selects secret text on the page.
+ * @param {{ eeManager: object, t: function }} ctx
+ * @returns {{ destroy(): void }}
+ */
+export function createSelectSecret(ctx) {
+    const { eeManager, t } = ctx;
+
+    const timers = [];
+    const listeners = [];
+    let destroyed = false;
+
+    function schedule(fn, delay) {
+        if (destroyed) return null;
+        const id = setTimeout(() => {
+            if (!destroyed) fn();
+        }, delay);
+        timers.push(id);
+        return id;
+    }
+
+    function listen(target, event, handler, options) {
+        target.addEventListener(event, handler, options);
+        listeners.push({ target, event, handler, options });
+    }
+
     const secretTexts = document.querySelectorAll('.ee-secret-text');
-    if (secretTexts.length === 0) return;
-    for (let si = 0; si < secretTexts.length; si++) {
-        const key = secretTexts[si].getAttribute('data-ee-key');
+    if (secretTexts.length === 0) return { destroy() {} };
+
+    for (const el of secretTexts) {
+        const key = el.getAttribute('data-ee-key');
         if (key) {
-            secretTexts[si].textContent = eeT(key);
+            el.textContent = t(key);
         }
     }
+
     let discovered = false;
+
     function checkSelection() {
         if (discovered) return;
         const sel = window.getSelection();
         if (!sel || sel.rangeCount === 0) return;
-        for (let i = 0; i < secretTexts.length; i++) {
-            if (sel.containsNode(secretTexts[i], true)) {
+        for (const el of secretTexts) {
+            if (sel.containsNode(el, true)) {
                 discovered = true;
                 eeManager.discover('ee11');
                 return;
             }
         }
     }
-    document.addEventListener('keydown', (e) => {
+
+    listen(document, 'keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-            setTimeout(checkSelection, 100);
+            schedule(checkSelection, SELECT_CHECK_DELAY_MS);
         }
     });
-    document.addEventListener('mouseup', () => {
-        setTimeout(checkSelection, 200);
+
+    listen(document, 'mouseup', () => {
+        schedule(checkSelection, SELECT_CHECK_MOUSE_DELAY_MS);
     });
-    document.addEventListener('touchend', () => {
-        setTimeout(checkSelection, 200);
+
+    listen(document, 'touchend', () => {
+        schedule(checkSelection, SELECT_CHECK_MOUSE_DELAY_MS);
     });
+
+    return {
+        destroy() {
+            destroyed = true;
+            for (const id of timers) clearTimeout(id);
+            for (const { target, event, handler, options } of listeners) {
+                target.removeEventListener(event, handler, options);
+            }
+        },
+    };
 }

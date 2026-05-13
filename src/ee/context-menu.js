@@ -1,91 +1,157 @@
-export function initContextMenu(eeManager, eeT, eeShowToast, html) {
+const DOUBLE_CLICK_THRESHOLD_MS = 500;
+const MENU_MAX_WIDTH_PX = 300;
+const MENU_MAX_HEIGHT_PX = 200;
+const LONG_PRESS_MS = 500;
+const TOUCH_MOVE_THRESHOLD_PX = 10;
+
+function seededRandom(seed) {
+    const x = Math.sin(seed + 1) * 10000;
+    return x - Math.floor(x);
+}
+
+function shuffleArray(arr, seed) {
+    const result = arr.slice();
+    let s = seed * 10000;
+    for (let i = result.length - 1; i > 0; i--) {
+        s = seededRandom(s);
+        const j = Math.floor(s * (i + 1));
+        const tmp = result[i];
+        result[i] = result[j];
+        result[j] = tmp;
+    }
+    return result;
+}
+
+/**
+ * Custom double-right-click context menu with themed items and about modal.
+ * @param {{ eeManager: object, t: function, html?: HTMLElement, showToast?: function }} ctx
+ * @returns {{ destroy(): void }}
+ */
+export function createContextMenu(ctx) {
+    const { eeManager, t, html, showToast } = ctx;
+
+    const timers = [];
+    const listeners = [];
+    let destroyed = false;
+
+    function listen(target, event, handler, options) {
+        target.addEventListener(event, handler, options);
+        listeners.push({ target, event, handler, options });
+    }
+
     let activeMenu = null;
+
     function closeEeMenu() {
         if (activeMenu) {
             activeMenu.remove();
             activeMenu = null;
         }
     }
-    function shuffleArray(arr, seed) {
-        const result = arr.slice();
-        for (let i = result.length - 1; i > 0; i--) {
-            const j = Math.floor(seed * (i + 1)) % result.length;
-            const tmp = result[i];
-            result[i] = result[j];
-            result[j] = tmp;
-        }
-        return result;
-    }
+
     function createMenu(x, y) {
         closeEeMenu();
         eeManager.discover('ee04');
         const menu = document.createElement('div');
         menu.className = 'ee-cde-menu';
-        menu.style.left = `${Math.min(x, window.innerWidth - 300)}px`;
-        menu.style.top = `${Math.min(y, window.innerHeight - 200)}px`;
+        menu.style.left = `${Math.min(x, window.innerWidth - MENU_MAX_WIDTH_PX)}px`;
+        menu.style.top = `${Math.min(y, window.innerHeight - MENU_MAX_HEIGHT_PX)}px`;
+
         const menuHeader = document.createElement('div');
         menuHeader.className = 'ee-cde-menu__header';
         menuHeader.textContent = 'MILINSKY.OS';
         menu.appendChild(menuHeader);
+
         const sep = () => {
             const s = document.createElement('div');
             s.className = 'ee-cde-menu__sep';
             menu.appendChild(s);
         };
+
         const items = [
-            { label: eeT('ee_menu_about'), action: () => {
-                closeEeMenu();
-                const overlay = document.createElement('div');
-                overlay.className = 'ee-modal-overlay';
-                const modal = document.createElement('div');
-                modal.className = 'ee-about-modal';
-                const hdr = document.createElement('div');
-                hdr.className = 'ee-about-modal__header';
-                hdr.textContent = eeT('ee_modal_title');
-                const body = document.createElement('div');
-                body.className = 'ee-about-modal__body';
-                body.innerHTML = `MILINSKY.OS v4.2.0<br>Build: 2026.05<br>Kernel: PHP 8.4+<br>Runtime: Duyler Framework<br>Uptime: ${eeManager.getVisitCount()} visits<br>Status: OPERATIONAL`;
-                const closeBtn = document.createElement('button');
-                closeBtn.className = 'ee-about-modal__close';
-                closeBtn.textContent = eeT('ee_modal_ok');
-                closeBtn.type = 'button';
-                closeBtn.addEventListener('click', () => {
-                    overlay.remove();
-                });
-                modal.appendChild(hdr);
-                modal.appendChild(body);
-                modal.appendChild(closeBtn);
-                overlay.appendChild(modal);
-                document.body.appendChild(overlay);
-                overlay.addEventListener('click', (ev) => {
-                    if (ev.target === overlay) {
-                        overlay.remove();
+            {
+                label: t('ee_menu_about'),
+                action: () => {
+                    closeEeMenu();
+                    const overlay = document.createElement('div');
+                    overlay.className = 'ee-modal-overlay';
+                    const modal = document.createElement('div');
+                    modal.className = 'ee-about-modal';
+                    const hdr = document.createElement('div');
+                    hdr.className = 'ee-about-modal__header';
+                    hdr.textContent = t('ee_modal_title');
+                    const body = document.createElement('div');
+                    body.className = 'ee-about-modal__body';
+                    const lines = [
+                        'MILINSKY.OS v4.2.0',
+                        'Build: 2026.05',
+                        'Kernel: PHP 8.4+',
+                        'Runtime: Duyler Framework',
+                        `Uptime: ${eeManager.getVisitCount()} visits`,
+                        'Status: OPERATIONAL',
+                    ];
+                    for (const line of lines) {
+                        const p = document.createElement('div');
+                        p.textContent = line;
+                        body.appendChild(p);
                     }
-                });
-            }},
-            { label: eeT('ee_menu_source'), action: () => {
-                closeEeMenu();
-                eeShowToast(eeT('ee_toast_console'), 3000);
-            }},
-            { label: eeT('ee_menu_print'), action: () => {
-                closeEeMenu();
-                window.print();
-            }},
-            { label: html.getAttribute('data-ee-theme') === 'cyberpunk' ? eeT('ee_menu_theme_off') : eeT('ee_menu_theme_on'), action: () => {
-                closeEeMenu();
-                if (html.getAttribute('data-ee-theme') === 'cyberpunk') {
-                    html.removeAttribute('data-ee-theme');
-                    eeShowToast(eeT('ee_toast_cyber_off'), 2000);
-                } else {
-                    html.setAttribute('data-ee-theme', 'cyberpunk');
-                    eeShowToast(eeT('ee_toast_cyber_on'), 2000);
-                }
-            }},
-            { label: eeT('ee_menu_exit'), action: () => {
-                closeEeMenu();
-                eeShowToast(eeT('ee_toast_exit'), 3000);
-            }}
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'ee-about-modal__close';
+                    closeBtn.textContent = t('ee_modal_ok');
+                    closeBtn.type = 'button';
+                    closeBtn.addEventListener('click', () => {
+                        overlay.remove();
+                    });
+                    modal.appendChild(hdr);
+                    modal.appendChild(body);
+                    modal.appendChild(closeBtn);
+                    overlay.appendChild(modal);
+                    document.body.appendChild(overlay);
+                    overlay.addEventListener('click', (ev) => {
+                        if (ev.target === overlay) {
+                            overlay.remove();
+                        }
+                    });
+                },
+            },
+            {
+                label: t('ee_menu_source'),
+                action: () => {
+                    closeEeMenu();
+                    showToast(t('ee_toast_console'), 3000);
+                },
+            },
+            {
+                label: t('ee_menu_print'),
+                action: () => {
+                    closeEeMenu();
+                    window.print();
+                },
+            },
+            {
+                label:
+                    html?.getAttribute('data-ee-theme') === 'cyberpunk'
+                        ? t('ee_menu_theme_off')
+                        : t('ee_menu_theme_on'),
+                action: () => {
+                    closeEeMenu();
+                    if (html?.getAttribute('data-ee-theme') === 'cyberpunk') {
+                        html.removeAttribute('data-ee-theme');
+                        showToast(t('ee_toast_cyber_off'), 2000);
+                    } else {
+                        html?.setAttribute('data-ee-theme', 'cyberpunk');
+                        showToast(t('ee_toast_cyber_on'), 2000);
+                    }
+                },
+            },
+            {
+                label: t('ee_menu_exit'),
+                action: () => {
+                    closeEeMenu();
+                    showToast(t('ee_toast_exit'), 3000);
+                },
+            },
         ];
+
         const shuffled = shuffleArray(items, eeManager.getSessionSeed());
         for (let ii = 0; ii < shuffled.length; ii++) {
             if (ii === 1 || ii === 3) sep();
@@ -95,50 +161,93 @@ export function initContextMenu(eeManager, eeT, eeShowToast, html) {
             item.addEventListener('click', shuffled[ii].action);
             menu.appendChild(item);
         }
+
         document.body.appendChild(menu);
         activeMenu = menu;
     }
-    document.addEventListener('contextmenu', (e) => {
+
+    let lastContextTime = 0;
+    listen(document, 'contextmenu', (e) => {
         if (e.target.closest('.ee-cde-menu') || e.target.closest('.ee-about-modal')) return;
-        e.preventDefault();
-        createMenu(e.clientX, e.clientY);
+        const now = Date.now();
+        if (now - lastContextTime < DOUBLE_CLICK_THRESHOLD_MS) {
+            e.preventDefault();
+            createMenu(e.clientX, e.clientY);
+            lastContextTime = 0;
+        } else {
+            lastContextTime = now;
+        }
     });
-    document.addEventListener('click', (e) => {
+
+    listen(document, 'click', (e) => {
         if (activeMenu && !activeMenu.contains(e.target)) {
             closeEeMenu();
         }
     });
-    document.addEventListener('keydown', (e) => {
+
+    listen(document, 'keydown', (e) => {
         if (e.key === 'Escape') {
             closeEeMenu();
             const overlay = document.querySelector('.ee-modal-overlay');
             if (overlay) overlay.remove();
         }
     });
+
     let longPressTimer = null;
     let longPressStart = null;
-    document.addEventListener('touchstart', (e) => {
-        const touch = e.touches[0];
-        longPressStart = { x: touch.clientX, y: touch.clientY };
-        longPressTimer = setTimeout(() => {
-            createMenu(longPressStart.x, longPressStart.y);
-            longPressStart = null;
-        }, 500);
-    }, { passive: true });
-    document.addEventListener('touchmove', (e) => {
-        if (!longPressTimer) return;
-        const touch = e.touches[0];
-        const dx = touch.clientX - longPressStart.x;
-        const dy = touch.clientY - longPressStart.y;
-        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-        }
-    }, { passive: true });
-    document.addEventListener('touchend', () => {
-        if (longPressTimer) {
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-        }
-    }, { passive: true });
+
+    listen(
+        document,
+        'touchstart',
+        (e) => {
+            const touch = e.touches[0];
+            longPressStart = { x: touch.clientX, y: touch.clientY };
+            const timerId = setTimeout(() => {
+                if (destroyed) return;
+                createMenu(longPressStart.x, longPressStart.y);
+                longPressStart = null;
+            }, LONG_PRESS_MS);
+            timers.push(timerId);
+            longPressTimer = timerId;
+        },
+        { passive: true }
+    );
+
+    listen(
+        document,
+        'touchmove',
+        (e) => {
+            if (!longPressTimer) return;
+            const touch = e.touches[0];
+            const dx = touch.clientX - longPressStart.x;
+            const dy = touch.clientY - longPressStart.y;
+            if (Math.abs(dx) > TOUCH_MOVE_THRESHOLD_PX || Math.abs(dy) > TOUCH_MOVE_THRESHOLD_PX) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        },
+        { passive: true }
+    );
+
+    listen(
+        document,
+        'touchend',
+        () => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        },
+        { passive: true }
+    );
+
+    return {
+        destroy() {
+            destroyed = true;
+            for (const id of timers) clearTimeout(id);
+            for (const { target, event, handler, options } of listeners) {
+                target.removeEventListener(event, handler, options);
+            }
+        },
+    };
 }

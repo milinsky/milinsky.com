@@ -1,83 +1,93 @@
 import { createEeManager } from './ee-manager.js';
 import { translations } from './translations.js';
 import { eeT, applyLanguage } from './i18n.js';
+import { getState, setState, subscribe } from './state.js';
 import { initTheme } from './theme.js';
 import { initNavigation } from './navigation.js';
 import { initTyping } from './typing.js';
 import { initScrollProgress } from './scroll-progress.js';
 import { initVisualEffects } from './visual-effects.js';
 import { initScrollTracking } from './scroll-tracking.js';
-import { eeShowToast } from './ee/toast.js';
-import { initConsoleDrop } from './ee/console-drop.js';
-import { initLogoReveal } from './ee/logo-reveal.js';
-import { initLogoMorph } from './ee/logo-morph.js';
-import { initContextMenu } from './ee/context-menu.js';
-import { eeShowSolarizedDialog } from './ee/solarized.js';
-import { initSelectSecret } from './ee/select-secret.js';
-import { initVisitCounter } from './ee/visit-counter.js';
-
-const eeManager = createEeManager();
-
-const eeLogoPre = document.querySelector('.nav__logo-ascii');
-let eeOriginalLogo = '';
-if (eeLogoPre) {
-    eeOriginalLogo = eeLogoPre.textContent;
-}
+import { showToast } from './utils/toast.js';
+import { createConsoleDrop } from './ee/console-drop.js';
+import { createLogoReveal } from './ee/logo-reveal.js';
+import { createLogoMorph } from './ee/logo-morph.js';
+import { createContextMenu } from './ee/context-menu.js';
+import { createSolarized } from './ee/solarized.js';
+import { createSelectSecret } from './ee/select-secret.js';
+import { createVisitCounter } from './ee/visit-counter.js';
 
 const html = document.documentElement;
-const storedLang = localStorage.getItem('lang');
-let currentLang = storedLang || 'en';
+const reducedMotion = getState('reducedMotion');
 
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const t = (key) => eeT(key, translations, getState('lang'));
 
-const boundEeT = (key) => eeT(key, translations, currentLang);
-
-initConsoleDrop(eeManager, boundEeT);
-
+const currentLang = getState('lang');
 html.setAttribute('lang', currentLang);
+applyLanguage(currentLang, translations);
 
-const boundApplyLanguage = (lang) => {
-    currentLang = lang;
+subscribe('lang', (lang) => {
+    html.setAttribute('lang', lang);
     applyLanguage(lang, translations);
-};
-boundApplyLanguage(currentLang);
-
-initLogoReveal(reducedMotion);
+});
 
 const langToggleBtn = document.getElementById('langToggle');
 if (langToggleBtn) {
     langToggleBtn.addEventListener('click', () => {
-        const nextLang = currentLang === 'en' ? 'ru' : 'en';
+        const nextLang = getState('lang') === 'en' ? 'ru' : 'en';
         localStorage.setItem('lang', nextLang);
-        boundApplyLanguage(nextLang);
-        restartTyping();
+        setState('lang', nextLang);
     });
 }
 
-initTheme(html, () => eeShowSolarizedDialog(eeManager, boundEeT));
+const cleanups = [];
 
-initNavigation();
+function safeInit(name, initFn) {
+    try {
+        const result = initFn();
+        if (result && typeof result.destroy === 'function') {
+            cleanups.push(result.destroy);
+        }
+    } catch (e) {
+        console.warn(`[init] Failed to init ${name}:`, e);
+    }
+}
 
-const { restartTyping } = initTyping(translations, () => currentLang);
+const eeManager = createEeManager();
+eeManager.recordVisit();
 
-initScrollProgress();
-
-const sectionLabels = document.querySelectorAll('.section__label[data-section]');
-initVisualEffects(sectionLabels);
-
-const sections = document.querySelectorAll('section[id]');
-initScrollTracking(sections);
-
-initLogoMorph(eeManager, {
-    logoPre: eeLogoPre,
-    originalLogo: eeOriginalLogo,
-    reducedMotion,
-    showToast: eeShowToast,
-    t: boundEeT,
+let solarized = { show() {} };
+safeInit('solarized', () => {
+    solarized = createSolarized({ eeManager, t });
+    return solarized;
 });
 
-initContextMenu(eeManager, boundEeT, eeShowToast, html);
+safeInit('theme', () => initTheme(html, () => solarized.show()));
 
-initSelectSecret(eeManager, boundEeT);
+safeInit('navigation', () => initNavigation());
 
-initVisitCounter(eeManager, boundEeT);
+safeInit('logoReveal', () => createLogoReveal({ reducedMotion }));
+
+let restartTyping = () => {};
+safeInit('typing', () => {
+    const result = initTyping(translations, () => getState('lang'));
+    restartTyping = result.restartTyping;
+    return result;
+});
+subscribe('lang', () => {
+    restartTyping();
+});
+
+safeInit('scrollProgress', () => initScrollProgress());
+
+const sectionLabels = document.querySelectorAll('.section__label[data-section]');
+safeInit('visualEffects', () => initVisualEffects(sectionLabels));
+
+const sections = document.querySelectorAll('section[id]');
+safeInit('scrollTracking', () => initScrollTracking(sections));
+
+safeInit('consoleDrop', () => createConsoleDrop({ eeManager, t }));
+safeInit('logoMorph', () => createLogoMorph({ eeManager, t, showToast, reducedMotion }));
+safeInit('contextMenu', () => createContextMenu({ eeManager, t, showToast, html }));
+safeInit('selectSecret', () => createSelectSecret({ eeManager, t }));
+safeInit('visitCounter', () => createVisitCounter({ eeManager, t }));
