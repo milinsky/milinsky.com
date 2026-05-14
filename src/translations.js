@@ -348,4 +348,321 @@ export const translations = {
         ru: 'Фреймворк Duyler — Open Source PHP-фреймворк',
     },
     ee_print_footer: { en: 'Printed from milinsky.dev', ru: 'Напечатано с milinsky.dev' },
+    ee_speedrun_recovered: {
+        en: 'SYSTEM RECOVERED. Sorry. Got thrown back to 1997.',
+        ru: 'СИСТЕМА ВОССТАНОВЛЕНА. Извините. Меня отбросило в 1997-й.',
+    },
+    ee_drag_title: { en: 'MILINSKY.OS -- Error', ru: 'MILINSKY.OS -- Ошибка' },
+    ee_drag_body: {
+        en: 'User attempted to move a system resource.\nError code: 0xC0FFEE',
+        ru: 'Пользователь попытался переместить системный ресурс.\nКод ошибки: 0xC0FFEE',
+    },
+    ee_drag_contact: { en: 'Contact', ru: 'Связаться' },
+    ee_drag_resume: { en: 'Resume', ru: 'Резюме' },
+    ee_drag_just: { en: 'Just because', ru: 'Просто так' },
+    ee_drag_response: { en: 'Continue, hooligan.', ru: 'Продолжай, хулиган.' },
+    ee_term_help: {
+        en: 'Available commands: help, sudo, exit, whoami, ls, cat, hello, secret, pineapple, rm -rf /',
+        ru: 'Доступные команды: help, sudo, exit, whoami, ls, cat, hello, secret, pineapple, rm -rf /',
+    },
+    ee_term_sudo: {
+        en: 'Nice try. Sudoers file is not configured. Try asking nicely.',
+        ru: 'Хорошая попытка. Sudoers не настроен. Попробуй попросить вежливо.',
+    },
+    ee_term_sandwich: {
+        en: 'Ok.',
+        ru: 'Ок.',
+    },
+    ee_term_exit: {
+        en: 'Are you sure? [Y/N]',
+        ru: 'Вы уверены? [Y/N]',
+    },
+    ee_term_exit_confirm: {
+        en: 'Nice try. There is no exit from MILINSKY.OS.',
+        ru: 'Хорошая попытка. Из MILINSKY.OS выхода нет.',
+    },
+    ee_term_coffee: {
+        en: 'Status: caffeine depleted.',
+        ru: 'Статус: кофеин исчерпан.',
+    },
+    ee_term_secret_prompt: {
+        en: 'Enter daily password (hint: NATO phonetic word + 3 digits):',
+        ru: 'Введите пароль дня (подсказка: слово НАТО + 3 цифры):',
+    },
+    ee_term_secret_wrong: {
+        en: 'Access denied. Wrong password.',
+        ru: 'Доступ запрещён. Неверный пароль.',
+    },
+    ee_term_secret_correct: {
+        en: 'Access granted. You know the secret.',
+        ru: 'Доступ разрешён. Ты знаешь секрет.',
+    },
+    ee_term_hello: {
+        en: "Hi! I'm not a chatbot. But I appreciate the attempt.",
+        ru: 'Привет! Я не чатбот. Но ценю попытку.',
+    },
+    ee_term_rmrf: {
+        en: 'Nice try. This is not that terminal.',
+        ru: 'Хорошая попытка. Это не тот терминал.',
+    },
+    ee_term_pineapple: {
+        en: "Pineapple on pizza: the hill I'm willing to code on.",
+        ru: 'Ананас на пицце: холм, на котором я готов кодить.',
+    },
+    ee_term_unknown: {
+        en: 'Command not found: {cmd}. Type "help" for available commands.',
+        ru: 'Команда не найдена: {cmd}. Введите "help" для списка команд.',
+    },
+    ee_konami_bios_1: {
+        en: 'MILINSKY BIOS v4.2.0\nMemory Test... 64MB OK\nLoading MILINSKY.OS...\nKernel panic - not syncing: VFS: unable to mount root fs\n\n...just kidding. You found me.',
+        ru: 'MILINSKY BIOS v4.2.0\nТест памяти... 64MB OK\nЗагрузка MILINSKY.OS...\nKernel panic - not syncing: VFS: unable to mount root fs\n\n...шутка. Ты нашёл меня.',
+    },
+    ee_konami_bios_2: {
+        en: 'MILINSKY BIOS v4.2.0\nMemory Test... 128MB OK\nBooting MILINSKY.OS...\nFATAL: coffee.dll not found\n\n...relax. Have you tried turning it off and on again?',
+        ru: 'MILINSKY BIOS v4.2.0\nТест памяти... 128MB OK\nЗагрузка MILINSKY.OS...\nFATAL: coffee.dll не найден\n\n...расслабься. Попробуй выключить и включить.',
+    },
+    ee_konami_bios_3: {
+        en: 'MILINSKY BIOS v4.2.0\nMemory Test... 256MB OK\nStarting MILINSKY.OS...\nERROR: /dev/caffeine exhausted\n\n...need more coffee. You found the Konami code though.',
+        ru: 'MILINSKY BIOS v4.2.0\nТест памяти... 256MB OK\nЗапуск MILINSKY.OS...\nОШИБКА: /dev/caffeine исчерпан\n\n...нужно больше кофе. Но ты нашёл код Konami.',
+    },
+    ee_ghost_toast: {
+        en: 'A ghost cursor appeared while you were away...',
+        ru: 'Пока тебя не было, появился призрачный курсор...',
+    },
+    ee_shake_detected: {
+        en: 'Seismic activity detected.',
+        ru: 'Обнаружена сейсмическая активность.',
+    },
+    ee_shake_permission: {
+        en: 'Tap to enable motion detection.',
+        ru: 'Нажмите для включения датчика движения.',
+    },
+    ee_bbs_connecting: {
+        en: 'ATDT 555-1337\nCONNECTING...',
+        ru: 'ATDT 555-1337\nПОДКЛЮЧЕНИЕ...',
+    },
+    ee_bbs_header: {
+        en: 'MILINSKY BBS v2.1\n(C) 1996 Milinsky SoftWorks',
+        ru: 'MILINSKY BBS v2.1\n(C) 1996 Milinsky SoftWorks',
+    },
+    ee_bbs_speed: {
+        en: 'Connected at {baud} baud.',
+        ru: 'Подключено на скорости {baud} бод.',
+    },
+    ee_bbs_menu_1: {
+        en: 'Bulletin Board',
+        ru: 'Доска объявлений',
+    },
+    ee_bbs_menu_2: {
+        en: 'File Library',
+        ru: 'Файловая библиотека',
+    },
+    ee_bbs_menu_3: {
+        en: 'Chat with SysOp',
+        ru: 'Чат с SysOp',
+    },
+    ee_bbs_menu_4: {
+        en: 'Exit',
+        ru: 'Выход',
+    },
+    ee_bbs_bulletin_content: {
+        en: 'WELCOME TO MILINSKY BBS!\n\nSysOp says: The web is a fad.\nTelnet is the future.\n\nNew files: doom_wad_pack.zip\n         doom_cheats.txt\n\nPost a message? NO CARRIER',
+        ru: 'ДОБРО ПОЖАЛОВАТЬ НА MILINSKY BBS!\n\nSysOp говорит: Веб — это хайп.\nTelnet — вот будущее.\n\nНовые файлы: doom_wad_pack.zip\n            doom_cheats.txt\n\nОставить сообщение? NO CARRIER',
+    },
+    ee_bbs_files_content: {
+        en: 'Downloading...',
+        ru: 'Загрузка...',
+    },
+    ee_bbs_chat_content: {
+        en: 'SysOp is: AWAY\n\nLast seen: 1996-12-25 03:14\nMessage: "Gone to install Red Hat 4.2"\n\nTry again later. BBS life waits for no one.',
+        ru: 'SysOp: ОТСУТСТВУЕТ\n\nПоследний раз: 1996-12-25 03:14\nСообщение: "Пошёл ставить Red Hat 4.2"\n\nПопробуйте позже. Жизнь BBS не ждёт.',
+    },
+    ee_bbs_goodbye: {
+        en: 'NO CARRIER\nGoodbye!',
+        ru: 'NO CARRIER\nДо свидания!',
+    },
+    ee_phosphor_10k_1: {
+        en: '10,000 pixels traveled. Your cursor leaves a trace.',
+        ru: '10 000 пикселей пройдено. Твой курсор оставляет след.',
+    },
+    ee_phosphor_10k_2: {
+        en: 'The phosphor remembers every path you take.',
+        ru: 'Фосфор помнит каждый твой путь.',
+    },
+    ee_phosphor_10k_3: {
+        en: 'Your mouse has earned its glow. Well traveled.',
+        ru: 'Твоя мышь заслужила своё свечение. Хорошо потрудилась.',
+    },
+    ee_ach_hunter: {
+        en: 'EASTER EGG HUNTER — {n} found',
+        ru: 'ОХОТНИК ЗА ПАСХАЛКАМИ — {n} найдено',
+    },
+    ee_ach_hunter_badge: {
+        en: 'EE HUNTER',
+        ru: 'ОХОТНИК',
+    },
+    ee_ach_badge_collapse: {
+        en: 'Collapse',
+        ru: 'Свернуть',
+    },
+    ee_ach_badge_expand: {
+        en: 'Expand',
+        ru: 'Развернуть',
+    },
+    ee_ach_perfectionist: {
+        en: 'PERFECTIONIST',
+        ru: 'ПЕРФЕКЦИОНИСТ',
+    },
+    ee_ach_panel_title: {
+        en: 'ACHIEVEMENTS',
+        ru: 'ДОСТИЖЕНИЯ',
+    },
+    ee_ach_panel_close: {
+        en: '[CLOSE]',
+        ru: '[ЗАКРЫТЬ]',
+    },
+    ee_ach_found: {
+        en: 'FOUND: {n} / {total}',
+        ru: 'НАЙДЕНО: {n} / {total}',
+    },
+    ee_ach_modal_text: {
+        en: 'You found every single easter egg. Respect.',
+        ru: 'Ты нашёл все пасхалки. Уважение.',
+    },
+    ee_ach_modal_link: {
+        en: 'Visit milinsky.dev',
+        ru: 'Перейти на milinsky.dev',
+    },
+    ee_ach_name_ee01: {
+        en: 'KONAMI CODE',
+        ru: 'КОД КОНАМИ',
+    },
+    ee_ach_name_ee02: {
+        en: 'GHOST TERMINAL',
+        ru: 'ПРИЗРАЧНЫЙ ТЕРМИНАЛ',
+    },
+    ee_ach_name_ee03: {
+        en: 'LOGO MORPH',
+        ru: 'МОРФ ЛОГОТИПА',
+    },
+    ee_ach_name_ee04: {
+        en: 'CONTEXT MENU',
+        ru: 'КОНТЕКСТНОЕ МЕНЮ',
+    },
+    ee_ach_name_ee06: {
+        en: 'CONSOLE DROP',
+        ru: 'КОНСОЛЬНЫЙ ДРОП',
+    },
+    ee_ach_name_ee08: {
+        en: 'SOURCE CODE',
+        ru: 'ИСХОДНЫЙ КОД',
+    },
+    ee_ach_name_ee09: {
+        en: 'TERMINAL PARSER',
+        ru: 'ТЕРМИНАЛЬНЫЙ ПАРСЕР',
+    },
+    ee_ach_name_ee10: {
+        en: 'THEME SPEEDRUN',
+        ru: 'СПИДРАН ТЕМЫ',
+    },
+    ee_ach_name_ee11: {
+        en: 'SECRET TEXT',
+        ru: 'СЕКРЕТНЫЙ ТЕКСТ',
+    },
+    ee_ach_name_ee12: {
+        en: 'PRINT RESUME',
+        ru: 'ПЕЧАТЬ РЕЗЮМЕ',
+    },
+    ee_ach_name_ee13: {
+        en: 'DRAG RESIST',
+        ru: 'СОПРОТИВЛЕНИЕ ПЕРЕТАСКИВАНИЮ',
+    },
+    ee_ach_name_ee14: {
+        en: 'BBS PORTAL',
+        ru: 'BBS ПОРТАЛ',
+    },
+    ee_ach_name_ee15: {
+        en: 'TIME TRAVELER',
+        ru: 'ПУТЕШЕСТВЕННИК ВО ВРЕМЕНИ',
+    },
+    ee_ach_name_ee16: {
+        en: 'VISIT COUNTER',
+        ru: 'СЧЁТЧИК ВИЗИТОВ',
+    },
+    ee_ach_name_ee19: {
+        en: 'TRIPLE CLICK',
+        ru: 'ТРОЙНОЙ КЛИК',
+    },
+    ee_ach_name_ee21: {
+        en: 'SHAKE',
+        ru: 'ВСТРЯСКА',
+    },
+    ee_ach_name_ee22: {
+        en: 'OVERSCROLL SECRET',
+        ru: 'СЕКРЕТ ПЕРЕЛИСТЫВАНИЯ',
+    },
+    ee_ach_name_ee_solarized: {
+        en: 'SOLARIZED',
+        ru: 'SOLARIZED',
+    },
+    ee_overscroll_label: {
+        en: '[ CLASSIFIED ]',
+        ru: '[ СЕКРЕТНО ]',
+    },
+    ee_overscroll_title: {
+        en: 'SECTOR 7-G',
+        ru: 'СЕКТОР 7-Г',
+    },
+    ee_overscroll_content: {
+        en: 'You found what was hidden below the fold. The page continues where no one scrolls.',
+        ru: 'Ты нашёл то, что было скрыто за нижним краем. Страница продолжается там, куда никто не скроллит.',
+    },
+    ee_overscroll_discovered: {
+        en: 'Secret sector unlocked',
+        ru: 'Секретный сектор открыт',
+    },
+    ee_overscroll_close: {
+        en: 'Close',
+        ru: 'Закрыть',
+    },
+    ee_unredacted_label_about: {
+        en: '> section_01 --unredacted',
+        ru: '> section_01 --unredacted',
+    },
+    ee_unredacted_label_services: {
+        en: '> section_02 --unredacted',
+        ru: '> section_02 --unredacted',
+    },
+    ee_unredacted_label_results: {
+        en: '> section_03 --unredacted',
+        ru: '> section_03 --unredacted',
+    },
+    ee_unredacted_label_expertise: {
+        en: '> section_04 --unredacted',
+        ru: '> section_04 --unredacted',
+    },
+    ee_unredacted_label_contact: {
+        en: '> section_05 --unredacted',
+        ru: '> section_05 --unredacted',
+    },
+    ee_unredacted_about: {
+        en: 'Honestly? I spend most of my time debugging code I wrote last week and wondering if I should switch to farming.',
+        ru: 'Честно? Я трачу большую часть времени на отладку кода, который написал на прошлой неделе, и думаю, не перейти ли в фермерство.',
+    },
+    ee_unredacted_services: {
+        en: "I will solve your problems. Some of them I created myself last sprint, but we don't talk about that.",
+        ru: 'Я решу ваши проблемы. Некоторые из них я сам создал в прошлом спринте, но мы об этом не говорим.',
+    },
+    ee_unredacted_results: {
+        en: 'These numbers are real. The tears behind them are also real. Mostly mine.',
+        ru: 'Эти цифры настоящие. Слёзы за ними тоже настоящие. В основном мои.',
+    },
+    ee_unredacted_expertise: {
+        en: 'Expertise level: can google errors faster than juniors. That counts, right?',
+        ru: 'Уровень экспертизы: могу гуглить ошибки быстрее джуниоров. Это считается, да?',
+    },
+    ee_unredacted_contact: {
+        en: "Write to me. Or don't. I'll be here either way, refactoring this very page.",
+        ru: 'Напишите мне. Или нет. Я всё равно буду здесь, рефакторить эту самую страницу.',
+    },
 };
