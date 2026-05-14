@@ -139,6 +139,7 @@
     position: relative;
     z-index: 2;
     max-width: 800px;
+    width: 100%;
     padding: var(--space-4xl) 0;
 }
 
@@ -153,15 +154,7 @@
 }
 
 .hero__subtitle {
-    font-family: var(--font-mono);
-    font-size: clamp(0.875rem, 1.5vw, 1rem);
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-top: var(--space-xl);
-    margin-bottom: var(--space-2xl);
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-sm);
+    display: none;
 }
 
 .hero__actions {
@@ -169,6 +162,7 @@
     gap: var(--space-md);
     flex-wrap: wrap;
     justify-content: center;
+    margin-top: var(--space-2xl);
 }
 
 .about__grid {

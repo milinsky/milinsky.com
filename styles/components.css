@@ -237,6 +237,9 @@
     padding: 0 var(--space-xl) var(--space-xl);
     position: relative;
     background: rgba(var(--glow-color), 0.02);
+    overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .hero__terminal-header {
@@ -328,6 +331,9 @@
 
 .typing-wrap {
     flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .cursor {
