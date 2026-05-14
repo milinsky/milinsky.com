@@ -1,4 +1,3 @@
-const DOUBLE_CLICK_THRESHOLD_MS = 500;
 const MENU_MAX_WIDTH_PX = 300;
 const MENU_MAX_HEIGHT_PX = 200;
 const LONG_PRESS_MS = 500;
@@ -209,17 +208,10 @@ export function createContextMenu(ctx) {
         activeMenu = menu;
     }
 
-    let lastContextTime = 0;
     listen(document, 'contextmenu', (e) => {
         if (e.target.closest('.ee-cde-menu') || e.target.closest('.ee-about-modal')) return;
-        const now = Date.now();
-        if (now - lastContextTime < DOUBLE_CLICK_THRESHOLD_MS) {
-            e.preventDefault();
-            createMenu(e.clientX, e.clientY);
-            lastContextTime = 0;
-        } else {
-            lastContextTime = now;
-        }
+        e.preventDefault();
+        createMenu(e.clientX, e.clientY);
     });
 
     listen(document, 'click', (e) => {

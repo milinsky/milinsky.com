@@ -174,8 +174,8 @@ describe('logo-morph', () => {
         [0.0, '/\\'],
         [0.2, 'o.o'],
         [0.4, 'PHP'],
-        [0.6, '__'],
-        [0.8, '____'],
+        [0.6, 'Duyler'],
+        [0.8, '+'],
     ])('seed %s produces art containing %s', (seed, marker) => {
         eeManager.getSessionSeed.mockReturnValue(seed);
         document.querySelector('.nav__logo-ascii').textContent = eeOriginalLogo;
@@ -221,5 +221,38 @@ describe('logo-morph', () => {
         const textAfterDestroy = eeLogoPre.textContent;
         vi.advanceTimersByTime(10000);
         expect(eeLogoPre.textContent).toBe(textAfterDestroy);
+    });
+
+    it('art 3 (Duyler logo) contains duyler text case-insensitive', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.6);
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
+        clickLogo(7, 400);
+        expect(eeLogoPre.textContent.toLowerCase()).toContain('duyler');
+    });
+
+    it('art 4 (retro computer) contains both | and + characters', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.8);
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
+        clickLogo(7, 400);
+        expect(eeLogoPre.textContent).toContain('|');
+        expect(eeLogoPre.textContent).toContain('+');
+    });
+
+    it('all 5 altArts are non-empty strings', () => {
+        for (let seed = 0; seed < 5; seed++) {
+            eeManager.getSessionSeed.mockReturnValue(seed / 5);
+            document.querySelector('.nav__logo-ascii').textContent = eeOriginalLogo;
+            const { destroy } = createLogoMorph({
+                eeManager,
+                t: vi.fn((k) => k),
+                reducedMotion: true,
+                showToast: vi.fn(),
+            });
+            clickLogo(7, 400);
+            expect(eeLogoPre.textContent).toBeTypeOf('string');
+            expect(eeLogoPre.textContent.length).toBeGreaterThan(0);
+            expect(eeLogoPre.textContent).not.toBe(eeOriginalLogo);
+            destroy();
+        }
     });
 });

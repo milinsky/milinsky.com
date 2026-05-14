@@ -56,31 +56,23 @@ describe('context-menu', () => {
         return result;
     }
 
-    function fireDoubleContextMenu(x, y) {
-        const firstEvent = new MouseEvent('contextmenu', {
+    function fireContextMenu(x, y) {
+        const event = new MouseEvent('contextmenu', {
             bubbles: true,
             cancelable: true,
             clientX: x,
             clientY: y,
         });
-        target.dispatchEvent(firstEvent);
-
-        const secondEvent = new MouseEvent('contextmenu', {
-            bubbles: true,
-            cancelable: true,
-            clientX: x,
-            clientY: y,
-        });
-        target.dispatchEvent(secondEvent);
+        target.dispatchEvent(event);
     }
 
-    it('double right-click creates menu with .ee-cde-menu class', () => {
+    it('single right-click creates menu with .ee-cde-menu class', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         expect(document.querySelector('.ee-cde-menu')).not.toBeNull();
     });
 
-    it('single right-click does not create menu', () => {
+    it('contextmenu event is prevented', () => {
         init();
         const event = new MouseEvent('contextmenu', {
             bubbles: true,
@@ -89,18 +81,18 @@ describe('context-menu', () => {
             clientY: 100,
         });
         target.dispatchEvent(event);
-        expect(document.querySelector('.ee-cde-menu')).toBeNull();
+        expect(event.defaultPrevented).toBe(true);
     });
 
     it('discover ee04 is called on menu creation', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         expect(eeManager.discover).toHaveBeenCalledWith('ee04');
     });
 
     it('menu is positioned at click coordinates', () => {
         init();
-        fireDoubleContextMenu(150, 200);
+        fireContextMenu(150, 200);
         const menu = document.querySelector('.ee-cde-menu');
         expect(menu.style.left).toBe('150px');
         expect(menu.style.top).toBe('200px');
@@ -108,7 +100,7 @@ describe('context-menu', () => {
 
     it('menu has header with MILINSKY.OS text', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const header = document.querySelector('.ee-cde-menu__header');
         expect(header).not.toBeNull();
         expect(header.textContent).toBe('MILINSKY.OS');
@@ -116,14 +108,14 @@ describe('context-menu', () => {
 
     it('menu items are shuffled - contains base items plus random', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = document.querySelectorAll('.ee-cde-menu__item');
         expect(items.length).toBe(6);
     });
 
     it('clicking outside menu closes it', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         expect(document.querySelector('.ee-cde-menu')).not.toBeNull();
         target.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: 500, clientY: 500 }));
         expect(document.querySelector('.ee-cde-menu')).toBeNull();
@@ -131,7 +123,7 @@ describe('context-menu', () => {
 
     it('Escape key closes menu', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         expect(document.querySelector('.ee-cde-menu')).not.toBeNull();
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
         expect(document.querySelector('.ee-cde-menu')).toBeNull();
@@ -174,7 +166,7 @@ describe('context-menu', () => {
 
     it('about modal opens and closes with button', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const aboutItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'About');
         aboutItem.click();
@@ -187,7 +179,7 @@ describe('context-menu', () => {
 
     it('about modal closes when clicking overlay background', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const aboutItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'About');
         aboutItem.click();
@@ -200,7 +192,7 @@ describe('context-menu', () => {
 
     it('about modal shows visit count', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const aboutItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'About');
         aboutItem.click();
@@ -210,7 +202,7 @@ describe('context-menu', () => {
 
     it('theme toggle removes cyberpunk when active', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const themeItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'Theme Off');
         themeItem.click();
@@ -221,7 +213,7 @@ describe('context-menu', () => {
     it('theme toggle adds cyberpunk when inactive', () => {
         html.removeAttribute('data-ee-theme');
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const themeItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'Theme On');
         themeItem.click();
@@ -230,7 +222,7 @@ describe('context-menu', () => {
 
     it('Escape closes about modal overlay', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const aboutItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'About');
         aboutItem.click();
@@ -243,7 +235,7 @@ describe('context-menu', () => {
         init();
         Object.defineProperty(window, 'innerWidth', { value: 200, configurable: true });
         Object.defineProperty(window, 'innerHeight', { value: 150, configurable: true });
-        fireDoubleContextMenu(500, 500);
+        fireContextMenu(500, 500);
         const menu = document.querySelector('.ee-cde-menu');
         expect(parseInt(menu.style.left)).toBeLessThanOrEqual(200 - 300);
         expect(parseInt(menu.style.top)).toBeLessThanOrEqual(150 - 200);
@@ -251,7 +243,7 @@ describe('context-menu', () => {
 
     it('exit menu item shows toast', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const exitItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'Exit');
         exitItem.click();
@@ -260,7 +252,7 @@ describe('context-menu', () => {
 
     it('source menu item shows toast', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const sourceItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'Source');
         sourceItem.click();
@@ -270,7 +262,7 @@ describe('context-menu', () => {
     it('print menu item calls window.print', () => {
         window.print = vi.fn();
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const printItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'Print');
         printItem.click();
@@ -279,12 +271,11 @@ describe('context-menu', () => {
 
     it('contextmenu inside existing menu does not create a new one', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const menu = document.querySelector('.ee-cde-menu');
         expect(menu).not.toBeNull();
 
         const menuItemCount = document.querySelectorAll('.ee-cde-menu__item').length;
-        menu.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 110, clientY: 110 }));
         menu.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 110, clientY: 110 }));
         const newMenuItemCount = document.querySelectorAll('.ee-cde-menu__item').length;
         expect(newMenuItemCount).toBe(menuItemCount);
@@ -334,20 +325,20 @@ describe('context-menu', () => {
         destroy();
         eeManager.discover.mockClear();
 
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         expect(eeManager.discover).not.toHaveBeenCalled();
     });
 
     it('menu has separator elements between items', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const seps = document.querySelectorAll('.ee-cde-menu__sep');
         expect(seps.length).toBe(2);
     });
 
     it('about modal body shows system info', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const aboutItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'About');
         aboutItem.click();
@@ -360,7 +351,7 @@ describe('context-menu', () => {
     it('theme toggle adds cyberpunk with toast', () => {
         html.removeAttribute('data-ee-theme');
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const themeItem = Array.from(document.querySelectorAll('.ee-cde-menu__item'))
             .find((el) => el.textContent === 'Theme On');
         themeItem.click();
@@ -368,29 +359,9 @@ describe('context-menu', () => {
         expect(showToast).toHaveBeenCalledWith('Cyberpunk on', 2000);
     });
 
-    it('double contextmenu with long gap only stores time', () => {
-        init();
-        const event1 = new MouseEvent('contextmenu', {
-            bubbles: true,
-            cancelable: true,
-            clientX: 100,
-            clientY: 100,
-        });
-        target.dispatchEvent(event1);
-        vi.advanceTimersByTime(600);
-        const event2 = new MouseEvent('contextmenu', {
-            bubbles: true,
-            cancelable: true,
-            clientX: 100,
-            clientY: 100,
-        });
-        target.dispatchEvent(event2);
-        expect(document.querySelector('.ee-cde-menu')).toBeNull();
-    });
-
     it('keydown with non-Escape key does not close menu', () => {
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         expect(document.querySelector('.ee-cde-menu')).not.toBeNull();
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
         expect(document.querySelector('.ee-cde-menu')).not.toBeNull();
@@ -410,7 +381,7 @@ describe('context-menu', () => {
     it('Self-destruct present when sessionSeed > 0.5', () => {
         eeManager.getSessionSeed.mockReturnValue(0.6);
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const selfDestruct = items.find((el) => el.textContent === '> Self-destruct');
         expect(selfDestruct).toBeDefined();
@@ -419,7 +390,7 @@ describe('context-menu', () => {
     it('Self-destruct absent when sessionSeed <= 0.5', () => {
         eeManager.getSessionSeed.mockReturnValue(0.5);
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const selfDestruct = items.find((el) => el.textContent === '> Self-destruct');
         expect(selfDestruct).toBeUndefined();
@@ -428,7 +399,7 @@ describe('context-menu', () => {
     it('Coffee break present when sessionSeed between 0.3 and 0.7', () => {
         eeManager.getSessionSeed.mockReturnValue(0.5);
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const coffeeBreak = items.find((el) => el.textContent === '> Coffee break');
         expect(coffeeBreak).toBeDefined();
@@ -437,7 +408,7 @@ describe('context-menu', () => {
     it('Coffee break absent when sessionSeed <= 0.3 or >= 0.7', () => {
         eeManager.getSessionSeed.mockReturnValue(0.2);
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const coffeeBreak = items.find((el) => el.textContent === '> Coffee break');
         expect(coffeeBreak).toBeUndefined();
@@ -446,7 +417,7 @@ describe('context-menu', () => {
     it('click Self-destruct sets body opacity to 0 and restores via timer', () => {
         eeManager.getSessionSeed.mockReturnValue(0.6);
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const selfDestruct = items.find((el) => el.textContent === '> Self-destruct');
         selfDestruct.click();
@@ -458,7 +429,7 @@ describe('context-menu', () => {
     it('click Coffee break calls showToast', () => {
         eeManager.getSessionSeed.mockReturnValue(0.5);
         init();
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const coffeeBreak = items.find((el) => el.textContent === '> Coffee break');
         coffeeBreak.click();
@@ -468,7 +439,7 @@ describe('context-menu', () => {
     it('Print Resume calls printResume when provided', () => {
         const mockPrintResume = vi.fn();
         createContextMenu({ eeManager, t, html, showToast, printResume: mockPrintResume });
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const printItem = items.find((el) => el.textContent === t('ee_menu_print'));
         printItem.click();
@@ -478,7 +449,7 @@ describe('context-menu', () => {
     it('Print Resume falls back to window.print when printResume not provided', () => {
         vi.spyOn(window, 'print').mockImplementation(() => {});
         createContextMenu({ eeManager, t, html, showToast });
-        fireDoubleContextMenu(100, 100);
+        fireContextMenu(100, 100);
         const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
         const printItem = items.find((el) => el.textContent === t('ee_menu_print'));
         printItem.click();

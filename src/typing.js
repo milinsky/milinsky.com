@@ -67,7 +67,7 @@ export function initTyping(translations, getCurrentLang) {
         typingStarted = false;
         reserveTypingHeight();
         if (
-            document.querySelector('.hero__subtitle.is-visible') ||
+            document.querySelector('.hero__terminal-frame.is-visible') ||
             document.querySelector('.hero.animate-on-scroll.is-visible')
         ) {
             startDelayTimeout = setTimeout(startTyping, RESTART_DELAY_MS);

@@ -197,17 +197,21 @@ describe('visit-counter', () => {
         expect(document.querySelector('.ee-visit-link')).toBeNull();
     });
 
-    it('creates .ee-visit-secret when visitCount >= 20', () => {
+    it('creates telegram link when visitCount >= 20', () => {
         eeManager.getVisitCount.mockReturnValue(20);
         createVisitCounter({ eeManager, t });
-        const secret = document.querySelector('.ee-visit-secret');
-        expect(secret).not.toBeNull();
-        expect(secret.textContent).toBe('Telegram: t.me/milinsky');
+        const links = document.querySelectorAll('.ee-visit-link');
+        expect(links.length).toBe(2);
+        const telegramLink = links[1];
+        expect(telegramLink.textContent).toBe('> Telegram: t.me/milinsky');
+        expect(telegramLink.tagName).toBe('A');
+        expect(telegramLink.href).toContain('t.me/milinsky');
     });
 
-    it('does not create .ee-visit-secret when visitCount < 20', () => {
+    it('does not create telegram link when visitCount < 20', () => {
         eeManager.getVisitCount.mockReturnValue(19);
         createVisitCounter({ eeManager, t });
-        expect(document.querySelector('.ee-visit-secret')).toBeNull();
+        const links = document.querySelectorAll('.ee-visit-link');
+        expect(links.length).toBe(1);
     });
 });

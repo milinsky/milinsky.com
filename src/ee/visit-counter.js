@@ -59,9 +59,12 @@ export function createVisitCounter(ctx) {
     }
 
     if (visitCount >= VISIT_MILESTONE_20) {
-        const secret = document.createElement('div');
-        secret.className = 'ee-visit-secret';
-        secret.textContent = 'Telegram: t.me/milinsky';
+        const secret = document.createElement('a');
+        secret.href = 'https://t.me/milinsky';
+        secret.target = '_blank';
+        secret.rel = 'noopener noreferrer';
+        secret.className = 'ee-visit-link';
+        secret.textContent = '> Telegram: t.me/milinsky';
         terminalFrame.appendChild(secret);
     }
 

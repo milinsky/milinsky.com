@@ -2,12 +2,8 @@
  * @module theme
  */
 
-/**
- * Initialize theme toggle and system-preference listener.
- * @param {HTMLElement} html - The <html> element.
- * @param {function(): void} eeShowSolarizedDialog - Callback for double-click easter egg.
- * @returns {{ destroy: () => void }}
- */
+import { setState } from './state.js';
+
 export function initTheme(html, eeShowSolarizedDialog) {
     const storedTheme = localStorage.getItem('theme');
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -22,6 +18,7 @@ export function initTheme(html, eeShowSolarizedDialog) {
         const next = current === 'dark' ? 'light' : 'dark';
         html.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
+        setState('theme', next);
     }
 
     function onThemeDblClick(e) {
