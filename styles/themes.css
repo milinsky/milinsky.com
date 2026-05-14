@@ -68,3 +68,92 @@
 [data-theme="light"] .theme-toggle__icon--sun {
     display: none;
 }
+
+@media print {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    body {
+        background: #fff;
+        color: #000;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 11pt;
+    }
+
+    .header,
+    .footer,
+    .crt-noise,
+    .scroll-progress,
+    .scroll-status,
+    .ee-secret-text,
+    .section__label,
+    .noise-overlay,
+    .hero__badge,
+    .hero__terminal-header,
+    .hero__terminal-controls,
+    .hero__actions,
+    .lang-toggle,
+    .theme-toggle,
+    .nav__burger,
+    .nav__list,
+    .hero__grid-bg,
+    .hero__terminal-frame,
+    .contact__visual {
+        display: none !important;
+    }
+
+    .accent-text {
+        color: #333;
+        text-shadow: none;
+    }
+
+    a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    .hero__title {
+        font-size: 24pt;
+        text-align: center;
+        border-bottom: 2px solid #333;
+        padding-bottom: 8pt;
+        margin-bottom: 16pt;
+        text-shadow: none;
+    }
+
+    .hero__subtitle {
+        text-align: center;
+        font-size: 10pt;
+        margin-bottom: 16pt;
+    }
+
+    .section {
+        page-break-inside: avoid;
+        margin-bottom: 15pt;
+    }
+
+    .section__title {
+        font-size: 14pt;
+        border-bottom: 1px solid #999;
+        padding-bottom: 4pt;
+        text-shadow: none;
+    }
+
+    .contact__methods {
+        text-align: center;
+        font-size: 10pt;
+    }
+
+    .footer::after {
+        content: 'Printed from milinsky.dev';
+        text-align: center;
+        font-size: 9pt;
+        color: #999;
+        display: block;
+        margin-top: 20pt;
+    }
+}
