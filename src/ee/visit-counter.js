@@ -42,9 +42,28 @@ export function createVisitCounter(ctx) {
         msg = t('ee_visit_2').replace('#N', String(visitCount));
     }
 
+    if (!eeManager.isDiscovered('ee16')) {
+        eeManager.discover('ee16');
+    }
+
     const msgEl = document.createElement('div');
     msgEl.className = 'ee-visit-msg';
     terminalFrame.appendChild(msgEl);
+
+    if (visitCount >= VISIT_MILESTONE_10) {
+        const link = document.createElement('a');
+        link.href = 'mailto:hello@milinsky.com';
+        link.className = 'ee-visit-link';
+        link.textContent = '> direct_contact';
+        terminalFrame.appendChild(link);
+    }
+
+    if (visitCount >= VISIT_MILESTONE_20) {
+        const secret = document.createElement('div');
+        secret.className = 'ee-visit-secret';
+        secret.textContent = 'Telegram: t.me/milinsky';
+        terminalFrame.appendChild(secret);
+    }
 
     let idx = 0;
 

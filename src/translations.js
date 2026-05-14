@@ -188,16 +188,16 @@ export const translations = {
         ru: 'Ты нашёл одну. Продолжай искать.',
     },
     ee_select_1: {
-        en: 'You found invisible text.',
-        ru: 'Ты нашёл невидимый текст.',
+        en: 'You found invisible text. In the early web',
+        ru: 'Ты нашёл невидимый текст. В раннем вебе',
     },
     ee_select_2: {
-        en: 'In the early web we hid messages in font color=background.',
-        ru: 'В раннем вебе мы прятали сообщения в font color=background.',
+        en: 'we hid messages in font color=background.',
+        ru: 'мы прятали сообщения в font color=background.',
     },
     ee_select_3: {
-        en: 'Some things never change.',
-        ru: 'Кое-что никогда не меняется.',
+        en: 'Some things never change. Keep looking.',
+        ru: 'Кое-что никогда не меняется. Продолжай искать.',
     },
     ee_select_promo: {
         en: 'Secret text discovered. There is more hidden here.',
@@ -299,4 +299,53 @@ export const translations = {
         en: 'You have been here #N times. Secret: persistence is the ultimate skill.',
         ru: 'Ты был здесь #N раз. Секрет: упорство — главный навык.',
     },
+    ee_print_role: { en: 'AI Specialist / PHP Developer', ru: 'AI-специалист / PHP-разработчик' },
+    ee_print_experience_heading: { en: 'EXPERIENCE', ru: 'ОПЫТ' },
+    ee_print_exp1: {
+        en: '9+ years of commercial PHP development',
+        ru: '9+ лет коммерческой PHP-разработки',
+    },
+    ee_print_exp2: {
+        en: 'AI/LLM integration into business processes',
+        ru: 'Интеграция AI/LLM в бизнес-процессы',
+    },
+    ee_print_exp3: {
+        en: 'Technical leadership and team mentoring',
+        ru: 'Техническое лидерство и менторство команды',
+    },
+    ee_print_services_heading: { en: 'SERVICES', ru: 'УСЛУГИ' },
+    ee_print_svc1: {
+        en: 'AI Integration — LLM, RAG, Prompt Engineering',
+        ru: 'AI-интеграция — LLM, RAG, Prompt Engineering',
+    },
+    ee_print_svc2: {
+        en: 'PHP/Symfony — High-load systems',
+        ru: 'PHP/Symfony — Высоконагруженные системы',
+    },
+    ee_print_svc3: {
+        en: 'Enterprise Solutions — Full-Stack, Architecture',
+        ru: 'Корпоративные решения — Full-Stack, Архитектура',
+    },
+    ee_print_svc4: {
+        en: 'AI Training — Workshops, Team productivity',
+        ru: 'Обучение AI — Воркшопы, Продуктивность команды',
+    },
+    ee_print_results_heading: { en: 'KEY RESULTS', ru: 'КЛЮЧЕВЫЕ РЕЗУЛЬТАТЫ' },
+    ee_print_res1: {
+        en: '+30% delivery speed — Broadcasting services',
+        ru: '+30% скорость доставки — Сервисы рассылок',
+    },
+    ee_print_res2: {
+        en: 'VoIP Integration — Telephony providers',
+        ru: 'Интеграция VoIP — Провайдеры телефонии',
+    },
+    ee_print_res3: {
+        en: 'AI System — Call center operator assistance',
+        ru: 'AI-система — Помощник операторов call-центра',
+    },
+    ee_print_res4: {
+        en: 'Duyler Framework — Open Source PHP framework',
+        ru: 'Фреймворк Duyler — Open Source PHP-фреймворк',
+    },
+    ee_print_footer: { en: 'Printed from milinsky.dev', ru: 'Напечатано с milinsky.dev' },
 };

@@ -36,6 +36,7 @@ const mockCreateSolarized = vi.fn(() => ({
 }));
 const mockCreateSelectSecret = vi.fn(() => ({ destroy: vi.fn() }));
 const mockCreateVisitCounter = vi.fn(() => ({ destroy: vi.fn() }));
+const mockCreatePrintResume = vi.fn(() => ({ destroy: vi.fn(), printResume: vi.fn() }));
 
 vi.mock('../src/ee-manager.js', () => ({
     createEeManager: mockCreateEeManager,
@@ -76,7 +77,7 @@ vi.mock('../src/utils/toast.js', () => ({
 vi.mock('../src/ee/console-drop.js', () => ({
     createConsoleDrop: mockCreateConsoleDrop,
 }));
-vi.mock('../src/ee/logo-reveal.js', () => ({
+vi.mock('../src/logo-reveal.js', () => ({
     createLogoReveal: mockCreateLogoReveal,
 }));
 vi.mock('../src/ee/logo-morph.js', () => ({
@@ -93,6 +94,9 @@ vi.mock('../src/ee/select-secret.js', () => ({
 }));
 vi.mock('../src/ee/visit-counter.js', () => ({
     createVisitCounter: mockCreateVisitCounter,
+}));
+vi.mock('../src/ee/print-resume.js', () => ({
+    createPrintResume: mockCreatePrintResume,
 }));
 
 function setupDOM() {
@@ -311,6 +315,7 @@ describe('main.js', () => {
             t: expect.any(Function),
             showToast: mockShowToast,
             html: document.documentElement,
+            printResume: expect.any(Function),
         });
     });
 

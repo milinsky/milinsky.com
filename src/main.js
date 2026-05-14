@@ -10,12 +10,13 @@ import { initVisualEffects } from './visual-effects.js';
 import { initScrollTracking } from './scroll-tracking.js';
 import { showToast } from './utils/toast.js';
 import { createConsoleDrop } from './ee/console-drop.js';
-import { createLogoReveal } from './ee/logo-reveal.js';
+import { createLogoReveal } from './logo-reveal.js';
 import { createLogoMorph } from './ee/logo-morph.js';
 import { createContextMenu } from './ee/context-menu.js';
 import { createSolarized } from './ee/solarized.js';
 import { createSelectSecret } from './ee/select-secret.js';
 import { createVisitCounter } from './ee/visit-counter.js';
+import { createPrintResume } from './ee/print-resume.js';
 
 const html = document.documentElement;
 const reducedMotion = getState('reducedMotion');
@@ -88,6 +89,14 @@ safeInit('scrollTracking', () => initScrollTracking(sections));
 
 safeInit('consoleDrop', () => createConsoleDrop({ eeManager, t }));
 safeInit('logoMorph', () => createLogoMorph({ eeManager, t, showToast, reducedMotion }));
-safeInit('contextMenu', () => createContextMenu({ eeManager, t, showToast, html }));
+
+let printResumeFn = null;
+safeInit('printResume', () => {
+    const pr = createPrintResume({ eeManager, t });
+    printResumeFn = pr.printResume;
+    return pr;
+});
+
+safeInit('contextMenu', () => createContextMenu({ eeManager, t, showToast, html, printResume: printResumeFn }));
 safeInit('selectSecret', () => createSelectSecret({ eeManager, t }));
 safeInit('visitCounter', () => createVisitCounter({ eeManager, t }));

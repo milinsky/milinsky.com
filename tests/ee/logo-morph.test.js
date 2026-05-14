@@ -49,16 +49,34 @@ describe('logo-morph', () => {
         expect(() => createLogoMorph({ eeManager, t: vi.fn((k) => k) })).not.toThrow();
     });
 
-    it('7 clicks within 3.5s triggers morph and discovers ee03', () => {
+    it('7 fast clicks with gap < 500ms triggers morph and discovers ee03', () => {
         createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 400);
         expect(eeManager.discover).toHaveBeenCalledWith('ee03');
     });
 
-    it('slow clicks do NOT trigger morph', () => {
+    it('7 slow clicks with gap >= 500ms do NOT trigger morph', () => {
         createLogoMorph({ eeManager, t: vi.fn((k) => k) });
         clickLogo(7, 600);
         expect(eeManager.discover).not.toHaveBeenCalled();
+    });
+
+    it('6 fast + 1 slow click (gap >= 500ms) do NOT trigger morph', () => {
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
+        const logoLink = document.querySelector('.nav__logo');
+        for (let i = 0; i < 6; i++) {
+            logoLink.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+            vi.advanceTimersByTime(400);
+        }
+        vi.advanceTimersByTime(600);
+        logoLink.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        expect(eeManager.discover).not.toHaveBeenCalled();
+    });
+
+    it('7 clicks with exactly 499ms gap triggers morph', () => {
+        createLogoMorph({ eeManager, t: vi.fn((k) => k) });
+        clickLogo(7, 499);
+        expect(eeManager.discover).toHaveBeenCalledWith('ee03');
     });
 
     it('6 clicks do NOT trigger morph', () => {
@@ -131,6 +149,39 @@ describe('logo-morph', () => {
         clickLogo(7, 400);
         const firstArt = eeLogoPre.textContent;
         expect(firstArt).not.toBe(eeOriginalLogo);
+    });
+
+    it('altArts has exactly 5 elements (verified via session seed indices)', () => {
+        const arts = [];
+        for (let seed = 0; seed < 5; seed++) {
+            eeManager.getSessionSeed.mockReturnValue(seed / 5);
+            document.querySelector('.nav__logo-ascii').textContent = eeOriginalLogo;
+            const { destroy } = createLogoMorph({
+                eeManager,
+                t: vi.fn((k) => k),
+                reducedMotion: true,
+                showToast: vi.fn(),
+            });
+            clickLogo(7, 400);
+            arts.push(eeLogoPre.textContent);
+            destroy();
+        }
+        const unique = [...new Set(arts)];
+        expect(unique.length).toBe(5);
+    });
+
+    it.each([
+        [0.0, '/\\'],
+        [0.2, 'o.o'],
+        [0.4, 'PHP'],
+        [0.6, '__'],
+        [0.8, '____'],
+    ])('seed %s produces art containing %s', (seed, marker) => {
+        eeManager.getSessionSeed.mockReturnValue(seed);
+        document.querySelector('.nav__logo-ascii').textContent = eeOriginalLogo;
+        createLogoMorph({ eeManager, t: vi.fn((k) => k), reducedMotion: true, showToast: vi.fn() });
+        clickLogo(7, 400);
+        expect(eeLogoPre.textContent).toContain(marker);
     });
 
     it('shifts clicks when more than 7 slow clicks accumulate', () => {

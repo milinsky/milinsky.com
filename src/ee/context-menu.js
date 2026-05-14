@@ -3,6 +3,11 @@ const MENU_MAX_WIDTH_PX = 300;
 const MENU_MAX_HEIGHT_PX = 200;
 const LONG_PRESS_MS = 500;
 const TOUCH_MOVE_THRESHOLD_PX = 10;
+const SEED_SELF_DESTRUCT_THRESHOLD = 0.5;
+const SEED_COFFEE_MIN = 0.3;
+const SEED_COFFEE_MAX = 0.7;
+const SELF_DESTRUCT_RESTORE_MS = 2000;
+const COFFEE_TOAST_MS = 5000;
 
 function seededRandom(seed) {
     const x = Math.sin(seed + 1) * 10000;
@@ -28,7 +33,7 @@ function shuffleArray(arr, seed) {
  * @returns {{ destroy(): void }}
  */
 export function createContextMenu(ctx) {
-    const { eeManager, t, html, showToast } = ctx;
+    const { eeManager, t, html, showToast, printResume } = ctx;
 
     const timers = [];
     const listeners = [];
@@ -37,6 +42,15 @@ export function createContextMenu(ctx) {
     function listen(target, event, handler, options) {
         target.addEventListener(event, handler, options);
         listeners.push({ target, event, handler, options });
+    }
+
+    function schedule(fn, delay) {
+        if (destroyed) return null;
+        const id = setTimeout(() => {
+            if (!destroyed) fn();
+        }, delay);
+        timers.push(id);
+        return id;
     }
 
     let activeMenu = null;
@@ -124,7 +138,11 @@ export function createContextMenu(ctx) {
                 label: t('ee_menu_print'),
                 action: () => {
                     closeEeMenu();
-                    window.print();
+                    if (printResume) {
+                        printResume();
+                    } else {
+                        window.print();
+                    }
                 },
             },
             {
@@ -151,6 +169,31 @@ export function createContextMenu(ctx) {
                 },
             },
         ];
+
+        const sessionSeed = eeManager.getSessionSeed();
+
+        if (sessionSeed > SEED_SELF_DESTRUCT_THRESHOLD) {
+            items.push({
+                label: '> Self-destruct',
+                action: () => {
+                    closeEeMenu();
+                    document.body.style.opacity = '0';
+                    schedule(() => {
+                        document.body.style.opacity = '1';
+                    }, SELF_DESTRUCT_RESTORE_MS);
+                },
+            });
+        }
+
+        if (sessionSeed > SEED_COFFEE_MIN && sessionSeed < SEED_COFFEE_MAX) {
+            items.push({
+                label: '> Coffee break',
+                action: () => {
+                    closeEeMenu();
+                    showToast('(\\\n  \\)_  coffee\n   |_(\n', COFFEE_TOAST_MS);
+                },
+            });
+        }
 
         const shuffled = shuffleArray(items, eeManager.getSessionSeed());
         for (let ii = 0; ii < shuffled.length; ii++) {

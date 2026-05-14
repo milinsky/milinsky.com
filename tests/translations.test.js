@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { translations } from '../src/translations.js';
 
-const EXPECTED_KEY_COUNT = 96;
+const EXPECTED_KEY_COUNT = 112;
 const REQUIRED_LANGS = ['en', 'ru'];
 const CRITICAL_KEYS = [
     'hero_typing',
@@ -21,7 +21,12 @@ const EASTER_EGG_KEYS = [
     'ee_visit_10',
     'ee_visit_20',
     'ee_select_promo',
+    'ee_select_1',
+    'ee_select_2',
+    'ee_select_3',
 ];
+
+const SELECT_POEM_KEYS = ['ee_select_1', 'ee_select_2', 'ee_select_3'];
 
 describe('translations', () => {
     it('exports an object', () => {
@@ -72,5 +77,31 @@ describe('translations', () => {
         for (const key of EASTER_EGG_KEYS) {
             expect(translations).toHaveProperty(key);
         }
+    });
+
+    it('ee_select_1/2/3 form a connected poem in en', () => {
+        for (const key of SELECT_POEM_KEYS) {
+            expect(translations[key]).toHaveProperty('en');
+            expect(translations[key].en.length).toBeGreaterThan(0);
+        }
+        const poem = SELECT_POEM_KEYS.map((k) => translations[k].en).join(' ');
+        expect(poem).toContain('invisible text');
+        expect(poem).toContain('early web');
+        expect(poem).toContain('font color=background');
+        expect(poem).toContain('never change');
+        expect(poem).toContain('Keep looking');
+    });
+
+    it('ee_select_1/2/3 form a connected poem in ru', () => {
+        for (const key of SELECT_POEM_KEYS) {
+            expect(translations[key]).toHaveProperty('ru');
+            expect(translations[key].ru.length).toBeGreaterThan(0);
+        }
+        const poem = SELECT_POEM_KEYS.map((k) => translations[k].ru).join(' ');
+        expect(poem).toContain('невидимый текст');
+        expect(poem).toContain('раннем вебе');
+        expect(poem).toContain('font color=background');
+        expect(poem).toContain('никогда не меняется');
+        expect(poem).toContain('Продолжай искать');
     });
 });

@@ -1,5 +1,5 @@
 const MAX_CLICKS = 7;
-const CLICK_SPAN_MS = 3500;
+const CLICK_GAP_MS = 500;
 const MATRIX_CELL_SIZE_PX = 20;
 const MATRIX_CHAR_MIN = 10;
 const MATRIX_CHAR_RANGE = 20;
@@ -41,11 +41,11 @@ export function createLogoMorph(ctx) {
     if (!logoLink || !logoPre) return { destroy() {} };
 
     const altArts = [
-        '     /\\\n    /  \\\n   | ** |\n   | PHP|\n   | ** |\n  /| .. |\\\n / +----+ \\',
+        '    /\\\n   /  \\\n  | ** |\n  | -> |\n /| ~~ |\\\n/_|____|_\\\n  |    |',
         ' /\\_/\\\n( o.o )\n > ^ <\n/|   |\\\n(_|   |_)',
-        '   ____\n  / _  \\\n | (_   |\n |  _)  |\n | |    |\n \\_____/',
-        ' ________\n|  ____. |\n| |    | |\n| |____| |\n|________|\n   |  |',
-        '   ____\n  |  _ \\\n  | | | |\n  | |_| |\n  |  _  /\n  |_| \\_\\',
+        '     /\\\n    /  \\\n   | ** |\n   | PHP|\n   | ** |\n  /| .. |\\\n / +----+ \\',
+        '  ____  _\n |  _ \\(_)\n | | | |_  __ _\n | |_| | |/ _` |\n |  __/| | (_| |\n |_|   |_|\\__, |\n           __/ |\n          |___/',
+        '  _________\n |  ______ |\n | |      ||\n | |>>>>>>||\n | |______||\n |_________|\n   |_____|\n   |_____|',
     ];
 
     let clicks = [];
@@ -59,8 +59,7 @@ export function createLogoMorph(ctx) {
             clicks.shift();
         }
         if (clicks.length === MAX_CLICKS) {
-            const span = clicks[MAX_CLICKS - 1] - clicks[0];
-            if (span < CLICK_SPAN_MS) {
+            if (clicks.every((t, i) => i === 0 || t - clicks[i - 1] < CLICK_GAP_MS)) {
                 clicks = [];
                 morphActive = true;
                 eeManager.discover('ee03');

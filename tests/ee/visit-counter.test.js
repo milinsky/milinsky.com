@@ -15,6 +15,8 @@ describe('visit-counter', () => {
 
         eeManager = {
             getVisitCount: vi.fn(),
+            isDiscovered: vi.fn().mockReturnValue(false),
+            discover: vi.fn(),
         };
         t = vi.fn((key) => {
             const map = {
@@ -165,5 +167,47 @@ describe('visit-counter', () => {
         const msgEl = document.querySelector('.ee-visit-msg');
         vi.advanceTimersByTime(10000);
         expect(msgEl.textContent).toContain('You really like this place!');
+    });
+
+    it('calls eeManager.discover with ee16 on first message show', () => {
+        eeManager.getVisitCount.mockReturnValue(2);
+        createVisitCounter({ eeManager, t });
+        expect(eeManager.discover).toHaveBeenCalledWith('ee16');
+    });
+
+    it('does not call discover if already discovered', () => {
+        eeManager.isDiscovered.mockReturnValue(true);
+        eeManager.getVisitCount.mockReturnValue(2);
+        createVisitCounter({ eeManager, t });
+        expect(eeManager.discover).not.toHaveBeenCalled();
+    });
+
+    it('creates .ee-visit-link when visitCount >= 10', () => {
+        eeManager.getVisitCount.mockReturnValue(10);
+        createVisitCounter({ eeManager, t });
+        const link = document.querySelector('.ee-visit-link');
+        expect(link).not.toBeNull();
+        expect(link.href).toBe('mailto:hello@milinsky.com');
+        expect(link.textContent).toBe('> direct_contact');
+    });
+
+    it('does not create .ee-visit-link when visitCount < 10', () => {
+        eeManager.getVisitCount.mockReturnValue(9);
+        createVisitCounter({ eeManager, t });
+        expect(document.querySelector('.ee-visit-link')).toBeNull();
+    });
+
+    it('creates .ee-visit-secret when visitCount >= 20', () => {
+        eeManager.getVisitCount.mockReturnValue(20);
+        createVisitCounter({ eeManager, t });
+        const secret = document.querySelector('.ee-visit-secret');
+        expect(secret).not.toBeNull();
+        expect(secret.textContent).toBe('Telegram: t.me/milinsky');
+    });
+
+    it('does not create .ee-visit-secret when visitCount < 20', () => {
+        eeManager.getVisitCount.mockReturnValue(19);
+        createVisitCounter({ eeManager, t });
+        expect(document.querySelector('.ee-visit-secret')).toBeNull();
     });
 });

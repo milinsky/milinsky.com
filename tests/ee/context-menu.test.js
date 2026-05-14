@@ -114,11 +114,11 @@ describe('context-menu', () => {
         expect(header.textContent).toBe('MILINSKY.OS');
     });
 
-    it('menu items are shuffled - contains 5 items', () => {
+    it('menu items are shuffled - contains base items plus random', () => {
         init();
         fireDoubleContextMenu(100, 100);
         const items = document.querySelectorAll('.ee-cde-menu__item');
-        expect(items.length).toBe(5);
+        expect(items.length).toBe(6);
     });
 
     it('clicking outside menu closes it', () => {
@@ -405,5 +405,83 @@ describe('context-menu', () => {
         destroy();
         vi.advanceTimersByTime(500);
         expect(document.querySelector('.ee-cde-menu')).toBeNull();
+    });
+
+    it('Self-destruct present when sessionSeed > 0.5', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.6);
+        init();
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const selfDestruct = items.find((el) => el.textContent === '> Self-destruct');
+        expect(selfDestruct).toBeDefined();
+    });
+
+    it('Self-destruct absent when sessionSeed <= 0.5', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.5);
+        init();
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const selfDestruct = items.find((el) => el.textContent === '> Self-destruct');
+        expect(selfDestruct).toBeUndefined();
+    });
+
+    it('Coffee break present when sessionSeed between 0.3 and 0.7', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.5);
+        init();
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const coffeeBreak = items.find((el) => el.textContent === '> Coffee break');
+        expect(coffeeBreak).toBeDefined();
+    });
+
+    it('Coffee break absent when sessionSeed <= 0.3 or >= 0.7', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.2);
+        init();
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const coffeeBreak = items.find((el) => el.textContent === '> Coffee break');
+        expect(coffeeBreak).toBeUndefined();
+    });
+
+    it('click Self-destruct sets body opacity to 0 and restores via timer', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.6);
+        init();
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const selfDestruct = items.find((el) => el.textContent === '> Self-destruct');
+        selfDestruct.click();
+        expect(document.body.style.opacity).toBe('0');
+        vi.advanceTimersByTime(2000);
+        expect(document.body.style.opacity).toBe('1');
+    });
+
+    it('click Coffee break calls showToast', () => {
+        eeManager.getSessionSeed.mockReturnValue(0.5);
+        init();
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const coffeeBreak = items.find((el) => el.textContent === '> Coffee break');
+        coffeeBreak.click();
+        expect(showToast).toHaveBeenCalledWith('(\\\n  \\)_  coffee\n   |_(\n', 5000);
+    });
+
+    it('Print Resume calls printResume when provided', () => {
+        const mockPrintResume = vi.fn();
+        createContextMenu({ eeManager, t, html, showToast, printResume: mockPrintResume });
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const printItem = items.find((el) => el.textContent === t('ee_menu_print'));
+        printItem.click();
+        expect(mockPrintResume).toHaveBeenCalledOnce();
+    });
+
+    it('Print Resume falls back to window.print when printResume not provided', () => {
+        vi.spyOn(window, 'print').mockImplementation(() => {});
+        createContextMenu({ eeManager, t, html, showToast });
+        fireDoubleContextMenu(100, 100);
+        const items = Array.from(document.querySelectorAll('.ee-cde-menu__item'));
+        const printItem = items.find((el) => el.textContent === t('ee_menu_print'));
+        printItem.click();
+        expect(window.print).toHaveBeenCalled();
     });
 });

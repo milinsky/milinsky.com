@@ -169,6 +169,32 @@
     margin-top: var(--space-sm);
 }
 
+.ee-visit-link {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: var(--space-sm);
+}
+
+.ee-visit-link:hover {
+    text-decoration: underline;
+}
+
+.ee-visit-secret {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--accent);
+    margin-top: var(--space-sm);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .ee-visit-secret {
+        animation: blink 1s step-end infinite;
+    }
+}
+
 .ee-solarized-overlay {
     position: fixed;
     inset: 0;
@@ -313,4 +339,80 @@
     text-align: center;
     margin-top: var(--space-md);
     min-height: 1.4em;
+}
+
+@media print {
+    body.ee-printing > *:not(.ee-print-resume) {
+        display: none !important;
+    }
+
+    .ee-print-resume {
+        display: block !important;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        color: #000;
+        background: #fff;
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        font-size: 11pt;
+        line-height: 1.6;
+    }
+
+    .ee-print-resume__name {
+        font-size: 24pt;
+        font-weight: 700;
+        margin: 0 0 4px;
+        letter-spacing: 0.1em;
+        text-align: center;
+    }
+
+    .ee-print-resume__role {
+        font-size: 12pt;
+        text-align: center;
+        margin: 0 0 8px;
+        color: #333;
+    }
+
+    .ee-print-resume__contact {
+        font-size: 10pt;
+        text-align: center;
+        margin: 0 0 16px;
+        color: #555;
+    }
+
+    .ee-print-resume__divider {
+        border: none;
+        border-top: 1px solid #999;
+        margin: 12px 0;
+    }
+
+    .ee-print-resume__heading {
+        font-size: 12pt;
+        font-weight: 700;
+        margin: 0 0 6px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border-bottom: 2px solid #333;
+        padding-bottom: 2px;
+    }
+
+    .ee-print-resume__line {
+        margin: 2px 0;
+        padding-left: 16px;
+        position: relative;
+    }
+
+    .ee-print-resume__line::before {
+        content: '>';
+        position: absolute;
+        left: 0;
+        color: #999;
+    }
+
+    .ee-print-resume__footer {
+        font-size: 8pt;
+        color: #999;
+        text-align: center;
+        margin-top: 24px;
+    }
 }

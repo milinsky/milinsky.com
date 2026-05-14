@@ -233,4 +233,38 @@ describe('select-secret', () => {
 
         expect(eeManager.discover.mock.calls.length).toBe(beforeDiscoverCount);
     });
+
+    it('shows updated poem text via t() for ee_select_1/2/3', () => {
+        createSecretElement('ee_select_1');
+        createSecretElement('ee_select_2');
+        createSecretElement('ee_select_3');
+
+        createSelectSecret({ eeManager, t });
+
+        const elements = document.querySelectorAll('.ee-secret-text');
+        expect(elements[0].textContent).toBe('translated_ee_select_1');
+        expect(elements[1].textContent).toBe('translated_ee_select_2');
+        expect(elements[2].textContent).toBe('translated_ee_select_3');
+    });
+
+    it('uses correct language when t switches locale', () => {
+        const el1 = createSecretElement('ee_select_1');
+        const el2 = createSecretElement('ee_select_2');
+        const el3 = createSecretElement('ee_select_3');
+
+        t = vi.fn((key) => {
+            const ru = {
+                ee_select_1: 'Ты нашёл невидимый текст. В раннем вебе',
+                ee_select_2: 'мы прятали сообщения в font color=background.',
+                ee_select_3: 'Кое-что никогда не меняется. Продолжай искать.',
+            };
+            return ru[key] ?? key;
+        });
+
+        createSelectSecret({ eeManager, t });
+
+        expect(el1.textContent).toBe('Ты нашёл невидимый текст. В раннем вебе');
+        expect(el2.textContent).toBe('мы прятали сообщения в font color=background.');
+        expect(el3.textContent).toBe('Кое-что никогда не меняется. Продолжай искать.');
+    });
 });

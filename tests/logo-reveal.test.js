@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createLogoReveal } from '../../src/ee/logo-reveal.js';
+import { createLogoReveal } from '../src/logo-reveal.js';
 
 function createLogoPre(text) {
     const pre = document.createElement('pre');
