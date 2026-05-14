@@ -63,6 +63,19 @@ Completion Criteria
 - Linter reports zero errors
 - Output `COMPLETE` only when EVERYTHING has been verified
 
+## Must-read
+
+**Rules**:
+
+.ai/guides/architecture.md
+
+.ai/guides/code-style.md
+
+.ai/guides/testing.md
+
+.ai/guides/violations.md
+
+
 ## Commands
 
 ```bash
