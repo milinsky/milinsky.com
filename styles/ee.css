@@ -1126,7 +1126,7 @@ html.ee-time-anomaly {
 .neofetch-grid {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 0 var(--space-xl);
+    gap: 0 var(--space-sm);
     margin-top: var(--space-xs);
 }
 

@@ -1,4 +1,5 @@
 import { getDailyPassword, formatSessionId } from './utils.js';
+import { createNeofetchElement } from '../neofetch.js';
 
 const SANDWICH_ART = [
     '   /*\\     ',
@@ -20,16 +21,17 @@ export function createCommands(t, sessionSeed) {
     function cmdHelp() {
         const lines = [
             'Available commands:',
-            '  help     - Show this message',
-            '  sudo     - Try elevated access',
-            '  exit     - Exit terminal',
-            '  whoami   - Who are you?',
-            '  ls       - List files',
-            '  cat      - Read a file',
-            '  hello    - Say hi',
-            '  secret   - Enter a password',
+            '  help      - Show this message',
+            '  sudo      - Try elevated access',
+            '  exit      - Exit terminal',
+            '  whoami    - Who are you?',
+            '  ls        - List files',
+            '  cat       - Read a file',
+            '  hello     - Say hi',
+            '  secret    - Enter a password',
             '  pineapple - Hot take',
-            '  rm -rf / - Try it',
+            '  neofetch  - System info',
+            '  rm -rf /  - Try it',
             '',
             '  ~~secret~~',
         ];
@@ -111,6 +113,10 @@ export function createCommands(t, sessionSeed) {
         return { text: t('ee_term_pineapple'), discover: true };
     }
 
+    function cmdNeofetch() {
+        return { element: createNeofetchElement(), discover: true };
+    }
+
     function isExitPending() {
         return exitPending;
     }
@@ -142,6 +148,7 @@ export function createCommands(t, sessionSeed) {
         if (trimmed === 'hello') return cmdHello();
         if (trimmed === 'rm -rf /') return cmdRmrf();
         if (trimmed === 'pineapple') return cmdPineapple();
+        if (trimmed === 'neofetch') return cmdNeofetch();
 
         return { text: t('ee_term_unknown').replace('{cmd}', trimmed) };
     }

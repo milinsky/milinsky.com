@@ -86,7 +86,15 @@ export function createTerminalParser(ctx) {
         } else {
             terminalFrame.classList.remove('ee-term-dimmed');
         }
-        appendOutput(result.text, false);
+        if (result.element) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'ee-term-output__line';
+            wrapper.appendChild(result.element);
+            outputContainer.appendChild(wrapper);
+            shell.scrollTop = shell.scrollHeight;
+        } else {
+            appendOutput(result.text, false);
+        }
     }
 
     listen(terminalFrame, 'click', () => {

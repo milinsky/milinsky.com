@@ -4,14 +4,14 @@ const INITIAL_DELAY_MS = 500;
 const POST_CMD_DELAY_MS = 300;
 
 const ASCII_LINES = [
-    '       ┌─────────────┐',
-    '       │   •     •   │',
-    '       │       ▼     │',
-    '       │    ╲────╱   │',
-    '       └─────────────┘',
-    '       ┌──┬──┬──┬──┬──┐',
-    '       │▓▓│▓▓│▓▓│▓▓│▓▓│',
-    '       └──┴──┴──┴──┴──┘',
+    '  ┌─────────────┐',
+    '  │   •     •   │',
+    '  │       ▼     │',
+    '  │    ╲────╱   │',
+    '  └─────────────┘',
+    '  ┌──┬──┬──┬──┬──┐',
+    '  │▓▓│▓▓│▓▓│▓▓│▓▓│',
+    '  └──┴──┴──┴──┴──┘',
 ];
 
 const DIVIDER = '─────────────────────────';
@@ -29,6 +29,45 @@ function getInfoLines() {
         { key: 'Theme', value: getThemeName() },
         { key: 'Status', value: '● Available' },
     ];
+}
+
+export function createNeofetchElement() {
+    const grid = document.createElement('div');
+    grid.className = 'neofetch-grid';
+
+    const left = document.createElement('pre');
+    left.className = 'neofetch-ascii';
+    left.textContent = ASCII_LINES.join('\n');
+    grid.appendChild(left);
+
+    const right = document.createElement('div');
+    right.className = 'neofetch-info';
+
+    const header = document.createElement('div');
+    header.className = 'neofetch-header';
+    header.textContent = 'Mikhail@Ilinsky';
+    right.appendChild(header);
+
+    const dividerEl = document.createElement('div');
+    dividerEl.className = 'neofetch-divider';
+    dividerEl.textContent = DIVIDER;
+    right.appendChild(dividerEl);
+
+    for (const info of getInfoLines()) {
+        const line = document.createElement('div');
+        const key = document.createElement('span');
+        key.className = 'neofetch-key';
+        key.textContent = info.key + ': ';
+        const value = document.createElement('span');
+        value.className = 'neofetch-value';
+        value.textContent = info.value;
+        line.appendChild(key);
+        line.appendChild(value);
+        right.appendChild(line);
+    }
+    grid.appendChild(right);
+
+    return grid;
 }
 
 /**

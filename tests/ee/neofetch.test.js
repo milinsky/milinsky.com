@@ -121,7 +121,7 @@ describe('neofetch', () => {
         const ascii = document.querySelector('.neofetch-ascii');
         expect(ascii).not.toBeNull();
         vi.advanceTimersByTime(80 * 5);
-        expect(ascii.textContent).toContain('┌─────────┐');
+        expect(ascii.textContent).toContain('┌─────────────┐');
     });
 
     it('shows info lines after ASCII', () => {
