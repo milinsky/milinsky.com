@@ -11,7 +11,7 @@ export function runHireCommand(
     onDestroyed,
     runMailComposer
 ) {
-    const steps = [t('contact_hire_scanning'), t('contact_hire_checking'), t('contact_hire_generating')];
+    const steps = [t('contact_hire_step1'), t('contact_hire_step2'), t('contact_hire_step3')];
 
     if (reducedMotion) {
         for (const step of steps) {

@@ -260,9 +260,9 @@ describe('runHireCommand', () => {
     it('shows 3 scanning steps in reducedMotion', () => {
         runHireCommand(shell, t, true, schedule, appendLine, appendElement, listen, () => false, vi.fn());
         expect(lines.length).toBe(3);
-        expect(t).toHaveBeenCalledWith('contact_hire_scanning');
-        expect(t).toHaveBeenCalledWith('contact_hire_checking');
-        expect(t).toHaveBeenCalledWith('contact_hire_generating');
+        expect(t).toHaveBeenCalledWith('contact_hire_step1');
+        expect(t).toHaveBeenCalledWith('contact_hire_step2');
+        expect(t).toHaveBeenCalledWith('contact_hire_step3');
     });
 
     it('shows ASCII contract box', () => {
