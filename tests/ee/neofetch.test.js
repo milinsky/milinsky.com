@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createNeofetch } from '../../src/ee/neofetch.js';
+import { createNeofetch, createNeofetchElement } from '../../src/ee/neofetch.js';
 
 function setupShell() {
     const frame = document.createElement('div');
@@ -184,5 +184,65 @@ describe('neofetch', () => {
         expect(statusLine).toBeDefined();
         const value = statusLine.nextElementSibling;
         expect(value.textContent).toContain('● Available');
+    });
+});
+
+describe('createNeofetchElement', () => {
+    beforeEach(() => {
+        document.body.innerHTML = '';
+        document.documentElement.removeAttribute('data-theme');
+    });
+
+    it('returns a DOM element', () => {
+        const el = createNeofetchElement();
+        expect(el).toBeInstanceOf(HTMLElement);
+    });
+
+    it('returns element with neofetch-grid class', () => {
+        const el = createNeofetchElement();
+        expect(el.classList.contains('neofetch-grid')).toBe(true);
+    });
+
+    it('contains ASCII art section', () => {
+        const el = createNeofetchElement();
+        expect(el.querySelector('.neofetch-ascii')).not.toBeNull();
+    });
+
+    it('contains info section', () => {
+        const el = createNeofetchElement();
+        expect(el.querySelector('.neofetch-info')).not.toBeNull();
+    });
+
+    it('contains header', () => {
+        const el = createNeofetchElement();
+        const header = el.querySelector('.neofetch-header');
+        expect(header).not.toBeNull();
+        expect(header.textContent).toContain('Mikhail@Ilinsky');
+    });
+
+    it('contains divider', () => {
+        const el = createNeofetchElement();
+        expect(el.querySelector('.neofetch-divider')).not.toBeNull();
+    });
+
+    it('contains all info keys', () => {
+        const el = createNeofetchElement();
+        const keys = el.querySelectorAll('.neofetch-key');
+        expect(keys.length).toBe(6);
+        const keyTexts = [...keys].map((k) => k.textContent.replace(': ', '').trim());
+        expect(keyTexts).toContain('OS');
+        expect(keyTexts).toContain('Shell');
+        expect(keyTexts).toContain('Uptime');
+        expect(keyTexts).toContain('Stack');
+        expect(keyTexts).toContain('Theme');
+        expect(keyTexts).toContain('Status');
+    });
+
+    it('contains theme value', () => {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        const el = createNeofetchElement();
+        const values = el.querySelectorAll('.neofetch-value');
+        const themeValue = [...values].find((v) => v.textContent.includes('Solarized'));
+        expect(themeValue).toBeDefined();
     });
 });

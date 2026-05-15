@@ -386,6 +386,41 @@ describe('terminal-parser', () => {
         expect(inputLines[0].textContent).toContain('$ hello');
     });
 
+    it('neofetch command renders grid element', () => {
+        const frame = setupTerminal();
+        init();
+        clickTerminal(frame);
+        typeText('neofetch');
+        pressEnter();
+        const outputLines = frame.querySelectorAll('.ee-term-output__line');
+        const elementLine = [...outputLines].find((el) => el.querySelector('.neofetch-grid'));
+        expect(elementLine).not.toBeNull();
+        expect(elementLine.querySelector('.neofetch-grid')).not.toBeNull();
+        expect(elementLine.querySelector('.neofetch-ascii')).not.toBeNull();
+        expect(elementLine.querySelector('.neofetch-info')).not.toBeNull();
+    });
+
+    it('neofetch command triggers discover', () => {
+        const frame = setupTerminal();
+        init();
+        clickTerminal(frame);
+        typeText('neofetch');
+        pressEnter();
+        expect(ctx.eeManager.discover).toHaveBeenCalledWith('ee09');
+    });
+
+    it('processResult handles element output', () => {
+        const frame = setupTerminal();
+        init();
+        clickTerminal(frame);
+        typeText('neofetch');
+        pressEnter();
+        const elementWrappers = frame.querySelectorAll('.ee-term-output__line');
+        const wrapperWithGrid = [...elementWrappers].find((el) => el.querySelector('.neofetch-grid'));
+        expect(wrapperWithGrid).not.toBeNull();
+        expect(wrapperWithGrid.querySelector('.neofetch-grid').textContent).toContain('MILINSKY.OS');
+    });
+
     it('key events ignored when terminal not active', () => {
         const frame = document.createElement('div');
         frame.className = 'hero__terminal-frame';
@@ -422,25 +457,25 @@ describe('terminal-parser/commands', () => {
     const seed = 0.5;
 
     it('execute returns object with text property', () => {
-        const cmds = createCommands(mockT, seed);
+        const cmds = createCommands({ t: mockT, sessionSeed: seed });
         const result = cmds.execute('hello');
         expect(result).toHaveProperty('text');
     });
 
     it('cat without args shows usage', () => {
-        const cmds = createCommands(mockT, seed);
+        const cmds = createCommands({ t: mockT, sessionSeed: seed });
         const result = cmds.execute('cat');
         expect(result.text).toContain('Usage');
     });
 
     it('cat unknown file shows error', () => {
-        const cmds = createCommands(mockT, seed);
+        const cmds = createCommands({ t: mockT, sessionSeed: seed });
         const result = cmds.execute('cat nosuch.txt');
         expect(result.text).toContain('No such file');
     });
 
     it('ls does not set discover', () => {
-        const cmds = createCommands(mockT, seed);
+        const cmds = createCommands({ t: mockT, sessionSeed: seed });
         const result = cmds.execute('ls');
         expect(result.discover).toBe(true);
     });
