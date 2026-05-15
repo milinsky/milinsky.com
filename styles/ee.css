@@ -1165,3 +1165,76 @@ html.ee-time-anomaly {
 .neofetch-value {
     color: var(--text);
 }
+
+.contact-nf__grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.contact-nf__ascii {
+    color: var(--accent);
+    white-space: pre;
+    line-height: 1.2;
+}
+
+.contact-nf__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.contact-nf__header {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.contact-nf__key {
+    color: var(--muted);
+}
+
+.contact-nf__value {
+    color: var(--fg);
+}
+
+.contact-nf__hint {
+    color: var(--muted);
+    margin-top: var(--space-md);
+}
+
+.contact-hire__box {
+    white-space: pre;
+    color: var(--accent);
+    font-family: var(--font-mono);
+}
+
+.contact-hire__option {
+    cursor: pointer;
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.contact-hire__option:hover {
+    color: var(--fg);
+}
+
+.contact-mail__field {
+    color: var(--accent);
+}
+
+.contact-mail__input {
+    color: var(--fg);
+}
+
+.contact-mail__success {
+    color: var(--accent-green, var(--solar-green));
+}
+
+.contact-mail__error {
+    color: var(--accent-red, #dc322f);
+}
+
+.contact__terminal-shell :focus-visible {
+    outline: none;
+}
