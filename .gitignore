@@ -8,3 +8,4 @@ dist/
 .playwright-mcp/
 screenshot-*.png
 .ai
+tmp/
