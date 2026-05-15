@@ -42,7 +42,7 @@ export const translations = {
         en: 'Implementing intelligent LLM-based systems into business processes. From needs analysis to production-ready solutions.',
         ru: 'Внедрение интеллектуальных систем на базе LLM в бизнес-процессы компании. От анализа потребностей до рабочего решения в продакшене.',
     },
-    service2_title: { en: 'PHP/Symfony Development', ru: 'PHP/Symfony разработка' },
+    service2_title: { en: 'PHP/Java Development', ru: 'PHP/Java разработка' },
     service2_text: {
         en: 'Designing and developing high-load systems. Messaging services, VoIP provider integrations, enterprise platforms.',
         ru: 'Проектирование и разработка высоконагруженных систем. Сервисы рассылок, интеграции с VoIP-провайдерами, корпоративные платформы.',
@@ -64,8 +64,8 @@ export const translations = {
     result1_label: { en: 'delivery speed', ru: 'скорость доставки' },
     result1_title: { en: 'SMS & Email Broadcasting Services', ru: 'Сервисы SMS и Email-рассылок' },
     result1_text: {
-        en: 'Designed and deployed broadcasting services on PHP/Symfony. Optimized the architecture, increasing message delivery speed by 30%.',
-        ru: 'Спроектировал и развернул сервисы рассылок на PHP/Symfony. Оптимизировал архитектуру, что позволило увеличить скорость доставки сообщений на 30%.',
+        en: 'Designed and deployed broadcasting services on PHP/Java. Optimized the architecture, increasing message delivery speed by 30%.',
+        ru: 'Спроектировал и развернул сервисы рассылок на PHP/Java. Оптимизировал архитектуру, что позволило увеличить скорость доставки сообщений на 30%.',
     },
     result2_label: { en: 'integration', ru: 'интеграция' },
     result2_title: { en: 'VoIP Telephony Integration', ru: 'Интеграция VoIP-телефонии' },
@@ -140,16 +140,16 @@ export const translations = {
         ru: '2026. Все права защищены.',
     },
     meta_description: {
-        en: 'AI specialist and PHP developer with 9 years of experience. AI integration into business processes, enterprise solutions development.',
-        ru: 'AI-специалист и PHP-разработчик с 9-летним опытом. Интеграция искусственного интеллекта в бизнес-процессы, разработка корпоративных решений.',
+        en: 'Software engineer and AI engineer with 9 years of experience. AI integration into business processes, enterprise solutions development.',
+        ru: 'Software Engineer и AI Engineer с 9-летним опытом. Интеграция искусственного интеллекта в бизнес-процессы, разработка корпоративных решений.',
     },
     og_description: {
         en: 'Deep engineering expertise combined with modern AI. 9+ years of development experience.',
         ru: 'Глубокая инженерная экспертиза в сочетании с современным AI. 9+ лет опыта разработки.',
     },
     page_title: {
-        en: 'MILINSKY — AI Specialist / PHP Developer',
-        ru: 'MILINSKY — AI Специалист / PHP Разработчик',
+        en: 'MILINSKY — Software Engineer / AI Engineer',
+        ru: 'MILINSKY — Software Engineer / AI Engineer',
     },
     aria_burger: {
         en: 'Open menu',
@@ -299,7 +299,7 @@ export const translations = {
         en: 'You have been here #N times. Secret: persistence is the ultimate skill.',
         ru: 'Ты был здесь #N раз. Секрет: упорство — главный навык.',
     },
-    ee_print_role: { en: 'AI Specialist / PHP Developer', ru: 'AI-специалист / PHP-разработчик' },
+    ee_print_role: { en: 'Software Engineer / AI Engineer', ru: 'Software Engineer / AI Engineer' },
     ee_print_experience_heading: { en: 'EXPERIENCE', ru: 'ОПЫТ' },
     ee_print_exp1: {
         en: '9+ years of commercial PHP development',
@@ -319,8 +319,8 @@ export const translations = {
         ru: 'AI-интеграция — LLM, RAG, Prompt Engineering',
     },
     ee_print_svc2: {
-        en: 'PHP/Symfony — High-load systems',
-        ru: 'PHP/Symfony — Высоконагруженные системы',
+        en: 'PHP/Java — High-load systems',
+        ru: 'PHP/Java — Высоконагруженные системы',
     },
     ee_print_svc3: {
         en: 'Enterprise Solutions — Full-Stack, Architecture',
