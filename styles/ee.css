@@ -861,13 +861,6 @@ html.ee-time-anomaly {
     100% { filter: none; }
 }
 
-.ee-phosphor-canvas {
-    position: fixed;
-    inset: 0;
-    z-index: var(--z-ee-base);
-    pointer-events: none;
-}
-
 .ee-ach-panel-overlay {
     position: fixed;
     inset: 0;

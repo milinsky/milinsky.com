@@ -52,34 +52,6 @@ globalThis.matchMedia = vi.fn((query) => ({
     removeEventListener: vi.fn(),
 }));
 
-/** CanvasRenderingContext2D mock for phosphor-trail EE-05 */
-const canvasContextMock = {
-    fillRect: vi.fn(),
-    clearRect: vi.fn(),
-    arc: vi.fn(),
-    fill: vi.fn(),
-    stroke: vi.fn(),
-    beginPath: vi.fn(),
-    moveTo: vi.fn(),
-    lineTo: vi.fn(),
-    closePath: vi.fn(),
-    save: vi.fn(),
-    restore: vi.fn(),
-    fillStyle: '',
-    strokeStyle: '',
-    lineWidth: 1,
-    globalAlpha: 1,
-    globalCompositeOperation: 'source-over',
-    shadowColor: '',
-    shadowBlur: 0,
-    canvas: { width: 800, height: 600 },
-};
-
-HTMLCanvasElement.prototype.getContext = vi.fn((type) => {
-    if (type === '2d') return canvasContextMock;
-    return null;
-});
-
 /** Web Audio API mock for BBS portal EE-14 */
 const audioContextMock = {
     createOscillator: vi.fn(() => ({

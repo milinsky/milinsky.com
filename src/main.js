@@ -27,7 +27,6 @@ import { createShake } from './ee/shake.js';
 import { createBbsPortal } from './ee/bbs-portal.js';
 import { createTimeTraveler } from './ee/time-traveler.js';
 import { createOverscrollSecret } from './ee/overscroll-secret.js';
-import { createPhosphorTrail } from './ee/phosphor-trail.js';
 import { createAchievements } from './ee/achievements.js';
 
 const html = document.documentElement;
@@ -82,6 +81,7 @@ safeInit('navigation', () => initNavigation());
 safeInit('logoReveal', () => createLogoReveal({ reducedMotion }));
 
 let restartTyping = () => {};
+let achievements = null;
 safeInit('typing', () => {
     const result = initTyping(translations, () => getState('lang'));
     restartTyping = result.restartTyping;
@@ -89,6 +89,7 @@ safeInit('typing', () => {
 });
 subscribe('lang', () => {
     restartTyping();
+    if (achievements) achievements.updateLanguage();
 });
 
 safeInit('scrollProgress', () => initScrollProgress());
@@ -122,5 +123,7 @@ safeInit('shake', () => createShake({ eeManager, t, showToast, reducedMotion }))
 safeInit('bbsPortal', () => createBbsPortal({ eeManager, t, reducedMotion }));
 safeInit('timeTraveler', () => createTimeTraveler({ eeManager, t, showToast }));
 safeInit('overscrollSecret', () => createOverscrollSecret({ eeManager, t, showToast, reducedMotion }));
-safeInit('phosphorTrail', () => createPhosphorTrail({ eeManager, t, showToast, reducedMotion }));
-safeInit('achievements', () => createAchievements({ eeManager, t }));
+safeInit('achievements', () => {
+    achievements = createAchievements({ eeManager, t });
+    return achievements;
+});
