@@ -242,34 +242,9 @@
     align-content: start;
 }
 
-.contact__wrapper {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--space-4xl);
-    padding: var(--space-4xl);
-    align-items: center;
-    overflow: hidden;
-}
-
-.contact__content .section__label {
-    text-align: left;
-}
-
-.contact__content .section__title {
-    text-align: left;
-    margin-bottom: var(--space-xl);
-}
-
-.contact__methods {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-}
-
-.contact__visual {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.contact__terminal {
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 .footer {
@@ -312,25 +287,6 @@
 
     .expertise__features {
         grid-template-columns: 1fr 1fr;
-    }
-
-    .contact__wrapper {
-        grid-template-columns: 1fr;
-        padding: var(--space-2xl);
-        gap: var(--space-2xl);
-    }
-
-    .contact__visual {
-        display: none;
-    }
-
-    .contact__content .section__title,
-    .contact__content .section__label {
-        text-align: center;
-    }
-
-    .contact__methods {
-        align-items: center;
     }
 }
 
@@ -389,9 +345,5 @@
 
     .section__title {
         font-size: clamp(1.5rem, 6vw, 2rem);
-    }
-
-    .contact__wrapper {
-        padding: var(--space-xl);
     }
 }

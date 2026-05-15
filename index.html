@@ -378,39 +378,16 @@
 
         <section class="section contact" id="contact">
             <div class="container">
-                <div class="contact__wrapper retro-card animate-on-scroll">
-                    <div class="contact__content">
-                        <span class="section__label" aria-hidden="true" data-section="contact">&gt; section_05 --contact</span>
-                        <h2 class="section__title" data-i18n-html="contact_title">Ready to discuss<br><span class="accent-text">your project</span></h2>
-                        <p class="contact__text" data-i18n="contact_text">If you need a specialist who combines deep technical expertise with understanding of AI — let's talk.</p>
-                        <div class="contact__methods">
-                            <a href="mailto:hello@milinsky.com" class="contact__method">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
-                                    <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 5l9 8 9-8"/>
-                                </svg>
-                                <span>hello@milinsky.com</span>
-                            </a>
-                            <a href="https://t.me/milinsky" class="contact__method" target="_blank" rel="noopener noreferrer">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 3L2 11L10 14M22 3L18 21L10 14M22 3L10 14M10 14V20L13.5 16.5"/>
-                                </svg>
-                                <span>Telegram</span>
-                            </a>
-                        </div>
+                <div class="section__header animate-on-scroll">
+                    <span class="section__label" aria-hidden="true" data-section="contact">&gt; section_05 --contact</span>
+                    <h2 class="section__title" data-i18n-html="contact_title">Ready to discuss<br><span class="accent-text">your project</span></h2>
+                </div>
+                <div class="contact__terminal retro-card animate-on-scroll">
+                    <div class="contact__terminal-header" aria-hidden="true">
+                        <span class="contact__terminal-controls"><span>─</span><span>□</span><span>×</span></span>
+                        <span class="contact__terminal-title">contact.sh</span>
                     </div>
-                    <div class="contact__visual">
-                        <div class="contact__terminal-block" aria-hidden="true">
-                            <div class="contact__terminal-header">
-                                <span class="contact__terminal-prompt">$</span> init_contact
-                            </div>
-                            <div class="contact__terminal-output">
-                                <span class="contact__terminal-line">status: <span class="text-green status-pulse" data-i18n="contact_terminal_status">available for projects</span></span>
-                                <span class="contact__terminal-line">response: <span class="text-cyan" data-i18n="contact_terminal_response">within 24 hours</span></span>
-                                <span class="contact__terminal-line">languages: <span class="text-yellow" data-i18n="contact_terminal_languages">Russian, English</span></span>
-                            </div>
-                            <span class="contact__terminal-cursor" aria-hidden="true">_</span>
-                        </div>
-                    </div>
+                    <div class="contact__terminal-shell" id="contactTerminalShell"></div>
                 </div>
             </div>
         </section>
