@@ -545,6 +545,7 @@ html.ee-crt-glitch {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    padding: 0 var(--space-lg) 0 0;
 }
 
 .ee-term-output {
