@@ -61,6 +61,10 @@
     text-shadow: none;
 }
 
+[data-theme="dark"] .nav__logo-ascii {
+    text-shadow: 0 0 4px rgba(253, 246, 227, 0.5);
+}
+
 [data-theme="dark"] .theme-toggle__icon--moon {
     display: none;
 }
