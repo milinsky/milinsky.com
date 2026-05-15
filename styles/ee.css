@@ -262,7 +262,7 @@
 
 .ee-solarized-swatch:hover {
     transform: scale(1.2);
-    z-index: 1;
+    z-index: var(--z-ee-internal);
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -538,7 +538,7 @@ html.ee-crt-glitch {
         rgba(0, 0, 0, 0.15) 4px
     );
     pointer-events: none;
-    z-index: 1;
+    z-index: var(--z-ee-internal);
 }
 
 .hero__terminal-shell {
@@ -660,7 +660,7 @@ html.ee-crt-glitch {
         rgba(0, 255, 0, 0.03) 4px
     );
     pointer-events: none;
-    z-index: 1;
+    z-index: var(--z-ee-internal);
 }
 
 .ee-shake-overlay__art {
@@ -671,7 +671,7 @@ html.ee-crt-glitch {
     white-space: pre;
     margin: 0;
     text-shadow: 0 0 6px rgba(51, 255, 51, 0.5);
-    z-index: 2;
+    z-index: var(--z-ee-content);
 }
 
 .ee-bbs-screen {
@@ -701,7 +701,7 @@ html.ee-crt-glitch {
         rgba(0, 0, 0, 0.15) 4px
     );
     pointer-events: none;
-    z-index: 1;
+    z-index: var(--z-ee-internal);
 }
 
 .ee-bbs-header {

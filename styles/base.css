@@ -44,6 +44,11 @@
     --z-ee-toast: 10001;
     --z-ee-modal: 10002;
     --z-ee-top: 10003;
+    --z-scroll-status: 50;
+    --z-card-scanline: 5;
+    --z-hero-content: 2;
+    --z-ee-internal: 1;
+    --z-ee-content: 2;
     --scroll-progress-height: 20px;
 }
 

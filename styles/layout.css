@@ -137,7 +137,7 @@
 
 .hero__content {
     position: relative;
-    z-index: 2;
+    z-index: var(--z-hero-content);
     max-width: 800px;
     width: 100%;
     padding: var(--space-2xl) 0;

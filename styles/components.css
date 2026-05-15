@@ -320,11 +320,6 @@
 }
 
 .retro-card .card-scanline {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
     background: linear-gradient(90deg,
         transparent,
         rgba(var(--glow-color), 0.4),
@@ -332,7 +327,7 @@
     );
     opacity: 0;
     pointer-events: none;
-    z-index: 5;
+    z-index: var(--z-card-scanline);
 }
 
 .retro-card:hover .card-scanline {
@@ -731,7 +726,7 @@
     text-transform: uppercase;
     opacity: 0;
     pointer-events: none;
-    z-index: 100;
+    z-index: var(--z-scroll-status);
     line-height: 1.6;
 }
 
