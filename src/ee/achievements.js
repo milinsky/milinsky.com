@@ -279,6 +279,16 @@ export function createAchievements(ctx) {
         showPanel();
     }
 
+    function updateLanguage() {
+        if (!badgeEl) return;
+        const label = badgeEl.querySelector('.ee-ach-badge__label');
+        if (label) label.textContent = t('ee_ach_hunter_badge');
+        const collapseBtn = badgeEl.querySelector('.ee-ach-badge__toggle');
+        if (collapseBtn) collapseBtn.title = t('ee_ach_badge_collapse');
+        const expandBtn = badgeEl.querySelector('.ee-ach-badge__expand');
+        if (expandBtn) expandBtn.title = t('ee_ach_badge_expand');
+    }
+
     return {
         destroy() {
             destroyed = true;
@@ -299,5 +309,6 @@ export function createAchievements(ctx) {
                 l.target.removeEventListener(l.event, l.handler);
             }
         },
+        updateLanguage,
     };
 }
