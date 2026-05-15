@@ -109,14 +109,14 @@ describe('initScrollTracking', () => {
     it('creates IntersectionObserver instances for sections', () => {
         createScrollTrackingDOM();
         const sections = document.querySelectorAll('section');
-        initScrollTracking([...sections]);
+        initScrollTracking();
 
         expect(capturedObservers.length).toBeGreaterThanOrEqual(1);
     });
 
     it('adds nav__link--active class to matching link when section is visible', () => {
         const { aboutSection, linkAbout, linkServices, linkResults } = createScrollTrackingDOM();
-        initScrollTracking([aboutSection]);
+        initScrollTracking();
 
         const navObserver = capturedObservers[0];
         navObserver.callback([{ isIntersecting: true, target: aboutSection }]);
@@ -128,7 +128,7 @@ describe('initScrollTracking', () => {
 
     it('removes nav__link--active from previous and adds to new when section changes', () => {
         const { aboutSection, servicesSection, linkAbout, linkServices } = createScrollTrackingDOM();
-        initScrollTracking([aboutSection, servicesSection]);
+        initScrollTracking();
 
         const navObserver = capturedObservers[0];
         navObserver.callback([{ isIntersecting: true, target: aboutSection }]);
@@ -141,7 +141,7 @@ describe('initScrollTracking', () => {
 
     it('updates #scrollStatus element with section info', () => {
         const { aboutSection, scrollStatus } = createScrollTrackingDOM();
-        initScrollTracking([aboutSection]);
+        initScrollTracking();
 
         const statusObserver = capturedObservers[1];
         statusObserver.callback([{ isIntersecting: true, target: aboutSection }]);
@@ -154,7 +154,7 @@ describe('initScrollTracking', () => {
 
     it('scrollStatus removes visible class after timeout', () => {
         const { aboutSection, scrollStatus } = createScrollTrackingDOM();
-        initScrollTracking([aboutSection]);
+        initScrollTracking();
 
         const statusObserver = capturedObservers[1];
         statusObserver.callback([{ isIntersecting: true, target: aboutSection }]);
@@ -167,7 +167,7 @@ describe('initScrollTracking', () => {
 
     it('does not update scrollStatus for same section twice', () => {
         const { aboutSection, scrollStatus } = createScrollTrackingDOM();
-        initScrollTracking([aboutSection]);
+        initScrollTracking();
 
         const statusObserver = capturedObservers[1];
         statusObserver.callback([{ isIntersecting: true, target: aboutSection }]);
@@ -181,7 +181,7 @@ describe('initScrollTracking', () => {
 
     it('syslog typing effect at footer triggers on intersection', () => {
         const { syslogText, footer } = createScrollTrackingDOM();
-        initScrollTracking(document.querySelectorAll('section'));
+        initScrollTracking();
 
         const syslogObserver = capturedObservers[2];
         syslogObserver.callback([{ isIntersecting: true, target: footer }]);
@@ -192,7 +192,7 @@ describe('initScrollTracking', () => {
 
     it('syslog typing completes the full string', () => {
         const { syslogText, footer } = createScrollTrackingDOM();
-        initScrollTracking(document.querySelectorAll('section'));
+        initScrollTracking();
 
         const syslogObserver = capturedObservers[2];
         syslogObserver.callback([{ isIntersecting: true, target: footer }]);
@@ -203,7 +203,7 @@ describe('initScrollTracking', () => {
 
     it('syslog typing only triggers once', () => {
         const { syslogText, footer } = createScrollTrackingDOM();
-        initScrollTracking(document.querySelectorAll('section'));
+        initScrollTracking();
 
         const syslogObserver = capturedObservers[2];
         syslogObserver.callback([{ isIntersecting: true, target: footer }]);
@@ -223,7 +223,7 @@ describe('initScrollTracking', () => {
         section.id = 'about';
         document.body.appendChild(section);
 
-        expect(() => initScrollTracking([section])).not.toThrow();
+        expect(() => initScrollTracking()).not.toThrow();
         expect(capturedObservers.length).toBe(0);
     });
 
@@ -240,7 +240,7 @@ describe('initScrollTracking', () => {
         nav.appendChild(link);
         document.body.appendChild(nav);
 
-        expect(() => initScrollTracking([section])).not.toThrow();
+        expect(() => initScrollTracking()).not.toThrow();
 
         const navObserver = capturedObservers[0];
         navObserver.callback([{ isIntersecting: true, target: section }]);
@@ -257,7 +257,7 @@ describe('initScrollTracking', () => {
         scrollStatus.id = 'scrollStatus';
         document.body.appendChild(scrollStatus);
 
-        expect(() => initScrollTracking([section])).not.toThrow();
+        expect(() => initScrollTracking()).not.toThrow();
     });
 
     it('handles missing footer gracefully', () => {
@@ -270,7 +270,7 @@ describe('initScrollTracking', () => {
         syslogText.id = 'syslogText';
         document.body.appendChild(syslogText);
 
-        expect(() => initScrollTracking([section])).not.toThrow();
+        expect(() => initScrollTracking()).not.toThrow();
     });
 
     it('handles empty sections array gracefully', () => {
@@ -282,12 +282,12 @@ describe('initScrollTracking', () => {
         nav.appendChild(link);
         document.body.appendChild(nav);
 
-        expect(() => initScrollTracking([])).not.toThrow();
+        expect(() => initScrollTracking()).not.toThrow();
     });
 
     it('handles all missing elements gracefully', () => {
         document.body.innerHTML = '';
-        expect(() => initScrollTracking([])).not.toThrow();
+        expect(() => initScrollTracking()).not.toThrow();
     });
 
     it('creates only nav observer when no scrollStatus', () => {
@@ -295,20 +295,20 @@ describe('initScrollTracking', () => {
         document.getElementById('scrollStatus').remove();
         document.getElementById('syslogText').remove();
         document.querySelector('.footer').remove();
-        initScrollTracking([aboutSection]);
+        initScrollTracking();
         expect(capturedObservers.length).toBe(1);
     });
 
     it('creates nav and syslog observers when scrollStatus missing', () => {
         createScrollTrackingDOM();
         document.getElementById('scrollStatus').remove();
-        initScrollTracking(document.querySelectorAll('section'));
+        initScrollTracking();
         expect(capturedObservers.length).toBe(2);
     });
 
     it('updates scrollStatus with correct address for services section', () => {
         const { servicesSection, scrollStatus } = createScrollTrackingDOM();
-        initScrollTracking([servicesSection]);
+        initScrollTracking();
 
         const statusObserver = capturedObservers[1];
         statusObserver.callback([{ isIntersecting: true, target: servicesSection }]);
@@ -319,7 +319,7 @@ describe('initScrollTracking', () => {
 
     it('updates scrollStatus with correct address for results section', () => {
         const { resultsSection, scrollStatus } = createScrollTrackingDOM();
-        initScrollTracking([resultsSection]);
+        initScrollTracking();
 
         const statusObserver = capturedObservers[1];
         statusObserver.callback([{ isIntersecting: true, target: resultsSection }]);
@@ -330,7 +330,7 @@ describe('initScrollTracking', () => {
 
     it('nav observer ignores non-intersecting entries', () => {
         const { aboutSection, linkAbout } = createScrollTrackingDOM();
-        initScrollTracking([aboutSection]);
+        initScrollTracking();
 
         const navObserver = capturedObservers[0];
         linkAbout.classList.add('nav__link--active');
@@ -340,7 +340,7 @@ describe('initScrollTracking', () => {
 
     it('status observer ignores non-intersecting entries', () => {
         const { aboutSection, scrollStatus } = createScrollTrackingDOM();
-        initScrollTracking([aboutSection]);
+        initScrollTracking();
 
         const statusObserver = capturedObservers[1];
         statusObserver.callback([{ isIntersecting: false, target: aboutSection }]);
@@ -364,7 +364,7 @@ describe('initScrollTracking', () => {
         nav.appendChild(link);
         document.body.appendChild(nav);
 
-        initScrollTracking([unknownSection]);
+        initScrollTracking();
 
         if (capturedObservers.length > 1) {
             const statusObserver = capturedObservers[1];
@@ -375,8 +375,7 @@ describe('initScrollTracking', () => {
 
     it('returns destroy function that disconnects observers and clears timeouts', () => {
         createScrollTrackingDOM();
-        const sections = document.querySelectorAll('section');
-        const { destroy } = initScrollTracking([...sections]);
+        const { destroy } = initScrollTracking();
         expect(destroy).toBeTypeOf('function');
         expect(() => destroy()).not.toThrow();
     });

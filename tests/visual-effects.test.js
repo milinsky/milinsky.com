@@ -42,7 +42,7 @@ describe('initVisualEffects', () => {
 
     it('adds scanline spans to .retro-card elements', () => {
         const { card1, card2 } = createVisualEffectsDOM();
-        initVisualEffects([]);
+        initVisualEffects();
 
         const scanlines1 = card1.querySelectorAll('.card-scanline');
         const scanlines2 = card2.querySelectorAll('.card-scanline');
@@ -53,7 +53,7 @@ describe('initVisualEffects', () => {
 
     it('scanlines have class card-scanline and aria-hidden true', () => {
         const { card1 } = createVisualEffectsDOM();
-        initVisualEffects([]);
+        initVisualEffects();
 
         const scanline = card1.querySelector('.card-scanline');
         expect(scanline).toBeDefined();
@@ -65,7 +65,7 @@ describe('initVisualEffects', () => {
 
         vi.spyOn(Math, 'random').mockReturnValue(0);
 
-        initVisualEffects([]);
+        initVisualEffects();
 
         vi.advanceTimersByTime(3000);
 
@@ -84,7 +84,7 @@ describe('initVisualEffects', () => {
         vi.spyOn(Math, 'random').mockReturnValue(0);
         Object.defineProperty(document, 'hidden', { value: true, configurable: true });
 
-        initVisualEffects([]);
+        initVisualEffects();
 
         vi.advanceTimersByTime(3000);
 
@@ -103,7 +103,7 @@ describe('initVisualEffects', () => {
 
         vi.spyOn(Math, 'random').mockReturnValue(0);
 
-        initVisualEffects([label1]);
+        initVisualEffects();
 
         vi.advanceTimersByTime(4000);
 
@@ -123,7 +123,7 @@ describe('initVisualEffects', () => {
     it('handles empty sectionLabels gracefully', () => {
         const { crtNoise } = createVisualEffectsDOM();
 
-        expect(() => initVisualEffects([])).not.toThrow();
+        expect(() => initVisualEffects()).not.toThrow();
 
         vi.advanceTimersByTime(10000);
         expect(crtNoise).toBeDefined();
@@ -136,7 +136,7 @@ describe('initVisualEffects', () => {
         card.className = 'retro-card';
         document.body.appendChild(card);
 
-        expect(() => initVisualEffects([])).not.toThrow();
+        expect(() => initVisualEffects()).not.toThrow();
 
         vi.advanceTimersByTime(10000);
 
@@ -155,7 +155,7 @@ describe('initVisualEffects', () => {
             cards.push(card);
         }
 
-        initVisualEffects([]);
+        initVisualEffects();
 
         cards.forEach((card) => {
             const scanlines = card.querySelectorAll('.card-scanline');
@@ -166,7 +166,7 @@ describe('initVisualEffects', () => {
 
     it('does not add scanlines when no retro cards exist', () => {
         document.body.innerHTML = '';
-        expect(() => initVisualEffects([])).not.toThrow();
+        expect(() => initVisualEffects()).not.toThrow();
     });
 
     it('CRT noise removes and re-adds crt-noise--active class', () => {
@@ -174,7 +174,7 @@ describe('initVisualEffects', () => {
 
         vi.spyOn(Math, 'random').mockReturnValue(0);
 
-        initVisualEffects([]);
+        initVisualEffects();
 
         vi.advanceTimersByTime(3000);
         expect(crtNoise.classList.contains('crt-noise--active')).toBe(true);
@@ -192,7 +192,7 @@ describe('initVisualEffects', () => {
         vi.spyOn(Math, 'random').mockReturnValue(0);
         Object.defineProperty(document, 'hidden', { value: true, configurable: true });
 
-        initVisualEffects([label1]);
+        initVisualEffects();
 
         vi.advanceTimersByTime(4000);
         expect(label1.textContent).toBe(originalText);
@@ -204,7 +204,7 @@ describe('initVisualEffects', () => {
     it('returns destroy function that clears timeouts', () => {
         createVisualEffectsDOM();
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        const { destroy } = initVisualEffects([]);
+        const { destroy } = initVisualEffects();
         expect(destroy).toBeTypeOf('function');
         expect(() => destroy()).not.toThrow();
         Math.random.mockRestore();
@@ -213,7 +213,7 @@ describe('initVisualEffects', () => {
     it('destroy stops CRT noise loop', () => {
         const { crtNoise } = createVisualEffectsDOM();
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        const { destroy } = initVisualEffects([]);
+        const { destroy } = initVisualEffects();
 
         vi.advanceTimersByTime(3000);
         expect(crtNoise.classList.contains('crt-noise--active')).toBe(true);
@@ -227,7 +227,7 @@ describe('initVisualEffects', () => {
         const originalText = label1.textContent;
 
         vi.spyOn(Math, 'random').mockReturnValue(0.5);
-        const { destroy } = initVisualEffects([label1]);
+        const { destroy } = initVisualEffects();
 
         destroy();
 
@@ -240,7 +240,7 @@ describe('initVisualEffects', () => {
     it('noise does not run after destroy', () => {
         const { crtNoise } = createVisualEffectsDOM();
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        const { destroy } = initVisualEffects([]);
+        const { destroy } = initVisualEffects();
 
         destroy();
 
@@ -255,7 +255,7 @@ describe('initVisualEffects', () => {
         const originalText = label1.textContent;
 
         vi.spyOn(Math, 'random').mockReturnValue(0);
-        initVisualEffects([label1]);
+        initVisualEffects();
 
         vi.advanceTimersByTime(4000);
         expect(label1.textContent).not.toBe(originalText);

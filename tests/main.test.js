@@ -276,18 +276,14 @@ describe('main.js', () => {
         expect(mockInitScrollProgress).toHaveBeenCalled();
     });
 
-    it('calls initVisualEffects with section labels', async () => {
+    it('calls initVisualEffects with no arguments', async () => {
         await importMain();
-        expect(mockInitVisualEffects).toHaveBeenCalled();
-        const labels = mockInitVisualEffects.mock.calls[0][0];
-        expect(labels.length).toBe(2);
+        expect(mockInitVisualEffects).toHaveBeenCalledWith();
     });
 
-    it('calls initScrollTracking with sections', async () => {
+    it('calls initScrollTracking with no arguments', async () => {
         await importMain();
-        expect(mockInitScrollTracking).toHaveBeenCalled();
-        const sections = mockInitScrollTracking.mock.calls[0][0];
-        expect(sections.length).toBe(2);
+        expect(mockInitScrollTracking).toHaveBeenCalledWith();
     });
 
     it('calls createConsoleDrop with eeManager and t', async () => {

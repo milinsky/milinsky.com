@@ -176,6 +176,8 @@ describe('konami', () => {
         triggerAndWait();
         vi.advanceTimersByTime(10000);
         const textEl = document.querySelector('.ee-bios-overlay__text');
-        expect(textEl.textContent).toContain('just kidding');
+        const endings = ['just kidding', 'relax', 'need coffee'];
+        const hasEnding = endings.some((e) => textEl.textContent.includes(e));
+        expect(hasEnding).toBe(true);
     });
 });
