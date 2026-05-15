@@ -20,6 +20,7 @@ import { createPrintResume } from './ee/print-resume.js';
 import { createTripleClick } from './ee/triple-click.js';
 import { createThemeSpeedrun } from './ee/theme-speedrun.js';
 import { createDragResist } from './ee/drag-resist.js';
+import { createNeofetch } from './ee/neofetch.js';
 import { createGhostTerminal } from './ee/ghost-terminal.js';
 import { createTerminalParser } from './ee/terminal-parser.js';
 import { createKonami } from './ee/konami.js';
@@ -117,7 +118,13 @@ safeInit('dragResist', () => createDragResist({ eeManager, t, showToast }));
 safeInit('tripleClick', () => createTripleClick({ eeManager, t }));
 safeInit('themeSpeedrun', () => createThemeSpeedrun({ eeManager, t, showToast, reducedMotion }));
 safeInit('ghostTerminal', () => createGhostTerminal({ eeManager, t, showToast, reducedMotion }));
-safeInit('terminalParser', () => createTerminalParser({ eeManager, t, reducedMotion }));
+safeInit('neofetch', () => {
+    const result = createNeofetch({ t, reducedMotion });
+    result.done.then(() => {
+        safeInit('terminalParser', () => createTerminalParser({ eeManager, t, reducedMotion }));
+    });
+    return result;
+});
 safeInit('konami', () => createKonami({ eeManager, t, reducedMotion }));
 safeInit('shake', () => createShake({ eeManager, t, showToast, reducedMotion }));
 safeInit('bbsPortal', () => createBbsPortal({ eeManager, t, reducedMotion }));
