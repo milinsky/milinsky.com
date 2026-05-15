@@ -305,17 +305,6 @@
         grid-template-columns: 1fr;
     }
 
-    .result-item {
-        grid-template-columns: 1fr;
-        gap: var(--space-lg);
-    }
-
-    .result-item__metric {
-        flex-direction: row;
-        align-items: center;
-        gap: var(--space-md);
-    }
-
     .expertise__content {
         grid-template-columns: 1fr;
     }

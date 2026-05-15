@@ -767,6 +767,15 @@
 }
 
 @media (max-width: 1024px) {
+    .result-item {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+
+    .result-item__metric {
+        align-self: start;
+    }
+
     .contact__text {
         text-align: center;
         margin-left: auto;
