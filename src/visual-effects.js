@@ -14,10 +14,10 @@ const LABEL_STATUSES = ['[OK]', '[READY]', '[DONE]', '[PASS]'];
 
 /**
  * Initialize CRT visual effects: retro-card scanlines, CRT noise, and section label status rotation.
- * @param {NodeList} sectionLabels - Section label elements with data-section attribute.
  * @returns {{ destroy: () => void }}
  */
-export function initVisualEffects(sectionLabels) {
+export function initVisualEffects() {
+    const sectionLabels = document.querySelectorAll('.section__label[data-section]');
     const allTimeouts = [];
     let noiseDestroyed = false;
     let labelDestroyed = false;

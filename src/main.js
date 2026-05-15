@@ -95,11 +95,9 @@ subscribe('lang', () => {
 
 safeInit('scrollProgress', () => initScrollProgress());
 
-const sectionLabels = document.querySelectorAll('.section__label[data-section]');
-safeInit('visualEffects', () => initVisualEffects(sectionLabels));
+safeInit('visualEffects', () => initVisualEffects());
 
-const sections = document.querySelectorAll('section[id]');
-safeInit('scrollTracking', () => initScrollTracking(sections));
+safeInit('scrollTracking', () => initScrollTracking());
 
 safeInit('consoleDrop', () => createConsoleDrop({ eeManager, t }));
 safeInit('logoMorph', () => createLogoMorph({ eeManager, t, showToast, reducedMotion }));
@@ -120,9 +118,11 @@ safeInit('themeSpeedrun', () => createThemeSpeedrun({ eeManager, t, showToast, r
 safeInit('ghostTerminal', () => createGhostTerminal({ eeManager, t, showToast, reducedMotion }));
 safeInit('neofetch', () => {
     const result = createNeofetch({ t, reducedMotion });
-    result.done.then(() => {
-        safeInit('terminalParser', () => createTerminalParser({ eeManager, t, reducedMotion }));
-    });
+    result.done
+        .then(() => {
+            safeInit('terminalParser', () => createTerminalParser({ eeManager, t, reducedMotion }));
+        })
+        .catch(() => {});
     return result;
 });
 safeInit('konami', () => createKonami({ eeManager, t, reducedMotion }));

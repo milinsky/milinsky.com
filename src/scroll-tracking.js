@@ -14,10 +14,10 @@ const SECTION_MAP = { about: '0x1A2B', services: '0x3F7C', results: '0x5D9E', ex
 
 /**
  * Initialize scroll-based navigation highlighting, section status display, and syslog animation.
- * @param {NodeList} sections - Section elements to observe.
  * @returns {{ destroy: () => void }}
  */
-export function initScrollTracking(sections) {
+export function initScrollTracking() {
+    const sections = document.querySelectorAll('section[id]');
     const observers = [];
     const timeouts = [];
     const navAnchors = document.querySelectorAll('.nav__link');
