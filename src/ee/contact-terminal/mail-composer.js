@@ -1,0 +1,181 @@
+import { sendMessage } from './send-message.js';
+
+const SUCCESS_ASCII = [
+    '     ♥♥     ♥♥     ',
+    '   ♥♥♥♥♥   ♥♥♥♥♥   ',
+    '   ♥♥♥♥♥♥♥♥♥♥♥♥♥   ',
+    '    ♥♥♥♥♥♥♥♥♥♥♥    ',
+    '      ♥♥♥♥♥♥♥      ',
+    '        ♥♥♥        ',
+    '         ♥         ',
+];
+
+const MAIL_PROMPT_DELAY_MS = 400;
+
+function renderSuccess(shell, t, appendLine, appendElement) {
+    for (const line of SUCCESS_ASCII) {
+        const el = document.createElement('div');
+        el.className = 'contact-mail__success';
+        el.textContent = line;
+        appendElement(el);
+    }
+    appendLine('✓ ' + t('contact_mail_success'), 'contact-mail__success');
+}
+
+export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, appendElement, listen, onDestroyed) {
+    if (onDestroyed()) return;
+
+    appendLine('> ' + t('contact_mail_opening'), 'contact-nf__hint');
+    schedule(promptSubject, reducedMotion ? 0 : MAIL_PROMPT_DELAY_MS);
+
+    function promptSubject() {
+        if (onDestroyed()) return;
+
+        const line = document.createElement('div');
+
+        const label = document.createElement('span');
+        label.className = 'contact-mail__field';
+        label.textContent = t('contact_mail_subject_prompt') + ': ';
+        line.appendChild(label);
+
+        const input = document.createElement('span');
+        input.className = 'contact-mail__input';
+        input.setAttribute('tabindex', '0');
+        input.setAttribute('role', 'textbox');
+        line.appendChild(input);
+
+        const cursor = document.createElement('span');
+        cursor.textContent = '▋';
+        cursor.style.animation = 'blink 1s step-end infinite';
+        line.appendChild(cursor);
+
+        appendElement(line);
+        input.focus();
+
+        let buffer = '';
+
+        listen(input, 'keydown', (e) => {
+            if (onDestroyed()) return;
+            e.preventDefault();
+
+            if (e.key === 'Enter') {
+                cursor.remove();
+                const subject = buffer;
+                schedule(() => promptMessage(subject), reducedMotion ? 0 : MAIL_PROMPT_DELAY_MS);
+                return;
+            }
+
+            if (e.key === 'Backspace') {
+                buffer = buffer.slice(0, -1);
+                input.textContent = buffer;
+                return;
+            }
+
+            if (e.key.length === 1) {
+                buffer += e.key;
+                input.textContent = buffer;
+            }
+        });
+
+        listen(line, 'click', () => {
+            if (!onDestroyed()) input.focus();
+        });
+    }
+
+    function promptMessage(subject) {
+        if (onDestroyed()) return;
+
+        const hintLine = document.createElement('div');
+        hintLine.className = 'contact-nf__hint';
+        hintLine.textContent = '> ' + t('contact_mail_send_hint');
+        appendElement(hintLine);
+
+        const line = document.createElement('div');
+
+        const label = document.createElement('span');
+        label.className = 'contact-mail__field';
+        label.textContent = t('contact_mail_message_prompt') + ': ';
+        line.appendChild(label);
+
+        const input = document.createElement('span');
+        input.className = 'contact-mail__input';
+        input.setAttribute('tabindex', '0');
+        input.setAttribute('role', 'textbox');
+        line.appendChild(input);
+
+        const cursor = document.createElement('span');
+        cursor.textContent = '▋';
+        cursor.style.animation = 'blink 1s step-end infinite';
+        line.appendChild(cursor);
+
+        appendElement(line);
+        input.focus();
+
+        let buffer = '';
+
+        listen(input, 'keydown', (e) => {
+            if (onDestroyed()) return;
+            e.preventDefault();
+
+            if (e.key === 'Escape') {
+                cursor.remove();
+                appendLine('> Cancelled.', 'contact-nf__hint');
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                const lastNewline = buffer.lastIndexOf('\n');
+                const lastLine = (lastNewline === -1 ? buffer : buffer.slice(lastNewline + 1)).trim();
+                if (lastLine === '/send') {
+                    cursor.remove();
+                    const messageBody = lastNewline === -1 ? '' : buffer.slice(0, lastNewline);
+                    doSend(subject, messageBody);
+                    return;
+                }
+                buffer += '\n';
+                input.textContent += '\n';
+                shell.scrollTop = shell.scrollHeight;
+                return;
+            }
+
+            if (e.key === 'Backspace') {
+                buffer = buffer.slice(0, -1);
+                input.textContent = buffer;
+                return;
+            }
+
+            if (e.key.length === 1) {
+                buffer += e.key;
+                input.textContent += e.key;
+            }
+        });
+
+        listen(line, 'click', () => {
+            if (!onDestroyed()) input.focus();
+        });
+    }
+
+    async function doSend(subject, body) {
+        if (onDestroyed()) return;
+
+        appendLine('> ' + t('contact_mail_sending'), 'contact-nf__hint');
+
+        const ok = await sendMessage(subject, body);
+        if (onDestroyed()) return;
+
+        if (ok) {
+            renderSuccess(shell, t, appendLine, appendElement);
+        } else {
+            const errorLine = document.createElement('div');
+            errorLine.className = 'contact-mail__error';
+            errorLine.textContent = '✗ ' + t('contact_mail_error');
+            appendElement(errorLine);
+
+            const mailLink = document.createElement('a');
+            mailLink.className = 'contact-hire__option';
+            mailLink.href = 'mailto:hello@milinsky.com';
+            mailLink.textContent = 'hello@milinsky.com';
+            appendElement(mailLink);
+        }
+    }
+}

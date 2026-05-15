@@ -29,6 +29,7 @@ import { createBbsPortal } from './ee/bbs-portal.js';
 import { createTimeTraveler } from './ee/time-traveler.js';
 import { createOverscrollSecret } from './ee/overscroll-secret.js';
 import { createAchievements } from './ee/achievements.js';
+import { createContactTerminal } from './ee/contact-terminal.js';
 
 const html = document.documentElement;
 const reducedMotion = getState('reducedMotion');
@@ -134,3 +135,4 @@ safeInit('achievements', () => {
     achievements = createAchievements({ eeManager, t });
     return achievements;
 });
+safeInit('contactTerminal', () => createContactTerminal({ t, reducedMotion }));
