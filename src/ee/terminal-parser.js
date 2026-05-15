@@ -28,7 +28,7 @@ export function createTerminalParser(ctx) {
     const shell = document.querySelector('.hero__terminal-shell');
     if (!shell) return { destroy() {} };
 
-    const commands = createCommands(t, eeManager.getSessionSeed());
+    const commands = createCommands({ t, sessionSeed: eeManager.getSessionSeed() });
 
     const outputContainer = document.createElement('div');
     outputContainer.className = 'ee-term-output';

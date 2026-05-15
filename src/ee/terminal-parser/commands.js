@@ -11,12 +11,19 @@ const SANDWICH_ART = [
     ' /BREAD\\  ',
 ];
 
-let secretAwaitingInput = false;
+/**
+ * Creates command handler for the terminal parser.
+ * @param {{ t: function, sessionSeed: number }} ctx
+ * @returns {{ execute: function, isExitPending: function, isSecretPending: function }}
+ */
+export function createCommands({ t, sessionSeed }) {
+    const SUDO_PREFIX = 'sudo ';
+    const CAT_PREFIX = 'cat ';
 
-export function createCommands(t, sessionSeed) {
     const sessionId = formatSessionId(sessionSeed);
     const dailyPassword = getDailyPassword();
     let exitPending = false;
+    let secretAwaitingInput = false;
 
     function cmdHelp() {
         const lines = [
@@ -138,12 +145,12 @@ export function createCommands(t, sessionSeed) {
 
         if (trimmed === 'help') return cmdHelp();
         if (trimmed === 'sudo') return cmdSudo('');
-        if (trimmed.startsWith('sudo ')) return cmdSudo(trimmed.slice(5));
+        if (trimmed.startsWith('sudo ')) return cmdSudo(trimmed.slice(SUDO_PREFIX.length));
         if (trimmed === 'exit') return cmdExit();
         if (trimmed === 'whoami') return cmdWhoami();
         if (trimmed === 'ls') return cmdLs();
         if (trimmed === 'cat') return cmdCat('');
-        if (trimmed.startsWith('cat ')) return cmdCat(trimmed.slice(4));
+        if (trimmed.startsWith('cat ')) return cmdCat(trimmed.slice(CAT_PREFIX.length));
         if (trimmed === 'secret') return cmdSecret();
         if (trimmed === 'hello') return cmdHello();
         if (trimmed === 'rm -rf /') return cmdRmrf();
