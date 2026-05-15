@@ -541,9 +541,13 @@ html.ee-crt-glitch {
     z-index: 1;
 }
 
-.ee-term-output {
-    max-height: 180px;
+.hero__terminal-shell {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
+}
+
+.ee-term-output {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--accent-green);
@@ -567,6 +571,7 @@ html.ee-crt-glitch {
     display: flex;
     align-items: center;
     min-height: 1.4em;
+    flex-shrink: 0;
 }
 
 .ee-term-cursor {

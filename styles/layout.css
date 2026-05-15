@@ -117,8 +117,8 @@
     position: relative;
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    overflow: hidden;
+    align-items: flex-start;
+    overflow: visible;
     padding-top: var(--header-height);
 }
 
@@ -140,7 +140,8 @@
     z-index: 2;
     max-width: 800px;
     width: 100%;
-    padding: var(--space-4xl) 0;
+    padding: var(--space-2xl) 0;
+    overflow: visible;
 }
 
 .hero__title {
