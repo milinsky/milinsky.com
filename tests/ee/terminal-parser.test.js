@@ -28,7 +28,7 @@ function makeCtx() {
 
 function setupTerminal() {
     const frame = document.createElement('div');
-    frame.className = 'hero__terminal-frame is-visible';
+    frame.className = 'hero__terminal-frame';
     document.body.appendChild(frame);
     return frame;
 }
@@ -94,21 +94,22 @@ describe('terminal-parser', () => {
     it('creates output container and input line', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         expect(frame.querySelector('.ee-term-output')).not.toBeNull();
         expect(frame.querySelector('.ee-term-input')).not.toBeNull();
         expect(frame.querySelector('.ee-term-cursor')).not.toBeNull();
     });
 
-    it('terminal activates automatically when visible', () => {
+    it('clicking terminal activates it', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
+        clickTerminal(frame);
         expect(frame.classList.contains('ee-term-active')).toBe(true);
     });
 
-    it('does not activate without is-visible class', () => {
-        const frame = document.createElement('div');
-        frame.className = 'hero__terminal-frame';
-        document.body.appendChild(frame);
+    it('does not activate without click', () => {
+        const frame = setupTerminal();
         init();
         expect(frame.classList.contains('ee-term-active')).toBe(false);
     });
@@ -116,6 +117,8 @@ describe('terminal-parser', () => {
     it('discover ee09 called on first command execution', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
+        clickTerminal(frame);
         typeText('hello');
         pressEnter();
         expect(ctx.eeManager.discover).toHaveBeenCalledWith('ee09');
@@ -125,6 +128,8 @@ describe('terminal-parser', () => {
     it('does not call discover twice on second command', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
+        clickTerminal(frame);
         typeText('hello');
         pressEnter();
         typeText('hello');
@@ -135,6 +140,7 @@ describe('terminal-parser', () => {
     it('help command shows command list with secret strikethrough', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('help');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -147,6 +153,7 @@ describe('terminal-parser', () => {
     it('sudo command shows root access message', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('sudo');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -156,6 +163,7 @@ describe('terminal-parser', () => {
     it('sudo make me a sandwich shows ASCII sandwich', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('sudo make me a sandwich');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -166,6 +174,7 @@ describe('terminal-parser', () => {
     it('exit command dims screen with confirmation', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('exit');
         pressEnter();
         expect(frame.classList.contains('ee-term-dimmed')).toBe(true);
@@ -176,6 +185,7 @@ describe('terminal-parser', () => {
     it('exit Y shows no escape message', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('exit');
         pressEnter();
         typeText('Y');
@@ -187,6 +197,7 @@ describe('terminal-parser', () => {
     it('exit N shows aborted', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('exit');
         pressEnter();
         typeText('N');
@@ -198,6 +209,7 @@ describe('terminal-parser', () => {
     it('whoami shows visitor with session id', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('whoami');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -207,6 +219,7 @@ describe('terminal-parser', () => {
     it('ls shows file listing', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('ls');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -216,6 +229,7 @@ describe('terminal-parser', () => {
     it('cat coffee.md shows ASCII cup and caffeine message', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('cat coffee.md');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -225,6 +239,7 @@ describe('terminal-parser', () => {
     it('cat secrets.enc shows partial password hint', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('cat secrets.enc');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -235,6 +250,7 @@ describe('terminal-parser', () => {
     it('hello shows chatbot response', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('hello');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -244,6 +260,7 @@ describe('terminal-parser', () => {
     it('rm -rf / shows denial message', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('rm -rf /');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -253,6 +270,7 @@ describe('terminal-parser', () => {
     it('pineapple shows pizza opinion', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('pineapple');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -262,6 +280,7 @@ describe('terminal-parser', () => {
     it('secret command asks for password', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('secret');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -271,6 +290,7 @@ describe('terminal-parser', () => {
     it('secret wrong password shows access denied', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('secret');
         pressEnter();
         typeText('wrongpass');
@@ -282,6 +302,7 @@ describe('terminal-parser', () => {
     it('secret correct password shows access granted', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('secret');
         pressEnter();
         const password = getDailyPassword();
@@ -294,6 +315,7 @@ describe('terminal-parser', () => {
     it('unknown command shows error with command name', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('foobar');
         pressEnter();
         const lines = getOutputLines(frame);
@@ -303,6 +325,7 @@ describe('terminal-parser', () => {
     it('backspace removes last character from input', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('ab');
         pressKey('Backspace');
         pressEnter();
@@ -313,6 +336,7 @@ describe('terminal-parser', () => {
     it('escape deactivates terminal', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         pressKey('Escape');
         expect(frame.classList.contains('ee-term-active')).toBe(false);
     });
@@ -320,6 +344,7 @@ describe('terminal-parser', () => {
     it('character input appends to buffer', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('abc');
         const inputLine = frame.querySelector('.ee-term-input');
         expect(inputLine.textContent).toContain('abc');
@@ -338,6 +363,7 @@ describe('terminal-parser', () => {
     it('input lines have distinct css class', () => {
         const frame = setupTerminal();
         init();
+        clickTerminal(frame);
         typeText('hello');
         pressEnter();
         const inputLines = frame.querySelectorAll('.ee-term-output__line--input');

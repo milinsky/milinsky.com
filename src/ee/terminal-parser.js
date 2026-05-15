@@ -86,21 +86,6 @@ export function createTerminalParser(ctx) {
         appendOutput(result.text, false);
     }
 
-    if (terminalFrame.classList.contains('is-visible')) {
-        activate();
-    } else {
-        const visibilityObserver = new MutationObserver((mutations) => {
-            for (const m of mutations) {
-                if (m.type === 'attributes' && terminalFrame.classList.contains('is-visible')) {
-                    visibilityObserver.disconnect();
-                    activate();
-                    return;
-                }
-            }
-        });
-        visibilityObserver.observe(terminalFrame, { attributes: true, attributeFilter: ['class'] });
-    }
-
     listen(terminalFrame, 'click', () => {
         if (destroyed) return;
         activate();
@@ -133,7 +118,7 @@ export function createTerminalParser(ctx) {
             return;
         }
 
-        if (e.key.length === 1) {
+        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
             e.preventDefault();
             inputBuffer += e.key;
             refreshInput();
