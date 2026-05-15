@@ -1,74 +1,13 @@
+import { renderInstant, ASCII_LINES, DIVIDER, getInfoLines } from './neofetch/render.js';
+
 const CHAR_DELAY_MS = 40;
 const LINE_DELAY_MS = 80;
 const INITIAL_DELAY_MS = 500;
 const POST_CMD_DELAY_MS = 300;
+const HEADER_DELAY_MULTIPLIER = 2;
+const DONE_RESOLVE_DELAY_MS = 100;
 
-const ASCII_LINES = [
-    '  ┌─────────────┐',
-    '  │   •     •   │',
-    '  │       ▼     │',
-    '  │    ╲────╱   │',
-    '  └─────────────┘',
-    '  ┌──┬──┬──┬──┬──┐',
-    '  │▓▓│▓▓│▓▓│▓▓│▓▓│',
-    '  └──┴──┴──┴──┴──┘',
-];
-
-const DIVIDER = '─────────────────────────';
-
-function getThemeName() {
-    return document.documentElement.getAttribute('data-theme') === 'light' ? 'Solarized Light' : 'Solarized Dark';
-}
-
-function getInfoLines() {
-    return [
-        { key: 'OS', value: 'MILINSKY.OS v4.2.0' },
-        { key: 'Shell', value: 'milinsky.sh' },
-        { key: 'Uptime', value: '9+ years' },
-        { key: 'Stack', value: 'PHP / Java / AI' },
-        { key: 'Theme', value: getThemeName() },
-        { key: 'Status', value: '● Available' },
-    ];
-}
-
-export function createNeofetchElement() {
-    const grid = document.createElement('div');
-    grid.className = 'neofetch-grid';
-
-    const left = document.createElement('pre');
-    left.className = 'neofetch-ascii';
-    left.textContent = ASCII_LINES.join('\n');
-    grid.appendChild(left);
-
-    const right = document.createElement('div');
-    right.className = 'neofetch-info';
-
-    const header = document.createElement('div');
-    header.className = 'neofetch-header';
-    header.textContent = 'Mikhail@Ilinsky';
-    right.appendChild(header);
-
-    const dividerEl = document.createElement('div');
-    dividerEl.className = 'neofetch-divider';
-    dividerEl.textContent = DIVIDER;
-    right.appendChild(dividerEl);
-
-    for (const info of getInfoLines()) {
-        const line = document.createElement('div');
-        const key = document.createElement('span');
-        key.className = 'neofetch-key';
-        key.textContent = info.key + ': ';
-        const value = document.createElement('span');
-        value.className = 'neofetch-value';
-        value.textContent = info.value;
-        line.appendChild(key);
-        line.appendChild(value);
-        right.appendChild(line);
-    }
-    grid.appendChild(right);
-
-    return grid;
-}
+export { createNeofetchElement } from './neofetch/render.js';
 
 /**
  * @param {{ t: function, reducedMotion?: boolean }} ctx
@@ -121,8 +60,7 @@ export function createNeofetch(ctx) {
     container.appendChild(cmdLine);
 
     const cmdText = '$ neofetch';
-    for (let i = 0; i < cmdText.length; i++) {
-        const ch = cmdText[i];
+    for (const ch of cmdText) {
         schedule(() => {
             cmdLine.textContent += ch;
             shell.scrollTop = shell.scrollHeight;
@@ -164,7 +102,7 @@ export function createNeofetch(ctx) {
         right.appendChild(dividerEl);
         shell.scrollTop = shell.scrollHeight;
     }, delay);
-    delay += LINE_DELAY_MS * 2;
+    delay += LINE_DELAY_MS * HEADER_DELAY_MULTIPLIER;
 
     const infoLines = getInfoLines();
     for (const info of infoLines) {
@@ -186,7 +124,7 @@ export function createNeofetch(ctx) {
 
     schedule(() => {
         resolveDone();
-    }, delay + 100);
+    }, delay + DONE_RESOLVE_DELAY_MS);
 
     return {
         destroy() {
@@ -195,47 +133,4 @@ export function createNeofetch(ctx) {
         },
         done,
     };
-}
-
-function renderInstant(container) {
-    const cmdLine = document.createElement('div');
-    cmdLine.className = 'ee-term-output__line ee-term-output__line--input';
-    cmdLine.textContent = '$ neofetch';
-    container.appendChild(cmdLine);
-
-    const grid = document.createElement('div');
-    grid.className = 'neofetch-grid';
-    container.appendChild(grid);
-
-    const left = document.createElement('pre');
-    left.className = 'neofetch-ascii';
-    left.textContent = ASCII_LINES.join('\n');
-    grid.appendChild(left);
-
-    const right = document.createElement('div');
-    right.className = 'neofetch-info';
-
-    const header = document.createElement('div');
-    header.className = 'neofetch-header';
-    header.textContent = 'Mikhail@Ilinsky';
-    right.appendChild(header);
-
-    const dividerEl = document.createElement('div');
-    dividerEl.className = 'neofetch-divider';
-    dividerEl.textContent = DIVIDER;
-    right.appendChild(dividerEl);
-
-    for (const info of getInfoLines()) {
-        const line = document.createElement('div');
-        const key = document.createElement('span');
-        key.className = 'neofetch-key';
-        key.textContent = info.key + ': ';
-        const value = document.createElement('span');
-        value.className = 'neofetch-value';
-        value.textContent = info.value;
-        line.appendChild(key);
-        line.appendChild(value);
-        right.appendChild(line);
-    }
-    grid.appendChild(right);
 }
