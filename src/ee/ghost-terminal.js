@@ -66,19 +66,20 @@ export function createGhostTerminal(ctx) {
 
         const output = document.querySelector('.ee-term-output');
         const inputLine = document.querySelector('.ee-term-input');
+        const shell = document.querySelector('.hero__terminal-shell');
         if (!output || !inputLine) return;
 
         const seed = eeManager.getSessionSeed();
-        runGhost(output, inputLine, seed);
+        runGhost(output, inputLine, shell, seed);
     }
 
-    function appendOutputLine(container, text, cssClass) {
+    function appendOutputLine(container, shellEl, text, cssClass) {
         const line = document.createElement('div');
         line.className = 'ee-term-output__line';
         if (cssClass) line.classList.add(cssClass);
         line.textContent = text;
         container.appendChild(line);
-        container.scrollTop = container.scrollHeight;
+        if (shellEl) shellEl.scrollTop = shellEl.scrollHeight;
         return line;
     }
 
@@ -93,7 +94,7 @@ export function createGhostTerminal(ctx) {
         }, CHAR_DELAY_MS);
     }
 
-    function runGhost(output, inputLine, seed) {
+    function runGhost(output, inputLine, shell, seed) {
         ghostActive = true;
         inputLine.style.display = 'none';
 
@@ -117,11 +118,11 @@ export function createGhostTerminal(ctx) {
             const step = script[stepIndex];
             schedule(
                 () => {
-                    const promptLine = appendOutputLine(output, '$ ', 'ee-ghost-prompt-line');
+                    const promptLine = appendOutputLine(output, shell, '$ ', 'ee-ghost-prompt-line');
                     ghostLines.push(promptLine);
 
                     typeInLine(promptLine, step.cmd, 0, () => {
-                        const outputLine = appendOutputLine(output, step.output, 'ee-ghost-output-line');
+                        const outputLine = appendOutputLine(output, shell, step.output, 'ee-ghost-output-line');
                         ghostLines.push(outputLine);
                         schedule(() => runStep(stepIndex + 1), LINE_PAUSE_MS);
                     });

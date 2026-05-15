@@ -31,6 +31,8 @@ export function createVisitCounter(ctx) {
     const terminalFrame = document.querySelector('.hero__terminal-frame');
     if (!terminalFrame) return { destroy() {} };
 
+    const target = terminalFrame.querySelector('.hero__split-left') || terminalFrame;
+
     let msg = '';
     if (visitCount >= VISIT_MILESTONE_20) {
         msg = t('ee_visit_20').replace('#N', String(visitCount));
@@ -48,14 +50,14 @@ export function createVisitCounter(ctx) {
 
     const msgEl = document.createElement('div');
     msgEl.className = 'ee-visit-msg';
-    terminalFrame.appendChild(msgEl);
+    target.appendChild(msgEl);
 
     if (visitCount >= VISIT_MILESTONE_10) {
         const link = document.createElement('a');
         link.href = 'mailto:hello@milinsky.com';
         link.className = 'ee-visit-link';
         link.textContent = '> direct_contact';
-        terminalFrame.appendChild(link);
+        target.appendChild(link);
     }
 
     if (visitCount >= VISIT_MILESTONE_20) {
@@ -65,7 +67,7 @@ export function createVisitCounter(ctx) {
         secret.rel = 'noopener noreferrer';
         secret.className = 'ee-visit-link';
         secret.textContent = '> Telegram: t.me/milinsky';
-        terminalFrame.appendChild(secret);
+        target.appendChild(secret);
     }
 
     let idx = 0;

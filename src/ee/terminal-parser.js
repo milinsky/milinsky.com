@@ -25,6 +25,9 @@ export function createTerminalParser(ctx) {
     const terminalFrame = document.querySelector('.hero__terminal-frame');
     if (!terminalFrame) return { destroy() {} };
 
+    const shell = document.querySelector('.hero__terminal-shell');
+    if (!shell) return { destroy() {} };
+
     const commands = createCommands(t, eeManager.getSessionSeed());
 
     const outputContainer = document.createElement('div');
@@ -40,8 +43,8 @@ export function createTerminalParser(ctx) {
     cursorSpan.setAttribute('aria-hidden', 'true');
     inputLine.appendChild(cursorSpan);
 
-    terminalFrame.appendChild(outputContainer);
-    terminalFrame.appendChild(inputLine);
+    shell.appendChild(outputContainer);
+    shell.appendChild(inputLine);
 
     function refreshInput() {
         const prefixNode = inputLine.firstChild;
@@ -56,7 +59,7 @@ export function createTerminalParser(ctx) {
         }
         line.textContent = text;
         outputContainer.appendChild(line);
-        outputContainer.scrollTop = outputContainer.scrollHeight;
+        shell.scrollTop = shell.scrollHeight;
     }
 
     function activate() {
