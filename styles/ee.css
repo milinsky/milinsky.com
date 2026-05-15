@@ -1231,6 +1231,12 @@ html.ee-time-anomaly {
     color: var(--accent-green, var(--solar-green));
 }
 
+.contact-mail__heart {
+    color: var(--solar-red);
+    text-align: center;
+    white-space: pre;
+}
+
 .contact-mail__error {
     color: var(--accent-red, #dc322f);
 }
