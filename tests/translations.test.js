@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { translations } from '../src/translations.js';
 
-const EXPECTED_KEY_COUNT = 195;
+const EXPECTED_KEY_COUNT = 192;
 const REQUIRED_LANGS = ['en', 'ru'];
 const CRITICAL_KEYS = [
     'hero_typing',

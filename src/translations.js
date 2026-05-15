@@ -92,8 +92,8 @@ export const translations = {
         ru: 'За последние два года создал множество решений в рамках корпоративных разработок — от простых лендингов до сложных многокомпонентных приложений.',
     },
     expertise_title: {
-        en: 'Not a "site in one prompt" —<br><span class="accent-text">an engineering approach to AI</span>',
-        ru: 'Не «сайт за один промпт» —<br><span class="accent-text">инженерный подход к AI</span>',
+        en: 'Not a "site in one prompt", but<br><span class="accent-text">an engineering approach to AI</span>',
+        ru: 'Не «сайт за один промпт», а<br><span class="accent-text">инженерный подход к AI</span>',
     },
     feature1_title: { en: 'Attention to Detail', ru: 'Внимание к деталям' },
     feature1_text: {
@@ -480,18 +480,6 @@ export const translations = {
     ee_bbs_goodbye: {
         en: 'NO CARRIER\nGoodbye!',
         ru: 'NO CARRIER\nДо свидания!',
-    },
-    ee_phosphor_10k_1: {
-        en: '10,000 pixels traveled. Your cursor leaves a trace.',
-        ru: '10 000 пикселей пройдено. Твой курсор оставляет след.',
-    },
-    ee_phosphor_10k_2: {
-        en: 'The phosphor remembers every path you take.',
-        ru: 'Фосфор помнит каждый твой путь.',
-    },
-    ee_phosphor_10k_3: {
-        en: 'Your mouse has earned its glow. Well traveled.',
-        ru: 'Твоя мышь заслужила своё свечение. Хорошо потрудилась.',
     },
     ee_ach_hunter: {
         en: 'EASTER EGG HUNTER — {n} found',
