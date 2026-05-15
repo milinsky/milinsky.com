@@ -93,6 +93,22 @@ describe('runMailComposer', () => {
         expect(spy).toHaveBeenCalledWith('Test subject', 'Hello world');
     });
 
+    it('/send on same line as message sends correctly', async () => {
+        const spy = vi.spyOn(sendMessageModule, 'sendMessage').mockResolvedValue(true);
+        runMailComposer(shell, t, false, schedule, appendLine, appendElement, listen, () => false);
+        scheduleCalls[0].fn();
+        const input = shell.querySelectorAll('.contact-mail__input')[0];
+        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+        scheduleCalls[1].fn();
+        const msgInput = shell.querySelectorAll('.contact-mail__input')[1];
+        for (const ch of 'Hello world/send') {
+            msgInput.dispatchEvent(new KeyboardEvent('keydown', { key: ch }));
+        }
+        msgInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+        await vi.runAllTimersAsync();
+        expect(spy).toHaveBeenCalledWith('', 'Hello world');
+    });
+
     it('escape cancels composer', () => {
         runMailComposer(shell, t, false, schedule, appendLine, appendElement, listen, () => false);
         scheduleCalls[0].fn();

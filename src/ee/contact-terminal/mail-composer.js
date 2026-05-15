@@ -1,25 +1,24 @@
 import { sendMessage } from './send-message.js';
 
 const SUCCESS_ASCII = [
-    '     ♥♥     ♥♥     ',
-    '   ♥♥♥♥♥   ♥♥♥♥♥   ',
-    '   ♥♥♥♥♥♥♥♥♥♥♥♥♥   ',
-    '    ♥♥♥♥♥♥♥♥♥♥♥    ',
-    '      ♥♥♥♥♥♥♥      ',
-    '        ♥♥♥        ',
-    '         ♥         ',
+    '   ♥     ♥   ',
+    '  ♥♥♥   ♥♥♥  ',
+    '  ♥♥♥♥♥♥♥♥♥  ',
+    '   ♥♥♥♥♥♥♥   ',
+    '     ♥♥♥♥    ',
+    '       ♥     ',
 ];
 
 const MAIL_PROMPT_DELAY_MS = 400;
 
-function renderSuccess(shell, t, appendLine, appendElement) {
+function renderSuccess(t, appendLine, appendElement) {
+    appendLine('✓ ' + t('contact_mail_success'), 'contact-mail__success');
     for (const line of SUCCESS_ASCII) {
         const el = document.createElement('div');
-        el.className = 'contact-mail__success';
+        el.className = 'contact-mail__heart';
         el.textContent = line;
         appendElement(el);
     }
-    appendLine('✓ ' + t('contact_mail_success'), 'contact-mail__success');
 }
 
 export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, appendElement, listen, onDestroyed) {
@@ -124,11 +123,10 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
             }
 
             if (e.key === 'Enter') {
-                const lastNewline = buffer.lastIndexOf('\n');
-                const lastLine = (lastNewline === -1 ? buffer : buffer.slice(lastNewline + 1)).trim();
-                if (lastLine === '/send') {
+                const trimmed = buffer.replace(/\s+$/, '');
+                if (trimmed.endsWith('/send')) {
                     cursor.remove();
-                    const messageBody = lastNewline === -1 ? '' : buffer.slice(0, lastNewline);
+                    const messageBody = trimmed.slice(0, -5).trim();
                     doSend(subject, messageBody);
                     return;
                 }
@@ -164,7 +162,7 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         if (onDestroyed()) return;
 
         if (ok) {
-            renderSuccess(shell, t, appendLine, appendElement);
+            renderSuccess(t, appendLine, appendElement);
         } else {
             const errorLine = document.createElement('div');
             errorLine.className = 'contact-mail__error';
