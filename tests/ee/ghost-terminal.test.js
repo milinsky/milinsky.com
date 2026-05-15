@@ -13,12 +13,27 @@ describe('ghost-terminal', () => {
 
         const terminal = document.createElement('div');
         terminal.className = 'hero__terminal-frame';
+        const split = document.createElement('div');
+        split.className = 'hero__split';
+        const left = document.createElement('div');
+        left.className = 'hero__split-left';
+        const divider = document.createElement('div');
+        divider.className = 'hero__split-divider';
+        const right = document.createElement('div');
+        right.className = 'hero__split-right';
+        const shell = document.createElement('div');
+        shell.className = 'hero__terminal-shell';
         const output = document.createElement('div');
         output.className = 'ee-term-output';
         const inputLine = document.createElement('div');
         inputLine.className = 'ee-term-input';
-        terminal.appendChild(output);
-        terminal.appendChild(inputLine);
+        shell.appendChild(output);
+        shell.appendChild(inputLine);
+        right.appendChild(shell);
+        split.appendChild(left);
+        split.appendChild(divider);
+        split.appendChild(right);
+        terminal.appendChild(split);
         document.body.appendChild(terminal);
 
         eeManager = {
