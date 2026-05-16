@@ -1,5 +1,14 @@
 import { ASCII_LINES } from '../neofetch/render.js';
 
+const LOGO_LINES = [
+    '  ██╗███╗   ███╗',
+    '  ██║████╗ ████║',
+    '  ██║██╔████╔██║',
+    '  ██║██║╚██╔╝██║',
+    '  ██║██║ ╚═╝ ██║',
+    '  ╚═╝╚═╝     ╚═╝',
+];
+
 const CLOCK_TICK_MS = 1000;
 
 function formatTime() {
@@ -12,7 +21,7 @@ export function runNeofetchCard(shell, t, reducedMotion, schedule, appendElement
 
     const ascii = document.createElement('pre');
     ascii.className = 'contact-nf__ascii';
-    ascii.textContent = ASCII_LINES.join('\n');
+    ascii.textContent = LOGO_LINES.join('\n');
     grid.appendChild(ascii);
 
     const info = document.createElement('div');
