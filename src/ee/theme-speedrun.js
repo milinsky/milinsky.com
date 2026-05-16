@@ -26,20 +26,25 @@ export function createThemeSpeedrun(ctx) {
         return id;
     }
 
+    function triggerGeoCities() {
+        document.documentElement.classList.add('ee-geocities');
+        schedule(restoreNormal, GEOCITIES_DURATION_MS);
+    }
+
+    function restoreNormal() {
+        document.documentElement.classList.remove('ee-geocities');
+        showToast(t('ee_speedrun_recovered'), TOAST_DURATION_MS);
+    }
+
     function activate() {
         if (!discovered) {
             eeManager.discover('ee10');
             discovered = true;
         }
-
         if (!reducedMotion) {
-            document.documentElement.classList.add('ee-geocities');
-            schedule(() => {
-                document.documentElement.classList.remove('ee-geocities');
-                showToast(t('ee_speedrun_recovered'), TOAST_DURATION_MS);
-            }, GEOCITIES_DURATION_MS);
+            triggerGeoCities();
         } else {
-            showToast(t('ee_speedrun_recovered'), TOAST_DURATION_MS);
+            restoreNormal();
         }
     }
 

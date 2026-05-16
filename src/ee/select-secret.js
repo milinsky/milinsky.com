@@ -30,11 +30,15 @@ export function createSelectSecret(ctx) {
     const secretTexts = document.querySelectorAll('.ee-secret-text');
     if (secretTexts.length === 0) return { destroy() {} };
 
-    for (const el of secretTexts) {
-        const key = el.getAttribute('data-ee-key');
+    function revealSecretText(element) {
+        const key = element.getAttribute('data-ee-key');
         if (key) {
-            el.textContent = t(key);
+            element.textContent = t(key);
         }
+    }
+
+    for (const el of secretTexts) {
+        revealSecretText(el);
     }
 
     let discovered = false;

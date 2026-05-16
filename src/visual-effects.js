@@ -31,8 +31,9 @@ export function initVisualEffects() {
         card.appendChild(scanline);
     }
 
-    const crtNoise = document.getElementById('crtNoise');
-    if (crtNoise) {
+    function initNoiseAnimation() {
+        const crtNoise = document.getElementById('crtNoise');
+        if (!crtNoise) return;
         (function runNoise() {
             if (noiseDestroyed) return;
             const delay = NOISE_DELAY_MIN_MS + Math.random() * NOISE_DELAY_RANGE_MS;
@@ -57,7 +58,8 @@ export function initVisualEffects() {
         })();
     }
 
-    if (sectionLabels.length > 0) {
+    function initLabelRotation() {
+        if (sectionLabels.length === 0) return;
         const labelOriginals = new Map();
         for (const label of sectionLabels) {
             labelOriginals.set(label, label.textContent);
@@ -88,6 +90,9 @@ export function initVisualEffects() {
             allTimeouts.push(t);
         })();
     }
+
+    initNoiseAnimation();
+    initLabelRotation();
 
     return {
         destroy() {

@@ -39,55 +39,43 @@ export function createPrintResume(ctx) {
         listeners.push({ target, event, handler, options });
     }
 
-    function buildResumeElement() {
+    function buildResumeHTML() {
         const resume = document.createElement('div');
         resume.className = PRINT_RESUME_CLASS;
-
         const name = document.createElement('h1');
         name.className = 'ee-print-resume__name';
         name.textContent = 'MILINSKY';
         resume.appendChild(name);
-
         const role = document.createElement('p');
         role.className = 'ee-print-resume__role';
         role.textContent = t('ee_print_role');
         resume.appendChild(role);
-
         const contact = document.createElement('p');
         contact.className = 'ee-print-resume__contact';
         contact.textContent = 'hello@milinsky.com  |  t.me/milinsky';
         resume.appendChild(contact);
-
         createDivider(resume);
-
         createSection(resume, 'ee_print_experience_heading', t);
         createLine(resume, t('ee_print_exp1'));
         createLine(resume, t('ee_print_exp2'));
         createLine(resume, t('ee_print_exp3'));
-
         createDivider(resume);
-
         createSection(resume, 'ee_print_services_heading', t);
         createLine(resume, t('ee_print_svc1'));
         createLine(resume, t('ee_print_svc2'));
         createLine(resume, t('ee_print_svc3'));
         createLine(resume, t('ee_print_svc4'));
-
         createDivider(resume);
-
         createSection(resume, 'ee_print_results_heading', t);
         createLine(resume, t('ee_print_res1'));
         createLine(resume, t('ee_print_res2'));
         createLine(resume, t('ee_print_res3'));
         createLine(resume, t('ee_print_res4'));
-
         createDivider(resume);
-
         const footer = document.createElement('p');
         footer.className = 'ee-print-resume__footer';
         footer.textContent = t('ee_print_footer');
         resume.appendChild(footer);
-
         return resume;
     }
 
@@ -96,7 +84,7 @@ export function createPrintResume(ctx) {
 
         eeManager.discover('ee12');
 
-        const resume = buildResumeElement();
+        const resume = buildResumeHTML();
         document.body.appendChild(resume);
         document.body.classList.add(PRINT_BODY_CLASS);
 

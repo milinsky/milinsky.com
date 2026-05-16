@@ -53,31 +53,36 @@ export function createTripleClick(ctx) {
         });
     }
 
-    function activateUnredacted(label, sectionName) {
+    function applyGlitch(label, sectionName) {
         const section = label.closest('section');
-        if (!section) return;
-
+        if (!section) return null;
         const container = section.querySelector('.container');
-        if (!container) return;
-
+        if (!container) return null;
         activeSection = sectionName;
         if (!discovered) {
             discovered = true;
             eeManager.discover('ee19');
         }
-
         const originalLabelText = label.textContent;
         label.textContent = t('ee_unredacted_label_' + sectionName);
-
         container.classList.add('ee-unredacted-active');
+        return { container, originalLabelText };
+    }
 
+    function buildOverlay(sectionName) {
         const overlay = document.createElement('div');
         overlay.className = 'ee-unredacted-content';
         overlay.textContent = t('ee_unredacted_' + sectionName);
-        container.appendChild(overlay);
+        return overlay;
+    }
 
+    function activateUnredacted(label, sectionName) {
+        const result = applyGlitch(label, sectionName);
+        if (!result) return;
+        const overlay = buildOverlay(sectionName);
+        result.container.appendChild(overlay);
         schedule(() => {
-            restoreContent(container, label, originalLabelText, overlay);
+            restoreContent(result.container, label, result.originalLabelText, overlay);
         }, UNREDACTED_DISPLAY_MS);
     }
 

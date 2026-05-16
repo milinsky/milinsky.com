@@ -33,54 +33,55 @@ export function createVisitCounter(ctx) {
 
     const target = terminalFrame.querySelector('.hero__split-left') || terminalFrame;
 
-    let msg = '';
-    if (visitCount >= VISIT_MILESTONE_20) {
-        msg = t('ee_visit_20').replace('#N', String(visitCount));
-    } else if (visitCount >= VISIT_MILESTONE_10) {
-        msg = t('ee_visit_10');
-    } else if (visitCount >= VISIT_MILESTONE_5) {
-        msg = t('ee_visit_5').replace('#N', String(visitCount));
-    } else {
-        msg = t('ee_visit_2').replace('#N', String(visitCount));
-    }
-
-    if (!eeManager.isDiscovered('ee16')) {
-        eeManager.discover('ee16');
-    }
-
-    const msgEl = document.createElement('div');
-    msgEl.className = 'ee-visit-msg';
-    target.appendChild(msgEl);
-
-    if (visitCount >= VISIT_MILESTONE_10) {
-        const link = document.createElement('a');
-        link.href = 'mailto:hello@milinsky.com';
-        link.className = 'ee-visit-link';
-        link.textContent = '> direct_contact';
-        target.appendChild(link);
-    }
-
-    if (visitCount >= VISIT_MILESTONE_20) {
-        const secret = document.createElement('a');
-        secret.href = 'https://t.me/milinsky';
-        secret.target = '_blank';
-        secret.rel = 'noopener noreferrer';
-        secret.className = 'ee-visit-link';
-        secret.textContent = '> Telegram: t.me/milinsky';
-        target.appendChild(secret);
-    }
-
-    let idx = 0;
-
-    function typeVisit() {
-        if (idx < msg.length) {
-            msgEl.textContent += msg[idx];
-            idx++;
-            schedule(typeVisit, TYPE_DELAY_BASE_MS + Math.random() * TYPE_DELAY_RANDOM_MS);
+    function getVisitMessage(count) {
+        if (count >= VISIT_MILESTONE_20) {
+            return t('ee_visit_20').replace('#N', String(count));
         }
+        if (count >= VISIT_MILESTONE_10) {
+            return t('ee_visit_10');
+        }
+        if (count >= VISIT_MILESTONE_5) {
+            return t('ee_visit_5').replace('#N', String(count));
+        }
+        return t('ee_visit_2').replace('#N', String(count));
     }
 
-    typeVisit();
+    function printWelcome() {
+        const msg = getVisitMessage(visitCount);
+        if (!eeManager.isDiscovered('ee16')) {
+            eeManager.discover('ee16');
+        }
+        const msgEl = document.createElement('div');
+        msgEl.className = 'ee-visit-msg';
+        target.appendChild(msgEl);
+        if (visitCount >= VISIT_MILESTONE_10) {
+            const link = document.createElement('a');
+            link.href = 'mailto:hello@milinsky.com';
+            link.className = 'ee-visit-link';
+            link.textContent = '> direct_contact';
+            target.appendChild(link);
+        }
+        if (visitCount >= VISIT_MILESTONE_20) {
+            const secret = document.createElement('a');
+            secret.href = 'https://t.me/milinsky';
+            secret.target = '_blank';
+            secret.rel = 'noopener noreferrer';
+            secret.className = 'ee-visit-link';
+            secret.textContent = '> Telegram: t.me/milinsky';
+            target.appendChild(secret);
+        }
+        let idx = 0;
+        function typeVisit() {
+            if (idx < msg.length) {
+                msgEl.textContent += msg[idx];
+                idx++;
+                schedule(typeVisit, TYPE_DELAY_BASE_MS + Math.random() * TYPE_DELAY_RANDOM_MS);
+            }
+        }
+        typeVisit();
+    }
+
+    printWelcome();
 
     return {
         destroy() {

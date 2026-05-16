@@ -8,22 +8,26 @@ const BOX_WIDTH = 40;
 export function createConsoleDrop(ctx) {
     const { eeManager, t } = ctx;
 
-    const borderStyle = 'font-family:monospace;color:#b58900;background:#002b36;padding:4px 0;';
-    const textStyle = 'font-family:monospace;color:#b58900;background:#002b36;';
-    const line1 = t('ee_console_box_1');
-    const line2 = t('ee_console_box_2');
-    const line3 = t('ee_console_box_3');
-    const padL1 = Math.max(0, BOX_WIDTH - 1 - line1.length);
-    const padL2 = Math.max(0, BOX_WIDTH - 1 - line2.length);
-    const padL3 = Math.max(0, BOX_WIDTH - 1 - line3.length);
-    const p1 = ' '.repeat(padL1);
-    const p2 = ' '.repeat(padL2);
-    const p3 = ' '.repeat(padL3);
-    console.log(`%c\u250C${'\u2500'.repeat(BOX_WIDTH)}\u2510`, borderStyle);
-    console.log(`%c\u2502  ${line1}${p1}\u2502`, textStyle);
-    console.log(`%c\u2502  ${line2}${p2}\u2502`, textStyle);
-    console.log(`%c\u2502  ${line3}${p3}\u2502`, textStyle);
-    console.log(`%c\u2514${'\u2500'.repeat(BOX_WIDTH)}\u2518`, borderStyle);
+    function buildAsciiBox() {
+        const borderStyle = 'font-family:monospace;color:#b58900;background:#002b36;padding:4px 0;';
+        const textStyle = 'font-family:monospace;color:#b58900;background:#002b36;';
+        const line1 = t('ee_console_box_1');
+        const line2 = t('ee_console_box_2');
+        const line3 = t('ee_console_box_3');
+        const padL1 = Math.max(0, BOX_WIDTH - 1 - line1.length);
+        const padL2 = Math.max(0, BOX_WIDTH - 1 - line2.length);
+        const padL3 = Math.max(0, BOX_WIDTH - 1 - line3.length);
+        const p1 = ' '.repeat(padL1);
+        const p2 = ' '.repeat(padL2);
+        const p3 = ' '.repeat(padL3);
+        console.log(`%c\u250C${'\u2500'.repeat(BOX_WIDTH)}\u2510`, borderStyle);
+        console.log(`%c\u2502  ${line1}${p1}\u2502`, textStyle);
+        console.log(`%c\u2502  ${line2}${p2}\u2502`, textStyle);
+        console.log(`%c\u2502  ${line3}${p3}\u2502`, textStyle);
+        console.log(`%c\u2514${'\u2500'.repeat(BOX_WIDTH)}\u2518`, borderStyle);
+    }
+
+    buildAsciiBox();
 
     const logSets = [
         [
