@@ -29,8 +29,7 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         line.appendChild(input);
 
         const cursor = document.createElement('span');
-        cursor.textContent = '▋';
-        cursor.style.animation = 'blink 1s step-end infinite';
+        cursor.className = 'contact-cursor';
         line.appendChild(cursor);
 
         appendElement(line);
@@ -88,8 +87,7 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         line.appendChild(input);
 
         const cursor = document.createElement('span');
-        cursor.textContent = '▋';
-        cursor.style.animation = 'blink 1s step-end infinite';
+        cursor.className = 'contact-cursor';
         line.appendChild(cursor);
 
         appendElement(line);

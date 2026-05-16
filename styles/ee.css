@@ -1244,3 +1244,18 @@ html.ee-time-anomaly {
 .contact__terminal-shell :focus-visible {
     outline: none;
 }
+
+.contact-cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.1em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    margin-left: 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .contact-cursor {
+        animation: ee-term-blink 1s step-end infinite;
+    }
+}
