@@ -1,5 +1,5 @@
 import { createEeManager } from './ee-manager.js';
-import { translations } from './translations.js';
+import { translations } from './translations/index.js';
 import { eeT, applyLanguage } from './i18n.js';
 import { getState, setState, subscribe } from './state.js';
 import { initTheme } from './theme.js';

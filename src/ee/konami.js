@@ -29,7 +29,6 @@ function getDailySeed() {
  */
 export function createKonami(ctx) {
     const { eeManager, t, reducedMotion } = ctx;
-
     let discovered = false;
     let index = 0;
     const timers = [];
@@ -46,48 +45,63 @@ export function createKonami(ctx) {
         listeners.push({ target, event, handler });
     }
 
-    function closeOverlay(overlay) {
-        overlay.remove();
+    function typeBiosText(textEl, lines) {
+        let lineIdx = 0;
+        let charIdx = 0;
+        let current = '';
+        function typeLine() {
+            if (lineIdx >= lines.length) return;
+            const line = lines[lineIdx];
+            if (charIdx < line.length) {
+                current += line[charIdx];
+                textEl.textContent = current + '\n'.repeat(lines.length - lineIdx - 1 > 0 ? 1 : 0);
+                charIdx++;
+                schedule(typeLine, TYPEWRITER_CHAR_MS);
+            } else {
+                current += '\n';
+                textEl.textContent = current;
+                lineIdx++;
+                charIdx = 0;
+                schedule(typeLine, TYPEWRITER_LINE_MS);
+            }
+        }
+        textEl.textContent = '\n'.repeat(lines.length - 1);
+        schedule(typeLine, TYPEWRITER_LINE_MS);
     }
 
-    function createBiosOverlay(text) {
+    function buildOverlay(text) {
         const overlay = document.createElement('div');
         overlay.className = 'ee-bios-overlay';
-
         const textEl = document.createElement('pre');
         textEl.className = 'ee-bios-overlay__text';
-
         if (reducedMotion) {
             textEl.textContent = text;
         } else {
-            const lines = text.split('\n');
-            let lineIdx = 0;
-            let charIdx = 0;
-            let current = '';
-            function typeLine() {
-                if (lineIdx >= lines.length) return;
-                const line = lines[lineIdx];
-                if (charIdx < line.length) {
-                    current += line[charIdx];
-                    textEl.textContent = current + '\n'.repeat(lines.length - lineIdx - 1 > 0 ? 1 : 0);
-                    charIdx++;
-                    schedule(typeLine, TYPEWRITER_CHAR_MS);
-                } else {
-                    current += '\n';
-                    textEl.textContent = current;
-                    lineIdx++;
-                    charIdx = 0;
-                    schedule(typeLine, TYPEWRITER_LINE_MS);
-                }
-            }
-            textEl.textContent = '\n'.repeat(lines.length - 1);
-            schedule(typeLine, TYPEWRITER_LINE_MS);
+            typeBiosText(textEl, text.split('\n'));
         }
-
         overlay.appendChild(textEl);
         document.body.appendChild(overlay);
+        listen(overlay, 'click', () => overlay.remove());
+    }
 
-        listen(overlay, 'click', () => closeOverlay(overlay));
+    function triggerEffect() {
+        if (!discovered) {
+            eeManager.discover('ee01');
+            discovered = true;
+        }
+        const seed = getDailySeed();
+        const msgKey = BIOS_KEYS[seed % BIOS_KEYS.length];
+        const text = t(msgKey);
+        const htmlEl = document.documentElement;
+        if (!reducedMotion) {
+            htmlEl.classList.add('ee-crt-glitch');
+            schedule(() => {
+                htmlEl.classList.remove('ee-crt-glitch');
+                buildOverlay(text);
+            }, CRT_GLITCH_MS);
+        } else {
+            buildOverlay(text);
+        }
     }
 
     function onKeydown(e) {
@@ -96,7 +110,7 @@ export function createKonami(ctx) {
             index++;
             if (index >= SEQUENCE.length) {
                 index = 0;
-                triggerBios();
+                triggerEffect();
             }
         } else {
             const matchOffset = SEQUENCE.indexOf(e.code);
@@ -108,32 +122,10 @@ export function createKonami(ctx) {
         }
     }
 
-    function triggerBios() {
-        if (!discovered) {
-            eeManager.discover('ee01');
-            discovered = true;
-        }
-
-        const seed = getDailySeed();
-        const msgKey = BIOS_KEYS[seed % BIOS_KEYS.length];
-        const text = t(msgKey);
-
-        const htmlEl = document.documentElement;
-        if (!reducedMotion) {
-            htmlEl.classList.add('ee-crt-glitch');
-            schedule(() => {
-                htmlEl.classList.remove('ee-crt-glitch');
-                createBiosOverlay(text);
-            }, CRT_GLITCH_MS);
-        } else {
-            createBiosOverlay(text);
-        }
-    }
-
     function onEscape(e) {
         if (e.code === 'Escape') {
             const overlay = document.querySelector('.ee-bios-overlay');
-            if (overlay) closeOverlay(overlay);
+            if (overlay) overlay.remove();
         }
     }
 

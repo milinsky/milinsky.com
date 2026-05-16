@@ -16,7 +16,6 @@ const ART_POOL = [
  */
 export function createShake(ctx) {
     const { eeManager, t, showToast, reducedMotion } = ctx;
-
     let destroyed = false;
     let discovered = false;
     const timers = [];
@@ -36,17 +35,17 @@ export function createShake(ctx) {
         listeners.push({ target, event, handler, options });
     }
 
-    function getArtIndex() {
-        const seed = eeManager.getSessionSeed();
-        return Math.floor(seed * ART_POOL.length) % ART_POOL.length;
+    function selectAsciiArt(seed) {
+        const index = Math.floor(seed * ART_POOL.length) % ART_POOL.length;
+        return ART_POOL[index];
     }
 
-    function createOverlay() {
+    function buildOverlay() {
         const overlay = document.createElement('div');
         overlay.className = 'ee-shake-overlay';
         const pre = document.createElement('pre');
         pre.className = 'ee-shake-overlay__art';
-        pre.textContent = ART_POOL[getArtIndex()];
+        pre.textContent = selectAsciiArt(eeManager.getSessionSeed());
         overlay.appendChild(pre);
         overlay.addEventListener('click', () => {
             if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
@@ -54,24 +53,14 @@ export function createShake(ctx) {
         return overlay;
     }
 
-    function activate() {
-        if (discovered) return;
-        discovered = true;
-        eeManager.discover('ee21');
-
-        if (reducedMotion) {
-            showToast(t('ee_shake_detected'));
-            return;
-        }
-
+    function triggerShakeAnimation() {
         document.body.classList.add('ee-shake-active');
         schedule(() => {
             document.body.classList.remove('ee-shake-active');
         }, STATIC_DURATION_MS);
-
         showToast(t('ee_shake_detected'));
         schedule(() => {
-            const overlay = createOverlay();
+            const overlay = buildOverlay();
             document.body.appendChild(overlay);
             schedule(() => {
                 if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
@@ -87,7 +76,13 @@ export function createShake(ctx) {
         if (x === null || y === null || z === null) return;
         const magnitude = Math.sqrt(x * x + y * y + z * z);
         if (magnitude > SHAKE_THRESHOLD) {
-            activate();
+            discovered = true;
+            eeManager.discover('ee21');
+            if (reducedMotion) {
+                showToast(t('ee_shake_detected'));
+                return;
+            }
+            triggerShakeAnimation();
         }
     }
 
