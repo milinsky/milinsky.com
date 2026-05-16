@@ -24,11 +24,11 @@ export function initVisualEffects() {
     let labelDestroyed = false;
 
     const retroCards = document.querySelectorAll('.retro-card');
-    for (let c = 0; c < retroCards.length; c++) {
+    for (const card of retroCards) {
         const scanline = document.createElement('span');
         scanline.className = 'card-scanline';
         scanline.setAttribute('aria-hidden', 'true');
-        retroCards[c].appendChild(scanline);
+        card.appendChild(scanline);
     }
 
     const crtNoise = document.getElementById('crtNoise');

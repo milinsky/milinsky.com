@@ -200,12 +200,12 @@ export function createContextMenu(ctx) {
         }
 
         const shuffled = shuffleArray(items, eeManager.getSessionSeed());
-        for (let ii = 0; ii < shuffled.length; ii++) {
+        for (const [ii, entry] of shuffled.entries()) {
             if (SEPARATOR_POSITIONS.includes(ii)) sep();
             const item = document.createElement('div');
             item.className = 'ee-cde-menu__item';
-            item.textContent = shuffled[ii].label;
-            item.addEventListener('click', shuffled[ii].action);
+            item.textContent = entry.label;
+            item.addEventListener('click', entry.action);
             menu.appendChild(item);
         }
 

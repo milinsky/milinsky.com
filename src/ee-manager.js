@@ -89,8 +89,8 @@ export function createEeManager() {
     function getDailySeed() {
         const str = new Date().toDateString();
         let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash << HASH_BITSHIFT) - hash + str.charCodeAt(i);
+        for (const ch of str) {
+            hash = (hash << HASH_BITSHIFT) - hash + ch.charCodeAt(0);
             hash = hash & hash;
         }
         return Math.abs(hash);
