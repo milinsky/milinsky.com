@@ -64,8 +64,8 @@ export const translations = {
     result1_label: { en: 'delivery speed', ru: 'скорость доставки' },
     result1_title: { en: 'SMS & Email Broadcasting Services', ru: 'Сервисы SMS и Email-рассылок' },
     result1_text: {
-        en: 'Designed and deployed broadcasting services on PHP/Java. Optimized the architecture, increasing message delivery speed by 30%.',
-        ru: 'Спроектировал и развернул сервисы рассылок на PHP/Java. Оптимизировал архитектуру, что позволило увеличить скорость доставки сообщений на 30%.',
+        en: 'Designed and deployed broadcasting services on PHP. Optimized the architecture, increasing message delivery speed by 30%.',
+        ru: 'Спроектировал и развернул сервисы рассылок на PHP. Оптимизировал архитектуру, что позволило увеличить скорость доставки сообщений на 30%.',
     },
     result2_label: { en: 'integration', ru: 'интеграция' },
     result2_title: { en: 'VoIP Telephony Integration', ru: 'Интеграция VoIP-телефонии' },
@@ -82,8 +82,8 @@ export const translations = {
     result_duyler_label: { en: 'years of dev', ru: 'лет разработки' },
     result_duyler_title: { en: 'Duyler Framework', ru: 'Фреймворк Duyler' },
     result_duyler_text: {
-        en: 'Event-driven non-blocking PHP framework for high-load AI solutions. Reactive architecture, async I/O, production-proven in real projects. Open Source.',
-        ru: 'Событийно-ориентированный неблокирующий PHP-фреймворк для высоконагруженных AI-решений. Реактивная архитектура, асинхронный I/O, проверенный в продакшене. Open Source.',
+        en: 'Event-driven non-blocking PHP framework for high-load AI solutions. Reactive architecture, async I/O, production-proven in real projects.',
+        ru: 'Событийно-ориентированный неблокирующий PHP-фреймворк для высоконагруженных AI-решений. Реактивная архитектура, асинхронный I/O, проверенный в продакшене.',
     },
     result4_label: { en: 'years of projects', ru: 'года проектов' },
     result4_title: { en: 'Full Range of Solutions', ru: 'Полный спектр решений' },
