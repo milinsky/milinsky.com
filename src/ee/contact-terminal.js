@@ -4,6 +4,7 @@ import { runMailComposer } from './contact-terminal/mail-composer.js';
 
 const SCROLL_TRIGGER_DELAY_MS = 300;
 const HIRE_COMMAND = 'hire milinsky';
+const INTERSECTION_THRESHOLD = 0.3;
 
 export function createContactTerminal(ctx) {
     const { t, reducedMotion } = ctx;
@@ -141,7 +142,7 @@ export function createContactTerminal(ctx) {
                 }
             }
         },
-        { threshold: 0.3 }
+        { threshold: INTERSECTION_THRESHOLD }
     );
     observer.observe(shell);
 

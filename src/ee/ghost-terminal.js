@@ -4,6 +4,8 @@ const OUTPUT_DELAY_MS = 400;
 const LINE_PAUSE_MS = 800;
 const INITIAL_DELAY_MS = 500;
 const GHOST_DURATION_MS = 8000;
+const SCRIPT_SELECT_THRESHOLD = 0.5;
+const GHOST_FADE_MS = 1000;
 
 const SCRIPTS = [
     [
@@ -98,7 +100,7 @@ export function createGhostTerminal(ctx) {
         ghostActive = true;
         inputLine.style.display = 'none';
 
-        const scriptIndex = seed < 0.5 ? 0 : 1;
+        const scriptIndex = seed < SCRIPT_SELECT_THRESHOLD ? 0 : 1;
         const script = SCRIPTS[scriptIndex];
         const ghostLines = [];
 
@@ -137,7 +139,7 @@ export function createGhostTerminal(ctx) {
             for (const line of ghostLines) {
                 line.classList.add('ee-term-output__line--fade');
             }
-            schedule(cleanup, 1000);
+            schedule(cleanup, GHOST_FADE_MS);
         }, GHOST_DURATION_MS);
     }
 

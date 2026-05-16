@@ -1,6 +1,7 @@
 import { sendMessage } from './send-message.js';
 
 const MAIL_PROMPT_DELAY_MS = 400;
+const SEND_CMD = '/send';
 
 function renderSuccess(t, appendLine) {
     appendLine('✓ ' + t('contact_mail_success'), 'contact-mail__success');
@@ -107,9 +108,9 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
 
             if (e.key === 'Enter') {
                 const trimmed = buffer.replace(/\s+$/, '');
-                if (trimmed.endsWith('/send')) {
+                if (trimmed.endsWith(SEND_CMD)) {
                     cursor.remove();
-                    const messageBody = trimmed.slice(0, -5).trim();
+                    const messageBody = trimmed.slice(0, -SEND_CMD.length).trim();
                     doSend(subject, messageBody);
                     return;
                 }

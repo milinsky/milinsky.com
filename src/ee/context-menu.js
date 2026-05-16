@@ -7,15 +7,20 @@ const SEED_COFFEE_MIN = 0.3;
 const SEED_COFFEE_MAX = 0.7;
 const SELF_DESTRUCT_RESTORE_MS = 2000;
 const COFFEE_TOAST_MS = 5000;
+const HASH_MULTIPLIER = 10000;
+const SEED_MULTIPLIER = 10000;
+const TOAST_DURATION_MS = 3000;
+const TOAST_SHORT_DURATION_MS = 2000;
+const SEPARATOR_POSITIONS = [1, 3];
 
 function seededRandom(seed) {
-    const x = Math.sin(seed + 1) * 10000;
+    const x = Math.sin(seed + 1) * HASH_MULTIPLIER;
     return x - Math.floor(x);
 }
 
 function shuffleArray(arr, seed) {
     const result = arr.slice();
-    let s = seed * 10000;
+    let s = seed * SEED_MULTIPLIER;
     for (let i = result.length - 1; i > 0; i--) {
         s = seededRandom(s);
         const j = Math.floor(s * (i + 1));
@@ -130,7 +135,7 @@ export function createContextMenu(ctx) {
                 label: t('ee_menu_source'),
                 action: () => {
                     closeEeMenu();
-                    showToast(t('ee_toast_console'), 3000);
+                    showToast(t('ee_toast_console'), TOAST_DURATION_MS);
                 },
             },
             {
@@ -153,10 +158,10 @@ export function createContextMenu(ctx) {
                     closeEeMenu();
                     if (html?.getAttribute('data-ee-theme') === 'cyberpunk') {
                         html.removeAttribute('data-ee-theme');
-                        showToast(t('ee_toast_cyber_off'), 2000);
+                        showToast(t('ee_toast_cyber_off'), TOAST_SHORT_DURATION_MS);
                     } else {
                         html?.setAttribute('data-ee-theme', 'cyberpunk');
-                        showToast(t('ee_toast_cyber_on'), 2000);
+                        showToast(t('ee_toast_cyber_on'), TOAST_SHORT_DURATION_MS);
                     }
                 },
             },
@@ -164,7 +169,7 @@ export function createContextMenu(ctx) {
                 label: t('ee_menu_exit'),
                 action: () => {
                     closeEeMenu();
-                    showToast(t('ee_toast_exit'), 3000);
+                    showToast(t('ee_toast_exit'), TOAST_DURATION_MS);
                 },
             },
         ];
@@ -196,7 +201,7 @@ export function createContextMenu(ctx) {
 
         const shuffled = shuffleArray(items, eeManager.getSessionSeed());
         for (let ii = 0; ii < shuffled.length; ii++) {
-            if (ii === 1 || ii === 3) sep();
+            if (SEPARATOR_POSITIONS.includes(ii)) sep();
             const item = document.createElement('div');
             item.className = 'ee-cde-menu__item';
             item.textContent = shuffled[ii].label;

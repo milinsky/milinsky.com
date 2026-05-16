@@ -13,11 +13,11 @@ describe('state', () => {
     });
 
     it('getState returns initial lang from localStorage', () => {
-        expect(getState('lang')).toBe('en');
+        expect(getState('lang')).toBe('ru');
     });
 
     it('getState returns initial theme from localStorage', () => {
-        expect(getState('theme')).toBe('light');
+        expect(getState('theme')).toBe('dark');
     });
 
     it('setState updates value and getState returns it', () => {

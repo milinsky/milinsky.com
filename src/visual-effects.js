@@ -2,6 +2,7 @@
  * @module visual-effects
  */
 
+const VIEWPORT_HEIGHT_PERCENT = 100;
 const NOISE_DELAY_MIN_MS = 3000;
 const NOISE_DELAY_RANGE_MS = 6000;
 const NOISE_VISIBILITY_MS = 250;
@@ -42,7 +43,7 @@ export function initVisualEffects() {
                     allTimeouts.push(retry);
                     return;
                 }
-                crtNoise.style.top = `${Math.random() * 100}vh`;
+                crtNoise.style.top = `${Math.random() * VIEWPORT_HEIGHT_PERCENT}vh`;
                 crtNoise.classList.remove('crt-noise--active');
                 void crtNoise.offsetWidth;
                 crtNoise.classList.add('crt-noise--active');

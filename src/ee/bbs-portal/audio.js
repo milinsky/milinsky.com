@@ -1,3 +1,6 @@
+const MASTER_VOLUME = 0.15;
+const FADE_TARGET_LEVEL = 0.001;
+const STOP_BUFFER_S = 0.05;
 const TONE_FREQ_LOW = 1200;
 const TONE_FREQ_HIGH = 2400;
 const TONE_DURATION_MS = 0.15;
@@ -16,7 +19,7 @@ export function playModemTones() {
     const actx = new CtxClass();
     const gain = actx.createGain();
     gain.connect(actx.destination);
-    gain.gain.setValueAtTime(0.15, actx.currentTime);
+    gain.gain.setValueAtTime(MASTER_VOLUME, actx.currentTime);
 
     const osc = actx.createOscillator();
     osc.type = 'sine';
@@ -30,12 +33,12 @@ export function playModemTones() {
     }
 
     gain.gain.exponentialRampToValueAtTime(
-        0.001,
+        FADE_TARGET_LEVEL,
         now + TONE_SWEEPS * (TONE_DURATION_MS + TONE_GAP_MS) * 2 + FADE_OUT_MS
     );
 
     osc.start(now);
-    osc.stop(now + TONE_SWEEPS * (TONE_DURATION_MS + TONE_GAP_MS) * 2 + FADE_OUT_MS + 0.05);
+    osc.stop(now + TONE_SWEEPS * (TONE_DURATION_MS + TONE_GAP_MS) * 2 + FADE_OUT_MS + STOP_BUFFER_S);
 
     return {
         stop() {

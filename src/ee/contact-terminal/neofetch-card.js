@@ -1,5 +1,3 @@
-import { ASCII_LINES } from '../neofetch/render.js';
-
 const LOGO_LINES = [
     '  ██╗███╗   ███╗',
     '  ██║████╗ ████║',
@@ -10,6 +8,7 @@ const LOGO_LINES = [
 ];
 
 const CLOCK_TICK_MS = 1000;
+const INPUT_SETUP_DELAY_MS = 200;
 
 function formatTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -79,5 +78,5 @@ export function runNeofetchCard(shell, t, reducedMotion, schedule, appendElement
     hint.textContent = '> ' + t('contact_hint');
     appendElement(hint);
 
-    schedule(onDone, reducedMotion ? 0 : 200);
+    schedule(onDone, reducedMotion ? 0 : INPUT_SETUP_DELAY_MS);
 }

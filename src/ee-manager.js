@@ -1,3 +1,5 @@
+const HASH_BITSHIFT = 5;
+
 /**
  * Create an Easter Egg manager instance.
  * @returns {{ discover: (id: string) => void, isDiscovered: (id: string) => boolean, getVisitCount: () => number, getSessionSeed: () => number, getDailySeed: () => number, recordVisit: () => void }}
@@ -88,7 +90,7 @@ export function createEeManager() {
         const str = new Date().toDateString();
         let hash = 0;
         for (let i = 0; i < str.length; i++) {
-            hash = (hash << 5) - hash + str.charCodeAt(i);
+            hash = (hash << HASH_BITSHIFT) - hash + str.charCodeAt(i);
             hash = hash & hash;
         }
         return Math.abs(hash);

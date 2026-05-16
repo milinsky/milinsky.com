@@ -14,10 +14,12 @@ const BIOS_KEYS = ['ee_konami_bios_1', 'ee_konami_bios_2', 'ee_konami_bios_3'];
 const CRT_GLITCH_MS = 1000;
 const TYPEWRITER_LINE_MS = 80;
 const TYPEWRITER_CHAR_MS = 30;
+const SEED_YEAR_MULTIPLIER = 10000;
+const SEED_MONTH_MULTIPLIER = 100;
 
 function getDailySeed() {
     const d = new Date();
-    return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    return d.getFullYear() * SEED_YEAR_MULTIPLIER + (d.getMonth() + 1) * SEED_MONTH_MULTIPLIER + d.getDate();
 }
 
 /**

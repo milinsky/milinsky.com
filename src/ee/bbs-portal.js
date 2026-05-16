@@ -3,6 +3,7 @@ import { getRandomBaudRate, getMenuItems } from './bbs-portal/content.js';
 
 const TYPE_DELAY_MS = 30;
 const LINE_DELAY_MS = 200;
+const MENU_DISPLAY_MS = 3000;
 
 /**
  * EE-14: #bbs transforms the page into a 90s BBS interface with modem tones.
@@ -123,7 +124,7 @@ export function createBbsPortal(ctx) {
         contentEl.textContent = item.content;
         schedule(() => {
             contentEl.textContent = '';
-        }, 3000);
+        }, MENU_DISPLAY_MS);
     }
 
     function exitBbs() {
