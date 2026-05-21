@@ -1,3 +1,5 @@
+const HASH_BITSHIFT = 5;
+
 /**
  * Create an Easter Egg manager instance.
  * @returns {{ discover: (id: string) => void, isDiscovered: (id: string) => boolean, getVisitCount: () => number, getSessionSeed: () => number, getDailySeed: () => number, recordVisit: () => void }}
@@ -14,12 +16,29 @@ export function createEeManager() {
         discovered = new Set();
     }
 
-    let rawSeed = sessionStorage.getItem('ee_session_seed');
-    if (!rawSeed) {
-        rawSeed = String(Math.random());
-        sessionStorage.setItem('ee_session_seed', rawSeed);
+    function hashString(str) {
+        let hash = 0;
+        for (const ch of str) {
+            hash = (hash << HASH_BITSHIFT) - hash + ch.charCodeAt(0);
+            hash = hash & hash;
+        }
+        return Math.abs(hash);
     }
-    const seedNum = parseFloat(rawSeed) || Math.random();
+
+    function generateDailySeed() {
+        return hashString(new Date().toDateString());
+    }
+
+    function formatSessionInfo() {
+        let rawSeed = sessionStorage.getItem('ee_session_seed');
+        if (!rawSeed) {
+            rawSeed = String(Math.random());
+            sessionStorage.setItem('ee_session_seed', rawSeed);
+        }
+        return parseFloat(rawSeed) || Math.random();
+    }
+
+    const seedNum = formatSessionInfo();
 
     function saveDiscovered() {
         try {
@@ -85,13 +104,7 @@ export function createEeManager() {
     }
 
     function getDailySeed() {
-        const str = new Date().toDateString();
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash << 5) - hash + str.charCodeAt(i);
-            hash = hash & hash;
-        }
-        return Math.abs(hash);
+        return generateDailySeed();
     }
 
     return {

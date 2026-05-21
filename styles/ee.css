@@ -674,6 +674,10 @@ html.ee-crt-glitch {
     z-index: var(--z-ee-content);
 }
 
+.ee-bbs-active main,
+.ee-bbs-active header,
+.ee-bbs-active footer { display: none; }
+
 .ee-bbs-screen {
     position: fixed;
     inset: 0;
@@ -1108,13 +1112,42 @@ html.ee-time-anomaly {
     border-color: var(--accent);
 }
 
+.ee-unredacted-active {
+    position: relative;
+    animation: ee-shake-anim 0.4s ease-in-out 3,
+               ee-unredacted-glitch 0.2s steps(2) 3 1.2s;
+}
+
+.ee-unredacted-active > *:not(.ee-unredacted-content) {
+    opacity: 0.15;
+    filter: blur(1px);
+    transition: opacity 0.3s, filter 0.3s;
+    pointer-events: none;
+}
+
 .ee-unredacted-content {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     font-family: var(--font-mono);
-    font-size: 0.875rem;
+    font-size: 1.25rem;
     line-height: 1.8;
-    color: var(--text-secondary);
-    padding: var(--space-lg) 0;
+    color: var(--solar-yellow);
+    padding: var(--space-lg);
+    z-index: var(--z-ee-top);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+@keyframes ee-unredacted-glitch {
+    0% { filter: none; }
+    20% { filter: brightness(1.5) contrast(2) hue-rotate(45deg); }
+    40% { filter: invert(0.3) brightness(0.8); }
+    60% { filter: brightness(1.8) saturate(2) hue-rotate(-45deg); }
+    80% { filter: contrast(1.5) brightness(1.2); }
+    100% { filter: none; }
 }
 
 .neofetch-output {
@@ -1243,4 +1276,19 @@ html.ee-time-anomaly {
 
 .contact__terminal-shell :focus-visible {
     outline: none;
+}
+
+.contact-cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.1em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    margin-left: 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .contact-cursor {
+        animation: ee-term-blink 1s step-end infinite;
+    }
 }

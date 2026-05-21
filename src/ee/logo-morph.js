@@ -48,6 +48,45 @@ export function createLogoMorph(ctx) {
         '    +--------+\n    | +----+ |\n    | |>>>>| |\n    | |>>>>| |\n    | +----+ |\n    +--------+\n      +----+\n      +----+',
     ];
 
+    function selectVariant() {
+        const artIdx = Math.floor(eeManager.getSessionSeed() * altArts.length);
+        return altArts[artIdx];
+    }
+
+    function buildMatrixRain(overlay) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*';
+        const colCount = Math.floor(window.innerWidth / MATRIX_CELL_SIZE_PX);
+        const colIndices = Array.from({ length: colCount }, (_, i) => i);
+        for (const col of colIndices) {
+            const colEl = document.createElement('div');
+            colEl.className = 'ee-matrix-col';
+            colEl.style.left = `${col * MATRIX_CELL_SIZE_PX}px`;
+            const len = MATRIX_CHAR_MIN + Math.floor(Math.random() * MATRIX_CHAR_RANGE);
+            const charIndices = Array.from({ length: len }, () =>
+                chars.charAt(Math.floor(Math.random() * chars.length))
+            );
+            colEl.textContent = charIndices.join('');
+            colEl.style.animationDuration = `${MATRIX_MIN_DURATION_S + Math.random() * MATRIX_DURATION_RANGE_S}s`;
+            colEl.style.animationDelay = `${Math.random() * MATRIX_MAX_DELAY_S}s`;
+            overlay.appendChild(colEl);
+        }
+    }
+
+    function applyMorphEffect() {
+        const overlay = document.createElement('div');
+        overlay.className = 'ee-matrix-overlay';
+        document.body.appendChild(overlay);
+        buildMatrixRain(overlay);
+        schedule(() => {
+            overlay.remove();
+            logoPre.textContent = selectVariant();
+            schedule(() => {
+                logoPre.textContent = originalLogo;
+                morphActive = false;
+            }, MORPH_DISPLAY_MS);
+        }, MATRIX_OVERLAY_MS);
+    }
+
     let clicks = [];
     let morphActive = false;
 
@@ -65,42 +104,14 @@ export function createLogoMorph(ctx) {
                 eeManager.discover('ee03');
                 if (reducedMotion) {
                     showToast(t('ee_logo_reduced'), MORPH_DISPLAY_MS);
-                    const artIdx = Math.floor(eeManager.getSessionSeed() * altArts.length);
-                    logoPre.textContent = altArts[artIdx];
+                    logoPre.textContent = selectVariant();
                     schedule(() => {
                         logoPre.textContent = originalLogo;
                         morphActive = false;
                     }, MORPH_DISPLAY_MS);
                     return;
                 }
-                const overlay = document.createElement('div');
-                overlay.className = 'ee-matrix-overlay';
-                document.body.appendChild(overlay);
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*';
-                const colCount = Math.floor(window.innerWidth / MATRIX_CELL_SIZE_PX);
-                for (let col = 0; col < colCount; col++) {
-                    const colEl = document.createElement('div');
-                    colEl.className = 'ee-matrix-col';
-                    colEl.style.left = `${col * MATRIX_CELL_SIZE_PX}px`;
-                    let text = '';
-                    const len = MATRIX_CHAR_MIN + Math.floor(Math.random() * MATRIX_CHAR_RANGE);
-                    for (let ci = 0; ci < len; ci++) {
-                        text += chars.charAt(Math.floor(Math.random() * chars.length));
-                    }
-                    colEl.textContent = text;
-                    colEl.style.animationDuration = `${MATRIX_MIN_DURATION_S + Math.random() * MATRIX_DURATION_RANGE_S}s`;
-                    colEl.style.animationDelay = `${Math.random() * MATRIX_MAX_DELAY_S}s`;
-                    overlay.appendChild(colEl);
-                }
-                schedule(() => {
-                    overlay.remove();
-                    const artIdx = Math.floor(eeManager.getSessionSeed() * altArts.length);
-                    logoPre.textContent = altArts[artIdx];
-                    schedule(() => {
-                        logoPre.textContent = originalLogo;
-                        morphActive = false;
-                    }, MORPH_DISPLAY_MS);
-                }, MATRIX_OVERLAY_MS);
+                applyMorphEffect();
             }
         }
     });

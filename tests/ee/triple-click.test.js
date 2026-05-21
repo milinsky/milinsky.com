@@ -90,15 +90,15 @@ describe('triple-click', () => {
         expect(unredacted.textContent).toBe('translated_ee_unredacted_about');
     });
 
-    it('double click does NOT activate unredacted view', () => {
+    it('double click within 500ms activates unredacted view', () => {
         const { label, container } = createSection('about', 'Original content');
         createTripleClick({ eeManager, t });
 
         doubleClick(label);
 
         const unredacted = container.querySelector('.ee-unredacted-content');
-        expect(unredacted).toBeNull();
-        expect(eeManager.discover).not.toHaveBeenCalled();
+        expect(unredacted).not.toBeNull();
+        expect(eeManager.discover).toHaveBeenCalledWith('ee19');
     });
 
     it('calls discover ee19 once on first activation', () => {
@@ -131,7 +131,7 @@ describe('triple-click', () => {
 
         expect(container.querySelector('.ee-unredacted-content')).not.toBeNull();
 
-        vi.advanceTimersByTime(10000);
+        vi.advanceTimersByTime(12000);
 
         expect(container.querySelector('.ee-unredacted-content')).toBeNull();
         expect(label.textContent).toBe(originalLabel);
@@ -155,17 +155,16 @@ describe('triple-click', () => {
 
         tripleClick(label);
         destroy();
-        vi.advanceTimersByTime(10000);
+        vi.advanceTimersByTime(12000);
 
         expect(container.querySelector('.ee-unredacted-content')).not.toBeNull();
+        expect(container.classList.contains('ee-unredacted-active')).toBe(true);
     });
 
     it('clicks beyond 500ms window reset counter', () => {
         const { label, container } = createSection('about', 'Content');
         createTripleClick({ eeManager, t });
 
-        nowMs += 100;
-        label.click();
         nowMs += 100;
         label.click();
 
@@ -225,7 +224,9 @@ describe('triple-click', () => {
         createTripleClick({ eeManager, t });
         tripleClick(label);
 
-        vi.advanceTimersByTime(10000);
+        expect(container.querySelector('.test-child')).not.toBeNull();
+
+        vi.advanceTimersByTime(12000);
 
         const restored = container.querySelector('.test-child');
         expect(restored).not.toBeNull();
@@ -254,9 +255,9 @@ describe('triple-click', () => {
 
         tripleClick(label);
 
-        vi.advanceTimersByTime(5000);
+        vi.advanceTimersByTime(6000);
 
-        vi.advanceTimersByTime(5000);
+        vi.advanceTimersByTime(6000);
 
         expect(label.textContent).not.toContain('translated_');
     });
@@ -269,11 +270,47 @@ describe('triple-click', () => {
         tripleClick(s1.label);
         expect(eeManager.discover).toHaveBeenCalledTimes(1);
 
-        vi.advanceTimersByTime(10000);
+        vi.advanceTimersByTime(12000);
 
         tripleClick(s2.label);
         expect(eeManager.discover).toHaveBeenCalledTimes(1);
         const unredacted = s2.container.querySelector('.ee-unredacted-content');
         expect(unredacted).not.toBeNull();
+    });
+
+    it('container gets ee-unredacted-active class on activation', () => {
+        const { label, container } = createSection('about', 'Content');
+        createTripleClick({ eeManager, t });
+
+        tripleClick(label);
+
+        expect(container.classList.contains('ee-unredacted-active')).toBe(true);
+    });
+
+    it('original content children remain in DOM during activation', () => {
+        const { label, container } = createSection('about', '');
+        const childDiv = document.createElement('div');
+        childDiv.className = 'test-child';
+        childDiv.textContent = 'child content';
+        container.appendChild(childDiv);
+
+        createTripleClick({ eeManager, t });
+        tripleClick(label);
+
+        expect(container.querySelector('.test-child')).not.toBeNull();
+        expect(container.querySelector('.test-child').textContent).toBe('child content');
+        expect(container.querySelector('.ee-unredacted-content')).not.toBeNull();
+    });
+
+    it('ee-unredacted-active class is removed after restore', () => {
+        const { label, container } = createSection('about', 'Content');
+        createTripleClick({ eeManager, t });
+
+        tripleClick(label);
+        expect(container.classList.contains('ee-unredacted-active')).toBe(true);
+
+        vi.advanceTimersByTime(12000);
+
+        expect(container.classList.contains('ee-unredacted-active')).toBe(false);
     });
 });

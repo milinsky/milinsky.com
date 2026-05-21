@@ -17,14 +17,14 @@ export function runHireCommand(
         for (const step of steps) {
             appendLine('> ' + step, 'contact-nf__hint');
         }
-        showContract();
+        buildConfirmUI();
         return;
     }
 
     let i = 0;
     function nextStep() {
         if (onDestroyed() || i >= steps.length) {
-            showContract();
+            buildConfirmUI();
             return;
         }
         appendLine('> ' + steps[i], 'contact-nf__hint');
@@ -33,9 +33,7 @@ export function runHireCommand(
     }
     nextStep();
 
-    function showContract() {
-        if (onDestroyed()) return;
-
+    function buildContractBox() {
         const PAD = 2;
         const MIN_WIDTH = 42;
         const header = 'COLLABORATION PROPOSAL';
@@ -60,7 +58,9 @@ export function runHireCommand(
             '└' + divider + '┘',
         ].join('\n');
         appendElement(box);
+    }
 
+    function buildOptionsLine() {
         const optionsLine = document.createElement('div');
         optionsLine.style.marginTop = 'var(--space-sm)';
 
@@ -84,17 +84,28 @@ export function runHireCommand(
         optionsLine.appendChild(tgOption);
         appendElement(optionsLine);
 
-        listen(emailOption, 'click', () => {
-            if (!onDestroyed()) runMailComposer();
-        });
+        listen(emailOption, 'click', () => processResponse('email'));
         listen(emailOption, 'keydown', (e) => {
-            if (!onDestroyed() && e.key === 'Enter') runMailComposer();
+            if (e.key === 'Enter') processResponse('email');
         });
-        listen(tgOption, 'click', () => {
-            if (!onDestroyed()) window.open('https://t.me/milinsky', '_blank');
-        });
+        listen(tgOption, 'click', () => processResponse('telegram'));
         listen(tgOption, 'keydown', (e) => {
-            if (!onDestroyed() && e.key === 'Enter') window.open('https://t.me/milinsky', '_blank');
+            if (e.key === 'Enter') processResponse('telegram');
         });
+    }
+
+    function buildConfirmUI() {
+        if (onDestroyed()) return;
+        buildContractBox();
+        buildOptionsLine();
+    }
+
+    function processResponse(response) {
+        if (onDestroyed()) return;
+        if (response === 'email') {
+            runMailComposer();
+        } else if (response === 'telegram') {
+            window.open('https://t.me/milinsky', '_blank');
+        }
     }
 }

@@ -1,12 +1,13 @@
 const ASCII_LINES = [
-    '  ┌─────────────┐',
-    '  │   •     •   │',
-    '  │       ▼     │',
-    '  │    ╲────╱   │',
-    '  └─────────────┘',
-    '  ┌──┬──┬──┬──┬──┐',
-    '  │▓▓│▓▓│▓▓│▓▓│▓▓│',
-    '  └──┴──┴──┴──┴──┘',
+    '     ▄██  ██▄',
+    '    ▄███▓▓███▄',
+    '    █ ▀█  █▀ █',
+    '    ▀▄  ▀▀  ▄▀',
+    '     ▀██████▀    ██',
+    '    ▄██▓▓▓▓▓█▄   ██',
+    '   ██▓▓▓▓▓▓▓▓██ ██',
+    '  ███▓▓▓▓▓▓▓▓████',
+    '  █████▓▓▓▓█████',
 ];
 
 const DIVIDER = '─────────────────────────';
@@ -47,7 +48,7 @@ function buildRightPanel() {
 
     const header = document.createElement('div');
     header.className = 'neofetch-header';
-    header.textContent = 'Mikhail@Ilinsky';
+    header.textContent = 'Terminal Cat';
     right.appendChild(header);
 
     const dividerEl = document.createElement('div');

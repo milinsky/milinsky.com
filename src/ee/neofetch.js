@@ -15,7 +15,6 @@ export { createNeofetchElement } from './neofetch/render.js';
  */
 export function createNeofetch(ctx) {
     const { reducedMotion } = ctx;
-
     let destroyed = false;
     const timers = [];
     let resolveDone = null;
@@ -53,78 +52,81 @@ export function createNeofetch(ctx) {
         };
     }
 
-    let delay = INITIAL_DELAY_MS;
-
-    const cmdLine = document.createElement('div');
-    cmdLine.className = 'ee-term-output__line ee-term-output__line--input';
-    container.appendChild(cmdLine);
-
-    const cmdText = '$ neofetch';
-    for (const ch of cmdText) {
-        schedule(() => {
-            cmdLine.textContent += ch;
-            shell.scrollTop = shell.scrollHeight;
-        }, delay);
-        delay += CHAR_DELAY_MS;
+    function typeCommand(cmdLine, cmdText, startDelay) {
+        let delay = startDelay;
+        for (const ch of cmdText) {
+            schedule(() => {
+                cmdLine.textContent += ch;
+                shell.scrollTop = shell.scrollHeight;
+            }, delay);
+            delay += CHAR_DELAY_MS;
+        }
+        return delay + POST_CMD_DELAY_MS;
     }
 
-    delay += POST_CMD_DELAY_MS;
-
-    const grid = document.createElement('div');
-    grid.className = 'neofetch-grid';
-    container.appendChild(grid);
-
-    const left = document.createElement('pre');
-    left.className = 'neofetch-ascii';
-    grid.appendChild(left);
-
-    const right = document.createElement('div');
-    right.className = 'neofetch-info';
-    grid.appendChild(right);
-
-    for (const line of ASCII_LINES) {
+    function buildCard(grid, startDelay) {
+        let delay = startDelay;
+        const left = document.createElement('pre');
+        left.className = 'neofetch-ascii';
+        grid.appendChild(left);
+        const right = document.createElement('div');
+        right.className = 'neofetch-info';
+        grid.appendChild(right);
+        for (const line of ASCII_LINES) {
+            schedule(() => {
+                left.textContent += line + '\n';
+                shell.scrollTop = shell.scrollHeight;
+            }, delay);
+            delay += LINE_DELAY_MS;
+        }
         schedule(() => {
-            left.textContent += line + '\n';
+            const header = document.createElement('div');
+            header.className = 'neofetch-header';
+            header.textContent = 'Terminal Cat';
+            right.appendChild(header);
+            const dividerEl = document.createElement('div');
+            dividerEl.className = 'neofetch-divider';
+            dividerEl.textContent = DIVIDER;
+            right.appendChild(dividerEl);
             shell.scrollTop = shell.scrollHeight;
         }, delay);
-        delay += LINE_DELAY_MS;
+        delay += LINE_DELAY_MS * HEADER_DELAY_MULTIPLIER;
+        const infoLines = getInfoLines();
+        for (const info of infoLines) {
+            schedule(() => {
+                const line = document.createElement('div');
+                const keySpan = document.createElement('span');
+                keySpan.className = 'neofetch-key';
+                keySpan.textContent = info.key + ': ';
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'neofetch-value';
+                valueSpan.textContent = info.value;
+                line.appendChild(keySpan);
+                line.appendChild(valueSpan);
+                right.appendChild(line);
+                shell.scrollTop = shell.scrollHeight;
+            }, delay);
+            delay += LINE_DELAY_MS;
+        }
+        return delay;
     }
 
-    schedule(() => {
-        const header = document.createElement('div');
-        header.className = 'neofetch-header';
-        header.textContent = 'Mikhail@Ilinsky';
-        right.appendChild(header);
-
-        const dividerEl = document.createElement('div');
-        dividerEl.className = 'neofetch-divider';
-        dividerEl.textContent = DIVIDER;
-        right.appendChild(dividerEl);
-        shell.scrollTop = shell.scrollHeight;
-    }, delay);
-    delay += LINE_DELAY_MS * HEADER_DELAY_MULTIPLIER;
-
-    const infoLines = getInfoLines();
-    for (const info of infoLines) {
+    function renderOutput() {
+        let delay = INITIAL_DELAY_MS;
+        const cmdLine = document.createElement('div');
+        cmdLine.className = 'ee-term-output__line ee-term-output__line--input';
+        container.appendChild(cmdLine);
+        delay = typeCommand(cmdLine, '$ neofetch', delay);
+        const grid = document.createElement('div');
+        grid.className = 'neofetch-grid';
+        container.appendChild(grid);
+        delay = buildCard(grid, delay);
         schedule(() => {
-            const line = document.createElement('div');
-            const keySpan = document.createElement('span');
-            keySpan.className = 'neofetch-key';
-            keySpan.textContent = info.key + ': ';
-            const valueSpan = document.createElement('span');
-            valueSpan.className = 'neofetch-value';
-            valueSpan.textContent = info.value;
-            line.appendChild(keySpan);
-            line.appendChild(valueSpan);
-            right.appendChild(line);
-            shell.scrollTop = shell.scrollHeight;
-        }, delay);
-        delay += LINE_DELAY_MS;
+            resolveDone();
+        }, delay + DONE_RESOLVE_DELAY_MS);
     }
 
-    schedule(() => {
-        resolveDone();
-    }, delay + DONE_RESOLVE_DELAY_MS);
+    renderOutput();
 
     return {
         destroy() {

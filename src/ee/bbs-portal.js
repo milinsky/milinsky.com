@@ -3,6 +3,7 @@ import { getRandomBaudRate, getMenuItems } from './bbs-portal/content.js';
 
 const TYPE_DELAY_MS = 30;
 const LINE_DELAY_MS = 200;
+const MENU_DISPLAY_MS = 3000;
 
 /**
  * EE-14: #bbs transforms the page into a 90s BBS interface with modem tones.
@@ -13,9 +14,9 @@ export function createBbsPortal(ctx) {
     const { eeManager, t, reducedMotion } = ctx;
 
     let discovered = false;
-    let savedBody = '';
     let active = false;
     let audioHandle = null;
+    let screenEl = null;
     const timers = [];
     const listeners = [];
 
@@ -30,22 +31,7 @@ export function createBbsPortal(ctx) {
         listeners.push({ target, event, handler });
     }
 
-    function activate() {
-        if (active) return;
-        active = true;
-
-        savedBody = document.body.innerHTML;
-
-        if (!discovered) {
-            eeManager.discover('ee14');
-            discovered = true;
-        }
-
-        if (!reducedMotion) {
-            audioHandle = playModemTones();
-        }
-
-        const baud = getRandomBaudRate();
+    function buildBbsScreen() {
         const screen = document.createElement('div');
         screen.className = 'ee-bbs-screen';
 
@@ -63,16 +49,7 @@ export function createBbsPortal(ctx) {
         menu.style.display = 'none';
         screen.appendChild(menu);
 
-        document.body.innerHTML = '';
-        document.body.appendChild(screen);
-
-        const headerText =
-            t('ee_bbs_connecting') + '\n\n' + t('ee_bbs_header') + '\n' + t('ee_bbs_speed').replace('{baud}', baud);
-        typewriterEffect(header, headerText, () => {
-            content.style.display = '';
-            menu.style.display = '';
-            renderMenu(menu, content);
-        });
+        return { screen, header, content, menu };
     }
 
     function typewriterEffect(el, text, onComplete) {
@@ -100,11 +77,12 @@ export function createBbsPortal(ctx) {
                 schedule(step, LINE_DELAY_MS);
             }
         }
+
         step();
     }
 
     function renderMenu(menuEl, contentEl) {
-        menuEl.innerHTML = '';
+        menuEl.replaceChildren();
         const items = getMenuItems(t);
         for (const item of items) {
             const div = document.createElement('div');
@@ -123,18 +101,53 @@ export function createBbsPortal(ctx) {
         contentEl.textContent = item.content;
         schedule(() => {
             contentEl.textContent = '';
-        }, 3000);
+        }, MENU_DISPLAY_MS);
     }
 
-    function exitBbs() {
-        document.body.innerHTML = savedBody;
-        savedBody = '';
+    function cleanupPortal() {
+        if (screenEl) {
+            screenEl.remove();
+            screenEl = null;
+        }
+        document.body.classList.remove('ee-bbs-active');
         active = false;
         if (audioHandle) {
             audioHandle.stop();
             audioHandle = null;
         }
+    }
+
+    function exitBbs() {
+        cleanupPortal();
         window.location.hash = '';
+    }
+
+    function activate() {
+        if (active) return;
+        active = true;
+
+        if (!discovered) {
+            eeManager.discover('ee14');
+            discovered = true;
+        }
+
+        if (!reducedMotion) {
+            audioHandle = playModemTones();
+        }
+
+        const baud = getRandomBaudRate();
+        const { screen, header, content, menu } = buildBbsScreen();
+        screenEl = screen;
+        document.body.classList.add('ee-bbs-active');
+        document.body.appendChild(screen);
+
+        const headerText =
+            t('ee_bbs_connecting') + '\n\n' + t('ee_bbs_header') + '\n' + t('ee_bbs_speed').replace('{baud}', baud);
+        typewriterEffect(header, headerText, () => {
+            content.style.display = '';
+            menu.style.display = '';
+            renderMenu(menu, content);
+        });
     }
 
     function onHashChange() {
@@ -155,14 +168,7 @@ export function createBbsPortal(ctx) {
             for (const { target, event, handler } of listeners) {
                 target.removeEventListener(event, handler);
             }
-            if (audioHandle) {
-                audioHandle.stop();
-                audioHandle = null;
-            }
-            if (active) {
-                document.body.innerHTML = savedBody;
-                active = false;
-            }
+            cleanupPortal();
         },
     };
 }

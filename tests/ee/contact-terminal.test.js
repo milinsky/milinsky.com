@@ -187,7 +187,7 @@ describe('runNeofetchCard', () => {
         runNeofetchCard(shell, t, false, schedule, appendElement, vi.fn(), addInterval);
         const grid = appended.find((el) => el.classList.contains('contact-nf__grid'));
         expect(grid).toBeDefined();
-        expect(grid.querySelector('.contact-nf__ascii').textContent).toContain('┌─────────────┐');
+        expect(grid.querySelector('.contact-nf__ascii').textContent).toContain('██');
     });
 
     it('renders info fields with t() translations', () => {
