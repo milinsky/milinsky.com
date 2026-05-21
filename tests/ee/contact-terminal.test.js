@@ -15,11 +15,8 @@ function setupShell() {
 
 function createTrackingObserver() {
     const created = [];
-    const OrigClass = MockObserver;
     const Tracked = function (cb) {
-        const obs = new OrigClass(cb);
-        const origObserve = obs.observe.bind(obs);
-        obs.observe = (el) => { origObserve(el); };
+        const obs = new MockObserver(cb);
         created.push(obs);
         return obs;
     };

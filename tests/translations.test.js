@@ -48,15 +48,6 @@ describe('translations', () => {
         }
     });
 
-    it('has no empty string values', () => {
-        const keys = Object.keys(translations);
-        for (const key of keys) {
-            for (const lang of REQUIRED_LANGS) {
-                expect(translations[key][lang].length, `empty value at ${key}.${lang}`).toBeGreaterThan(0);
-            }
-        }
-    });
-
     it('every translation value is a non-empty string', () => {
         const keys = Object.keys(translations);
         for (const key of keys) {
