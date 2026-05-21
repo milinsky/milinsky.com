@@ -1,6 +1,6 @@
-const TRIPLE_CLICK_THRESHOLD_MS = 500;
-const UNREDACTED_DISPLAY_MS = 10000;
-const REQUIRED_CLICKS = 3;
+const DOUBLE_CLICK_THRESHOLD_MS = 500;
+const UNREDACTED_DISPLAY_MS = 12000;
+const REQUIRED_CLICKS = 2;
 
 export function createTripleClick(ctx) {
     const { eeManager, t } = ctx;
@@ -10,8 +10,6 @@ export function createTripleClick(ctx) {
     let destroyed = false;
     let discovered = false;
     let activeSection = null;
-    let originalContent = null;
-
     function schedule(fn, delay) {
         const id = setTimeout(() => {
             if (!destroyed) fn();
@@ -41,7 +39,7 @@ export function createTripleClick(ctx) {
             const now = Date.now();
             const state = clickStates.get(label);
 
-            if (now - state.lastTime > TRIPLE_CLICK_THRESHOLD_MS) {
+            if (now - state.lastTime > DOUBLE_CLICK_THRESHOLD_MS) {
                 state.count = 1;
             } else {
                 state.count += 1;
@@ -71,35 +69,25 @@ export function createTripleClick(ctx) {
         const originalLabelText = label.textContent;
         label.textContent = t('ee_unredacted_label_' + sectionName);
 
-        originalContent = container.cloneNode(true);
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
+        container.classList.add('ee-unredacted-active');
 
-        const unredactedEl = document.createElement('div');
-        unredactedEl.className = 'ee-unredacted-content';
-        unredactedEl.textContent = t('ee_unredacted_' + sectionName);
-        container.appendChild(unredactedEl);
+        const overlay = document.createElement('div');
+        overlay.className = 'ee-unredacted-content';
+        overlay.textContent = t('ee_unredacted_' + sectionName);
+        container.appendChild(overlay);
 
         schedule(() => {
-            restoreContent(container, label, originalLabelText);
+            restoreContent(container, label, originalLabelText, overlay);
         }, UNREDACTED_DISPLAY_MS);
     }
 
-    function restoreContent(container, label, originalLabelText) {
-        if (!originalContent) return;
-
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
+    function restoreContent(container, label, originalLabelText, overlay) {
+        container.classList.remove('ee-unredacted-active');
+        if (overlay && overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
         }
-
-        for (const child of originalContent.childNodes) {
-            container.appendChild(child.cloneNode(true));
-        }
-
         label.textContent = originalLabelText;
         activeSection = null;
-        originalContent = null;
     }
 
     return {

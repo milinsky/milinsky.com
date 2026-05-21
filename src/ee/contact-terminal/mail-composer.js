@@ -1,24 +1,9 @@
 import { sendMessage } from './send-message.js';
 
-const SUCCESS_ASCII = [
-    '   ♥     ♥   ',
-    '  ♥♥♥   ♥♥♥  ',
-    '  ♥♥♥♥♥♥♥♥♥  ',
-    '   ♥♥♥♥♥♥♥   ',
-    '     ♥♥♥♥    ',
-    '       ♥     ',
-];
-
 const MAIL_PROMPT_DELAY_MS = 400;
 
-function renderSuccess(t, appendLine, appendElement) {
+function renderSuccess(t, appendLine) {
     appendLine('✓ ' + t('contact_mail_success'), 'contact-mail__success');
-    for (const line of SUCCESS_ASCII) {
-        const el = document.createElement('div');
-        el.className = 'contact-mail__heart';
-        el.textContent = line;
-        appendElement(el);
-    }
 }
 
 export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, appendElement, listen, onDestroyed) {
@@ -44,8 +29,7 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         line.appendChild(input);
 
         const cursor = document.createElement('span');
-        cursor.textContent = '▋';
-        cursor.style.animation = 'blink 1s step-end infinite';
+        cursor.className = 'contact-cursor';
         line.appendChild(cursor);
 
         appendElement(line);
@@ -103,8 +87,7 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         line.appendChild(input);
 
         const cursor = document.createElement('span');
-        cursor.textContent = '▋';
-        cursor.style.animation = 'blink 1s step-end infinite';
+        cursor.className = 'contact-cursor';
         line.appendChild(cursor);
 
         appendElement(line);

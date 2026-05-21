@@ -121,7 +121,7 @@ describe('neofetch', () => {
         const ascii = document.querySelector('.neofetch-ascii');
         expect(ascii).not.toBeNull();
         vi.advanceTimersByTime(80 * 5);
-        expect(ascii.textContent).toContain('┌─────────────┐');
+        expect(ascii.textContent).toContain('▄██  ██▄');
     });
 
     it('shows info lines after ASCII', () => {
@@ -167,12 +167,12 @@ describe('neofetch', () => {
         expect(keys.length).toBe(0);
     });
 
-    it('shows header Mikhail@Ilinsky', () => {
+    it('shows header Terminal Cat', () => {
         setupShell();
         createNeofetch({ t: vi.fn(), reducedMotion: true });
         const header = document.querySelector('.neofetch-header');
         expect(header).not.toBeNull();
-        expect(header.textContent).toBe('Mikhail@Ilinsky');
+        expect(header.textContent).toBe('Terminal Cat');
     });
 
     it('shows status with dot indicator', () => {
@@ -217,7 +217,7 @@ describe('createNeofetchElement', () => {
         const el = createNeofetchElement();
         const header = el.querySelector('.neofetch-header');
         expect(header).not.toBeNull();
-        expect(header.textContent).toContain('Mikhail@Ilinsky');
+        expect(header.textContent).toContain('Terminal Cat');
     });
 
     it('contains divider', () => {

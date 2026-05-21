@@ -70,8 +70,7 @@ export function createContactTerminal(ctx) {
         inputLine.appendChild(inputSpan);
 
         const cursor = document.createElement('span');
-        cursor.textContent = '▋';
-        cursor.style.animation = 'blink 1s step-end infinite';
+        cursor.className = 'contact-cursor';
         inputLine.appendChild(cursor);
 
         appendElement(inputLine);

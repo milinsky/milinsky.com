@@ -4,8 +4,8 @@
  */
 
 const state = {
-    lang: localStorage.getItem('lang') || 'en',
-    theme: localStorage.getItem('theme') || 'light',
+    lang: localStorage.getItem('lang') || 'ru',
+    theme: localStorage.getItem('theme') || 'dark',
     reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 };
 
