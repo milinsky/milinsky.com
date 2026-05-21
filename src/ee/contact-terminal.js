@@ -4,6 +4,7 @@ import { runMailComposer } from './contact-terminal/mail-composer.js';
 
 const SCROLL_TRIGGER_DELAY_MS = 300;
 const HIRE_COMMAND = 'hire milinsky';
+const INTERSECTION_THRESHOLD = 0.3;
 
 export function createContactTerminal(ctx) {
     const { t, reducedMotion } = ctx;
@@ -52,9 +53,7 @@ export function createContactTerminal(ctx) {
         shell.scrollTop = shell.scrollHeight;
     }
 
-    function setupInput() {
-        if (destroyed) return;
-
+    function buildTerminalUI() {
         const inputLine = document.createElement('div');
         inputLine.className = 'contact-nf__hint';
 
@@ -73,6 +72,33 @@ export function createContactTerminal(ctx) {
         cursor.className = 'contact-cursor';
         inputLine.appendChild(cursor);
 
+        return { inputLine, inputSpan, cursor };
+    }
+
+    function handleCommand(entered, cursor) {
+        cursor.remove();
+        if (entered === HIRE_COMMAND) {
+            runHireCommand(
+                shell,
+                t,
+                reducedMotion,
+                schedule,
+                appendLine,
+                appendElement,
+                listen,
+                () => destroyed,
+                runMailComposerFlow
+            );
+        } else {
+            appendLine(t('contact_nf_cmd_not_found'), 'contact-nf__hint');
+            setupInput();
+        }
+    }
+
+    function setupInput() {
+        if (destroyed) return;
+
+        const { inputLine, inputSpan, cursor } = buildTerminalUI();
         appendElement(inputLine);
         inputSpan.focus();
 
@@ -83,24 +109,7 @@ export function createContactTerminal(ctx) {
             e.preventDefault();
 
             if (e.key === 'Enter') {
-                const entered = buffer.trim().toLowerCase();
-                cursor.remove();
-                if (entered === HIRE_COMMAND) {
-                    runHireCommand(
-                        shell,
-                        t,
-                        reducedMotion,
-                        schedule,
-                        appendLine,
-                        appendElement,
-                        listen,
-                        () => destroyed,
-                        runMailComposerFlow
-                    );
-                } else {
-                    appendLine(t('contact_nf_cmd_not_found'), 'contact-nf__hint');
-                    setupInput();
-                }
+                handleCommand(buffer.trim().toLowerCase(), cursor);
                 return;
             }
 
@@ -125,25 +134,38 @@ export function createContactTerminal(ctx) {
         runMailComposer(shell, t, reducedMotion, schedule, appendLine, appendElement, listen, () => destroyed);
     }
 
-    const observer = new IntersectionObserver(
-        (entries) => {
-            if (entries[0].isIntersecting && !initialized) {
-                initialized = true;
-                observer.disconnect();
-                if (reducedMotion) {
-                    runNeofetchCard(shell, t, reducedMotion, schedule, appendElement, setupInput, addInterval);
-                } else {
-                    schedule(
-                        () =>
-                            runNeofetchCard(shell, t, reducedMotion, schedule, appendElement, setupInput, addInterval),
-                        SCROLL_TRIGGER_DELAY_MS
-                    );
+    function setupIntersectionObserver() {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !initialized) {
+                    initialized = true;
+                    observer.disconnect();
+                    if (reducedMotion) {
+                        runNeofetchCard(shell, t, reducedMotion, schedule, appendElement, setupInput, addInterval);
+                    } else {
+                        schedule(
+                            () =>
+                                runNeofetchCard(
+                                    shell,
+                                    t,
+                                    reducedMotion,
+                                    schedule,
+                                    appendElement,
+                                    setupInput,
+                                    addInterval
+                                ),
+                            SCROLL_TRIGGER_DELAY_MS
+                        );
+                    }
                 }
-            }
-        },
-        { threshold: 0.3 }
-    );
-    observer.observe(shell);
+            },
+            { threshold: INTERSECTION_THRESHOLD }
+        );
+        observer.observe(shell);
+        return observer;
+    }
+
+    const observer = setupIntersectionObserver();
 
     return {
         destroy() {

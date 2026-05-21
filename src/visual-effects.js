@@ -2,6 +2,7 @@
  * @module visual-effects
  */
 
+const VIEWPORT_HEIGHT_PERCENT = 100;
 const NOISE_DELAY_MIN_MS = 3000;
 const NOISE_DELAY_RANGE_MS = 6000;
 const NOISE_VISIBILITY_MS = 250;
@@ -23,15 +24,16 @@ export function initVisualEffects() {
     let labelDestroyed = false;
 
     const retroCards = document.querySelectorAll('.retro-card');
-    for (let c = 0; c < retroCards.length; c++) {
+    for (const card of retroCards) {
         const scanline = document.createElement('span');
         scanline.className = 'card-scanline';
         scanline.setAttribute('aria-hidden', 'true');
-        retroCards[c].appendChild(scanline);
+        card.appendChild(scanline);
     }
 
-    const crtNoise = document.getElementById('crtNoise');
-    if (crtNoise) {
+    function initNoiseAnimation() {
+        const crtNoise = document.getElementById('crtNoise');
+        if (!crtNoise) return;
         (function runNoise() {
             if (noiseDestroyed) return;
             const delay = NOISE_DELAY_MIN_MS + Math.random() * NOISE_DELAY_RANGE_MS;
@@ -42,7 +44,7 @@ export function initVisualEffects() {
                     allTimeouts.push(retry);
                     return;
                 }
-                crtNoise.style.top = `${Math.random() * 100}vh`;
+                crtNoise.style.top = `${Math.random() * VIEWPORT_HEIGHT_PERCENT}vh`;
                 crtNoise.classList.remove('crt-noise--active');
                 void crtNoise.offsetWidth;
                 crtNoise.classList.add('crt-noise--active');
@@ -56,7 +58,8 @@ export function initVisualEffects() {
         })();
     }
 
-    if (sectionLabels.length > 0) {
+    function initLabelRotation() {
+        if (sectionLabels.length === 0) return;
         const labelOriginals = new Map();
         for (const label of sectionLabels) {
             labelOriginals.set(label, label.textContent);
@@ -87,6 +90,9 @@ export function initVisualEffects() {
             allTimeouts.push(t);
         })();
     }
+
+    initNoiseAnimation();
+    initLabelRotation();
 
     return {
         destroy() {

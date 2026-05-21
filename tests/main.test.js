@@ -41,7 +41,7 @@ const mockCreatePrintResume = vi.fn(() => ({ destroy: vi.fn(), printResume: vi.f
 vi.mock('../src/ee-manager.js', () => ({
     createEeManager: mockCreateEeManager,
 }));
-vi.mock('../src/translations.js', () => ({
+vi.mock('../src/translations/index.js', () => ({
     translations: mockTranslations,
 }));
 vi.mock('../src/i18n.js', () => ({

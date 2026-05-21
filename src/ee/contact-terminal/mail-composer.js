@@ -1,10 +1,7 @@
 import { sendMessage } from './send-message.js';
 
 const MAIL_PROMPT_DELAY_MS = 400;
-
-function renderSuccess(t, appendLine) {
-    appendLine('✓ ' + t('contact_mail_success'), 'contact-mail__success');
-}
+const SEND_CMD = '/send';
 
 export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, appendElement, listen, onDestroyed) {
     if (onDestroyed()) return;
@@ -12,14 +9,12 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
     appendLine('> ' + t('contact_mail_opening'), 'contact-nf__hint');
     schedule(promptSubject, reducedMotion ? 0 : MAIL_PROMPT_DELAY_MS);
 
-    function promptSubject() {
-        if (onDestroyed()) return;
-
+    function buildComposerUI(labelText) {
         const line = document.createElement('div');
 
         const label = document.createElement('span');
         label.className = 'contact-mail__field';
-        label.textContent = t('contact_mail_subject_prompt') + ': ';
+        label.textContent = labelText;
         line.appendChild(label);
 
         const input = document.createElement('span');
@@ -34,6 +29,14 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
 
         appendElement(line);
         input.focus();
+
+        return { line, input, cursor };
+    }
+
+    function promptSubject() {
+        if (onDestroyed()) return;
+
+        const { line, input, cursor } = buildComposerUI(t('contact_mail_subject_prompt') + ': ');
 
         let buffer = '';
 
@@ -73,25 +76,7 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         hintLine.textContent = '> ' + t('contact_mail_send_hint');
         appendElement(hintLine);
 
-        const line = document.createElement('div');
-
-        const label = document.createElement('span');
-        label.className = 'contact-mail__field';
-        label.textContent = t('contact_mail_message_prompt') + ': ';
-        line.appendChild(label);
-
-        const input = document.createElement('span');
-        input.className = 'contact-mail__input';
-        input.setAttribute('tabindex', '0');
-        input.setAttribute('role', 'textbox');
-        line.appendChild(input);
-
-        const cursor = document.createElement('span');
-        cursor.className = 'contact-cursor';
-        line.appendChild(cursor);
-
-        appendElement(line);
-        input.focus();
+        const { line, input, cursor } = buildComposerUI(t('contact_mail_message_prompt') + ': ');
 
         let buffer = '';
 
@@ -107,10 +92,10 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
 
             if (e.key === 'Enter') {
                 const trimmed = buffer.replace(/\s+$/, '');
-                if (trimmed.endsWith('/send')) {
+                if (trimmed.endsWith(SEND_CMD)) {
                     cursor.remove();
-                    const messageBody = trimmed.slice(0, -5).trim();
-                    doSend(subject, messageBody);
+                    const messageBody = trimmed.slice(0, -SEND_CMD.length).trim();
+                    handleSend(subject, messageBody);
                     return;
                 }
                 buffer += '\n';
@@ -136,7 +121,11 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         });
     }
 
-    async function doSend(subject, body) {
+    function showConfirmation() {
+        appendLine('✓ ' + t('contact_mail_success'), 'contact-mail__success');
+    }
+
+    async function handleSend(subject, body) {
         if (onDestroyed()) return;
 
         appendLine('> ' + t('contact_mail_sending'), 'contact-nf__hint');
@@ -145,7 +134,7 @@ export function runMailComposer(shell, t, reducedMotion, schedule, appendLine, a
         if (onDestroyed()) return;
 
         if (ok) {
-            renderSuccess(t, appendLine, appendElement);
+            showConfirmation();
         } else {
             const errorLine = document.createElement('div');
             errorLine.className = 'contact-mail__error';

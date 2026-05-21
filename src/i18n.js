@@ -37,18 +37,18 @@ export function applyLanguage(lang, translations) {
     html.setAttribute('lang', lang);
 
     const elements = document.querySelectorAll('[data-i18n]');
-    for (let i = 0; i < elements.length; i++) {
-        const key = elements[i].getAttribute('data-i18n');
+    for (const el of elements) {
+        const key = el.getAttribute('data-i18n');
         if (translations[key] && translations[key][lang]) {
-            elements[i].textContent = translations[key][lang];
+            el.textContent = translations[key][lang];
         }
     }
 
     const htmlElements = document.querySelectorAll('[data-i18n-html]');
-    for (let j = 0; j < htmlElements.length; j++) {
-        const hKey = htmlElements[j].getAttribute('data-i18n-html');
+    for (const el of htmlElements) {
+        const hKey = el.getAttribute('data-i18n-html');
         if (translations[hKey] && translations[hKey][lang]) {
-            setParsedContent(htmlElements[j], translations[hKey][lang]);
+            setParsedContent(el, translations[hKey][lang]);
         }
     }
 

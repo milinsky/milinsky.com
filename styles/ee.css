@@ -674,6 +674,10 @@ html.ee-crt-glitch {
     z-index: var(--z-ee-content);
 }
 
+.ee-bbs-active main,
+.ee-bbs-active header,
+.ee-bbs-active footer { display: none; }
+
 .ee-bbs-screen {
     position: fixed;
     inset: 0;

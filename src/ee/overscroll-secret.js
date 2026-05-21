@@ -39,7 +39,7 @@ export function createOverscrollSecret(ctx) {
         listeners.push({ target, event, handler, options });
     }
 
-    function createSector() {
+    function buildSecretPanel() {
         const el = document.createElement('div');
         el.className = 'ee-secret-sector';
 
@@ -68,20 +68,7 @@ export function createOverscrollSecret(ctx) {
         return el;
     }
 
-    function activate() {
-        if (discovered) return;
-        discovered = true;
-        eeManager.discover('ee22');
-
-        sectorEl = createSector();
-        document.body.appendChild(sectorEl);
-
-        if (reducedMotion) {
-            sectorEl.classList.add('ee-secret-sector--visible');
-            showToast(t('ee_overscroll_discovered'));
-            return;
-        }
-
+    function triggerReveal() {
         document.body.classList.add('ee-secret-crack');
         schedule(() => {
             document.body.classList.remove('ee-secret-crack');
@@ -90,6 +77,23 @@ export function createOverscrollSecret(ctx) {
             }
             showToast(t('ee_overscroll_discovered'));
         }, CRACK_DURATION_MS);
+    }
+
+    function activate() {
+        if (discovered) return;
+        discovered = true;
+        eeManager.discover('ee22');
+
+        sectorEl = buildSecretPanel();
+        document.body.appendChild(sectorEl);
+
+        if (reducedMotion) {
+            sectorEl.classList.add('ee-secret-sector--visible');
+            showToast(t('ee_overscroll_discovered'));
+            return;
+        }
+
+        triggerReveal();
     }
 
     function dismiss() {

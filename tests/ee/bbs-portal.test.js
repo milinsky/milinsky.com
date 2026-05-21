@@ -73,6 +73,19 @@ describe('bbs-portal', () => {
         expect(document.querySelector('.ee-bbs-screen')).not.toBeNull();
     });
 
+    it('adds ee-bbs-active class on activation', () => {
+        init();
+        activateAndWait();
+        expect(document.body.classList.contains('ee-bbs-active')).toBe(true);
+    });
+
+    it('preserves original DOM during BBS mode', () => {
+        init();
+        activateAndWait();
+        expect(document.querySelector('#original')).not.toBeNull();
+        expect(document.querySelector('#original').textContent).toBe('Original content');
+    });
+
     it('discover ee14 is called once on activation', () => {
         init();
         activateAndWait();
@@ -142,7 +155,8 @@ describe('bbs-portal', () => {
         const items = document.querySelectorAll('.ee-bbs-menu__item');
         items[3].click();
         expect(document.querySelector('.ee-bbs-screen')).toBeNull();
-        expect(document.body.innerHTML).toContain('Original content');
+        expect(document.body.classList.contains('ee-bbs-active')).toBe(false);
+        expect(document.querySelector('#original')).not.toBeNull();
     });
 
     it('non-#bbs hash does not activate', () => {
@@ -158,7 +172,8 @@ describe('bbs-portal', () => {
         activateAndWait();
         destroyFn();
         expect(document.querySelector('.ee-bbs-screen')).toBeNull();
-        expect(document.body.innerHTML).toContain('Original content');
+        expect(document.body.classList.contains('ee-bbs-active')).toBe(false);
+        expect(document.querySelector('#original')).not.toBeNull();
     });
 
     it('destroy removes hashchange listener', () => {
@@ -195,6 +210,13 @@ describe('bbs-portal', () => {
         expect(content.textContent.length).toBeGreaterThan(0);
         vi.advanceTimersByTime(4000);
         expect(content.textContent).toBe('');
+    });
+
+    it('destroy without activation does not throw', () => {
+        const { destroy } = init();
+        expect(() => destroy()).not.toThrow();
+        expect(document.querySelector('.ee-bbs-screen')).toBeNull();
+        expect(document.body.classList.contains('ee-bbs-active')).toBe(false);
     });
 });
 

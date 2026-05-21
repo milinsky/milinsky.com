@@ -18,7 +18,7 @@ export function createDragResist(ctx) {
         overlay.remove();
     }
 
-    function createDialog() {
+    function buildModal() {
         const overlay = document.createElement('div');
         overlay.className = 'ee-modal-overlay';
 
@@ -92,7 +92,7 @@ export function createDragResist(ctx) {
             eeManager.discover('ee13');
             discovered = true;
         }
-        createDialog();
+        buildModal();
     });
 
     return {

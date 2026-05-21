@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { translations } from '../src/translations.js';
+import { translations } from '../src/translations/index.js';
 
 const EXPECTED_KEY_COUNT = 213;
 const REQUIRED_LANGS = ['en', 'ru'];
