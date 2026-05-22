@@ -93,9 +93,7 @@ describe('ee-manager', () => {
         });
 
         it('handles localStorage.getItem throwing in recordVisit', () => {
-            let callCount = 0;
             localStorage.getItem = vi.fn((key) => {
-                callCount++;
                 if (key === 'ee_visit_count') throw new Error('blocked');
                 return origGetItem(key);
             });
@@ -109,7 +107,6 @@ describe('ee-manager', () => {
 
         it('handles localStorage.setItem throwing in recordVisit', () => {
             localStorage.clear();
-            let origSetItem;
             const origGetItem = localStorage.getItem.bind(localStorage);
             const origSet = localStorage.setItem.bind(localStorage);
             localStorage.setItem = vi.fn((key, value) => {

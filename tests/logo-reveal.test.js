@@ -244,7 +244,7 @@ describe('logo-reveal', () => {
         });
 
         vi.advanceTimersByTime(100000);
-        expect(() => {}).not.toThrow();
+        expect(pre.querySelectorAll('.nav__logo-pixel--visible').length).toBe(0);
 
         Math.random.mockRestore();
     });
