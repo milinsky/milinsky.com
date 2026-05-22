@@ -1,7 +1,3 @@
-/**
- * @module scroll-tracking
- */
-
 const STATUS_VISIBLE_MS = 1300;
 const SYSLOG_CHAR_DELAY_MIN_MS = 25;
 const SYSLOG_CHAR_DELAY_RANGE_MS = 25;

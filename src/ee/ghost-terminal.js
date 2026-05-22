@@ -68,10 +68,8 @@ export function createGhostTerminal(ctx) {
 
 function triggerGhostInactivity(ctx, state, schedule) {
     if (state.destroyed || state.discovered || state.ghostActive) return;
-    if (!state.discovered) {
-        ctx.eeManager.discover('ee02');
-        state.discovered = true;
-    }
+    ctx.eeManager.discover('ee02');
+    state.discovered = true;
     if (ctx.reducedMotion) {
         if (ctx.showToast) ctx.showToast(ctx.t('ee_ghost_toast'));
         return;
